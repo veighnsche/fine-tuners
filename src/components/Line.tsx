@@ -28,7 +28,7 @@ export const Line = ({ line, idx }: LineProps) => {
 
   const getPrompt = () => {
     const prompt = parentRef.current?.querySelector('#prompt')
-    if (prompt && prompt.innerHTML !== '') {
+    if (prompt && prompt.innerHTML && prompt.innerHTML !== '') {
       return prompt.innerHTML
     }
     return '-'
@@ -36,14 +36,14 @@ export const Line = ({ line, idx }: LineProps) => {
 
   const getCompletion = () => {
     const completion = parentRef.current?.querySelector('#completion')
-    if (completion && completion.innerHTML !== '') {
+    if (completion && completion.innerHTML && completion.innerHTML !== '') {
       return completion.innerHTML
     }
     return '-'
   }
 
   useEffect(() => {
-    if (line.prompt === '') {
+    if (!line.prompt) {
       setLine({
         prompt: '-',
         completion: getCompletion(),
@@ -57,7 +57,7 @@ export const Line = ({ line, idx }: LineProps) => {
   }, [line.prompt])
 
   useEffect(() => {
-    if (line.completion === '') {
+    if (!line.completion) {
       setLine({
         prompt: getPrompt(),
         completion: '-',
