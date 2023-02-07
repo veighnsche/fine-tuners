@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import authReducer from './auth.slice'
 import documentReducer from './document.slice'
 import linesReducer from './lines.slice'
 
 export const store = configureStore({
   reducer: {
+    auth: authReducer,
     document: documentReducer,
     lines: linesReducer,
   },

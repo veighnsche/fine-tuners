@@ -1,16 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from './index'
 
 export interface DocumentState {
-  encryptedApiKey: string
-  encryptedPassword: string
+  userId: string
   name: string
   openAiFileId: string
 }
 
 export const initialState: DocumentState = {
-  encryptedApiKey: '',
-  encryptedPassword: '',
+  userId: '',
   name: '',
   openAiFileId: '',
 }
@@ -19,25 +16,10 @@ export const documentSlice = createSlice({
   name: 'document',
   initialState,
   reducers: {
-    setEncryptedApiKey: (state, action: PayloadAction<{
-      encryptedApiKey: string
+    setUserId: (state, action: PayloadAction<{
+      userId: string
     }>) => {
-      state.encryptedApiKey = action.payload.encryptedApiKey
-    },
-    setPassword: (state, action: PayloadAction<{
-      password: string
-    }>) => {
-      // todo: encrypt password
-      state.encryptedPassword = action.payload.password
-    },
-    encryptApiKey(state, action: PayloadAction<{
-      apiKey: string
-      password: string
-    }>) {
-      // todo: encrypt password
-      // todo: encrypt API key with encrypted password
-      // for now, just store the unencrypted API key
-      state.encryptedApiKey = action.payload.apiKey
+      state.userId = action.payload.userId
     },
     setName: (state, action: PayloadAction<{
       name: string
@@ -53,17 +35,9 @@ export const documentSlice = createSlice({
 })
 
 export const {
-  setEncryptedApiKey,
-  setPassword,
-  encryptApiKey,
+  setUserId,
   setName,
   setOpenAiFileId,
 } = documentSlice.actions
-
-export const selectApiKey = (state: RootState) => {
-  // todo: decrypt API key with encrypted password
-  // for now, just return the unencrypted API key
-  return state.document.encryptedApiKey
-}
 
 export default documentSlice.reducer

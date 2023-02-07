@@ -1,9 +1,15 @@
 import { Box, Button, ButtonGroup, Paper, Typography } from '@mui/material'
-import { useAppSelector } from '../store'
+import { useAppDispatch, useAppSelector } from '../store'
+import { newLine } from '../store/lines.slice'
 import { Line } from './Line'
 
 export const Lines = () => {
+  const dispatch = useAppDispatch()
   const lines = useAppSelector(state => state.lines.lines)
+
+  const handleAdd = () => {
+    dispatch(newLine())
+  }
 
   return (
     <Paper sx={{ p: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -13,7 +19,9 @@ export const Lines = () => {
         </Typography>
         <Box sx={{ flexGrow: 1 }}/>
         <ButtonGroup>
-          <Button>Add</Button>
+          <Button onClick={handleAdd}>
+            Add
+          </Button>
         </ButtonGroup>
       </Box>
       <Box display="flex" flexDirection="column" gap={1}>

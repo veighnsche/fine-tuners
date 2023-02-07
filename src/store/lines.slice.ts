@@ -9,7 +9,6 @@ export const initialState: LinesState = {
   lines: [{
     prompt: 'This is the prompt.',
     completion: '\n\nThis is the completion.',
-    taught: 0,
   }],
 }
 
@@ -24,9 +23,8 @@ export const linesSlice = createSlice({
     },
     newLine: (state) => {
       state.lines.push({
-        prompt: '',
-        completion: '',
-        taught: 0,
+        prompt: 'This is the prompt.',
+        completion: '\n\nThis is the completion.',
       })
     },
     updateLine: (state, action: PayloadAction<{

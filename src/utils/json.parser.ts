@@ -22,26 +22,30 @@ export function toJsonEdit(lineType: LineType): string {
   return JSON.stringify(lineType)
 }
 
-export function fromJsonl(jsonl: string): LineType[] {
-  return jsonl.split('/n').map(fromJson)
+export function fromJsonl(jsonl: string): {
+  lines: LineType[]
+} {
+  const split = jsonl.split(/(?<!\\)\n/)
+  const lines = split.map(fromJson)
+  return { lines }
 }
 
 export function toJsonl(lines: LineType[], isEdit?: boolean): string {
   return lines.map(
     isEdit ? toJsonEdit : toJson
-  ).join('/n')
+  ).join('\n')
 }
 
 export function fromJsonlEdit(jsonl: string): {
   document: DocumentState
   lines: LineType[]
 } {
-  const lines = jsonl.split('/n')
-  const document = JSON.parse(lines[0])
-  const sliced = lines.slice(1).map(fromJson)
-  return { document, lines: sliced }
+  const split = jsonl.split(/(?<!\\)\n/)
+  const document = JSON.parse(split[0])
+  const lines = split.slice(1).map(fromJson)
+  return { document, lines }
 }
 
 export function toJsonlEdit(document: DocumentState, lines: LineType[]): string {
-  return JSON.stringify(document) + '/n' + toJsonl(lines, true)
+  return JSON.stringify(document) + '\n' + toJsonl(lines, true)
 }
