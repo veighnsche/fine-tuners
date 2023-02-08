@@ -1,24 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ApiKeyType } from '../auth/lockedApiKeys.indexedDb'
+import { ProfileType } from '../auth/profile.store'
 
 export enum AuthStatus {
   UNINITIALIZED = 'UNINITIALIZED',
-  NO_API_KEY = 'NO_API_KEY',
-  LOCKED = 'LOCKED',
-  UNTESTED = 'UNTESTED',
-  UNLOCKED = 'UNLOCKED',
+  NO_PROFILE_CREATED = 'NO_PROFILE_CREATED',
+  NO_PROFILE_SELECTED = 'NO_PROFILE_SELECTED',
+  PROFILE_SELECTED = 'PROFILE_SELECTED',
+  PROFILE_LOCKED = 'PROFILE_LOCKED',
+  PROFILE_UNLOCKED = 'PROFILE_UNLOCKED',
 }
 
 export interface AuthState {
   encryptedPassword: string | null
-  lockedApiKey: Omit<ApiKeyType, 'id'> | null
+  profile: Omit<ProfileType, 'id'> | null
   status: AuthStatus
   isDialogOpen: boolean
 }
 
 export const initialState: AuthState = {
   encryptedPassword: null,
-  lockedApiKey: null,
+  profile: null,
   status: AuthStatus.UNINITIALIZED,
   isDialogOpen: false,
 }
@@ -29,31 +30,31 @@ export const authSlice = createSlice({
   reducers: {
     setAuth: (state, action: PayloadAction<{
       encryptedPassword: string
-      lockedApiKey: ApiKeyType
+      profile: ProfileType
     }>) => {
       state.encryptedPassword = action.payload.encryptedPassword
-      state.lockedApiKey = action.payload.lockedApiKey
-      state.status = AuthStatus.UNTESTED
+      state.profile = action.payload.profile
+      state.status = AuthStatus.PROFILE_LOCKED
     },
     setEncryptedPassword: (state, action: PayloadAction<{
       encryptedPassword: string
     }>) => {
       state.encryptedPassword = action.payload.encryptedPassword
-      state.status = AuthStatus.UNTESTED
+      state.status = AuthStatus.PROFILE_LOCKED
     },
     setLockedApiKey: (state, action: PayloadAction<{
-      lockedApiKey: ApiKeyType
+      profile: ProfileType
     }>) => {
-      state.status = AuthStatus.LOCKED
+      state.status = AuthStatus.PROFILE_SELECTED
       state.encryptedPassword = null
-      state.lockedApiKey = action.payload.lockedApiKey
+      state.profile = action.payload.profile
       state.isDialogOpen = true
     },
     authSuccess: (state) => {
-      state.status = AuthStatus.UNLOCKED
+      state.status = AuthStatus.PROFILE_UNLOCKED
     },
     authFailed: (state) => {
-      state.status = AuthStatus.LOCKED
+      state.status = AuthStatus.PROFILE_SELECTED
       state.encryptedPassword = null
       state.isDialogOpen = true
     },
@@ -63,14 +64,17 @@ export const authSlice = createSlice({
     closePasswordDialog: (state) => {
       state.isDialogOpen = false
     },
-    noApiKeyDuringInit: (state) => {
-      state.status = AuthStatus.NO_API_KEY
+    noProfileDuringInit: (state) => {
+      state.status = AuthStatus.NO_PROFILE_SELECTED
+    },
+    noProfilesDuringInit: (state) => {
+      state.status = AuthStatus.NO_PROFILE_CREATED
     },
     noEncryptedPasswordDuringInit: (state, action: PayloadAction<{
-      lockedApiKey: ApiKeyType
+      profile: ProfileType
     }>) => {
-      state.lockedApiKey = action.payload.lockedApiKey
-      state.status = AuthStatus.LOCKED
+      state.profile = action.payload.profile
+      state.status = AuthStatus.PROFILE_SELECTED
     },
   },
 })
@@ -83,7 +87,8 @@ export const {
   authFailed,
   openPasswordDialog,
   closePasswordDialog,
-  noApiKeyDuringInit,
+  noProfileDuringInit,
+  noProfilesDuringInit,
   noEncryptedPasswordDuringInit,
 } = authSlice.actions
 
