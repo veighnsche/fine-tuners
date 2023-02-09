@@ -1,6 +1,9 @@
-import { AuthStatus, ProfileType } from '../models/Auth'
+import { ProfileType } from '../models/Auth'
+import { useOpenAI } from '../openAI'
 import { useAppDispatch, useAppSelector } from '../store'
 import {
+  authFailed,
+  authSuccess,
   noEncryptedPasswordDuringInit,
   noProfileDuringInit,
   noProfilesDuringInit,
@@ -20,7 +23,6 @@ import { addProfileStore, fetchCurrentProfile, fetchHasProfiles, setCurrentProfi
 
 interface UseAuthHook {
   initializeAuth: () => Promise<void>;
-  getApiKey: () => Promise<string>;
   addProfile: ({
     name,
     unencryptedApiKey,
@@ -28,7 +30,10 @@ interface UseAuthHook {
     use,
   }: AddProfileParams) => Promise<void>
   pickProfile: ({ profile }: { profile: ProfileType }) => void
-  enterPassword: ({ profile, unencryptedPassword }: EnterPasswordParams) => Promise<boolean>
+  enterPassword: ({ profile, unencryptedPassword }: EnterPasswordParams) =>
+    Promise<{ encryptedPassword: string }>
+  testAuth: ({ encryptedPassword }?: { encryptedPassword?: string }) => Promise<void>
+  getApiKey: ({ encryptedPassword }?: { encryptedPassword?: string }) => Promise<string>;
 }
 
 interface AddProfileParams {
@@ -45,14 +50,14 @@ interface EnterPasswordParams {
 }
 
 export function useAuth(): UseAuthHook {
-  const status = useAppSelector((state) => state.auth.status)
-  const authProfile = useAppSelector((state) => ({
+  const { testApiKey } = useOpenAI()
+  const currentProfile = useAppSelector((state) => ({
     encryptedPassword: state.auth.encryptedPassword,
     profile: state.auth.profile,
   }))
   const dispatch = useAppDispatch()
 
-  async function initializeAuth(): Promise<void> {
+  const initializeAuth: UseAuthHook['initializeAuth'] = async () => {
     const profile = await fetchCurrentProfile()
     if (profile === null) {
       const hasProfiles = await fetchHasProfiles()
@@ -74,12 +79,12 @@ export function useAuth(): UseAuthHook {
     dispatch(setAuth({ encryptedPassword, profile }))
   }
 
-  async function addProfile({
+  const addProfile: UseAuthHook['addProfile'] = async ({
     name,
     unencryptedApiKey,
     unencryptedPassword,
     use,
-  }: AddProfileParams): Promise<void> {
+  }) => {
     const salt = passwordSalt.create()
     const encryptedPassword = await encryptPassword(unencryptedPassword, salt)
     const lockedApiKey = await lockApiKey(unencryptedApiKey, encryptedPassword)
@@ -99,36 +104,44 @@ export function useAuth(): UseAuthHook {
     }
   }
 
-  function pickProfile({ profile }: { profile: ProfileType }): void {
+  const pickProfile: UseAuthHook['pickProfile'] = ({ profile }) => {
     dispatch(setProfile({ profile }))
   }
 
-  async function enterPassword({ profile, unencryptedPassword }: EnterPasswordParams): Promise<boolean> {
+  const enterPassword: UseAuthHook['enterPassword'] = async ({ profile, unencryptedPassword }) => {
     const salt = passwordSalt.btoa(profile.passwordSalt)
     const encryptedPassword = await encryptPassword(unencryptedPassword, salt)
-    await saveEncryptedPasswordToSession(encryptedPassword)
     dispatch(setAuth({ encryptedPassword, profile }))
-
-    const apiKey = await unlockApiKey(profile.lockedApiKey, encryptedPassword)
-
-    console.log({ apiKey })
-
-    return true
+    await saveEncryptedPasswordToSession(encryptedPassword)
+    return { encryptedPassword }
   }
 
-  async function getApiKey(): Promise<string> {
-    if (status !== AuthStatus.PASSWORD_VERIFIED && status !== AuthStatus.NO_PASSWORD_VERIFICATION) {
-      dispatch(requirePassword())
-      return Promise.reject()
-    }
-
-    const { encryptedPassword, profile } = authProfile
-    if (!encryptedPassword || !profile) {
+  const getApiKey: UseAuthHook['getApiKey'] = async ({ encryptedPassword: encryptedPasswordParam } = {}) => {
+    const { encryptedPassword, profile } = currentProfile
+    console.log({ encryptedPassword, profile })
+    if (profile === null) {
       dispatch(requireProfile())
-      return Promise.reject()
+      return Promise.reject('No profile selected')
     }
 
-    return unlockApiKey(encryptedPassword, profile.lockedApiKey)
+    if (encryptedPassword === null && encryptedPasswordParam === undefined) {
+      dispatch(requirePassword())
+      return Promise.reject('No password')
+    }
+
+    return unlockApiKey(profile.lockedApiKey, encryptedPasswordParam || encryptedPassword!)
+  }
+
+  const testAuth: UseAuthHook['testAuth'] = async ({ encryptedPassword } = {}) => {
+    const apiKey = await getApiKey({ encryptedPassword })
+    const success = await testApiKey(apiKey)
+    if (success) {
+      dispatch(authSuccess())
+    }
+    else {
+      dispatch(authFailed())
+      await removeEncryptedPasswordFromSession()
+    }
   }
 
   return {
@@ -137,5 +150,6 @@ export function useAuth(): UseAuthHook {
     pickProfile,
     enterPassword,
     getApiKey,
+    testAuth,
   }
 }

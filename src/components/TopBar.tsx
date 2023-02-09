@@ -12,7 +12,7 @@ import { Identicon } from './Identicon'
 export function TopBar() {
   const fileMenuAnchor = useRef<HTMLButtonElement>(null)
   const [fileMenuOpen, setFileMenuOpen] = useState(false)
-  const authMenuAnchor = useRef<HTMLButtonElement>(null)
+  const authMenuAnchor = useRef<HTMLDivElement>(null)
   const [authMenuOpen, setAuthMenuOpen] = useState(false)
 
   const profile = useAppSelector(state => state.auth.profile)
@@ -69,31 +69,31 @@ export function TopBar() {
             {/*</Slide>*/}
             {/* todo: turn this into notifications component */}
 
-            {profile ? (
-              <Button
-                ref={authMenuAnchor}
-                onClick={() => setAuthMenuOpen(!authMenuOpen)}
-                size="small"
-                color="inherit"
-                sx={{ textTransform: 'none' }}
-                startIcon={<AuthStatusIcon/>}
-                endIcon={authMenuOpen
-                  ? <CloseIcon sx={{ width: 30, height: 30 }}/>
-                  : <Identicon value={profile.name} size={30}/>}
-              >
-                {profile.name}
-              </Button>
-            ) : (
-              <IconButton
-                ref={authMenuAnchor}
-                onClick={() => setAuthMenuOpen(!authMenuOpen)}
-                edge="end"
-                color="inherit"
-                aria-label="authentication menu"
-              >
-                {authMenuOpen ? <CloseIcon/> : <PersonOffIcon/>}
-              </IconButton>
-            )}
+            <div ref={authMenuAnchor}>
+              {profile ? (
+                <Button
+                  onClick={() => setAuthMenuOpen(!authMenuOpen)}
+                  size="small"
+                  color="inherit"
+                  sx={{ textTransform: 'none' }}
+                  startIcon={<AuthStatusIcon/>}
+                  endIcon={authMenuOpen
+                    ? <CloseIcon sx={{ width: 30, height: 30 }}/>
+                    : <Identicon value={profile.name} size={30}/>}
+                >
+                  {profile.name}
+                </Button>
+              ) : (
+                <IconButton
+                  onClick={() => setAuthMenuOpen(!authMenuOpen)}
+                  edge="end"
+                  color="inherit"
+                  aria-label="authentication menu"
+                >
+                  {authMenuOpen ? <CloseIcon/> : <PersonOffIcon/>}
+                </IconButton>
+              )}
+            </div>
           </Toolbar>
         </AppBar>
       </Box>

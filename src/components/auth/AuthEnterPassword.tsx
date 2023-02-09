@@ -12,14 +12,14 @@ interface AuthProfileFormProps {
 }
 
 export const AuthEnterPassword = ({ profile, onBackClick, onSubmitClick }: AuthProfileFormProps) => {
-  const { enterPassword } = useAuth()
+  const { enterPassword, testAuth } = useAuth()
   const [password, setPassword] = useState<string>('')
   if (!profile) return null
 
   async function handleSubmitClick() {
     if (profile && password.length > 0) {
-      const success = await enterPassword({ profile, unencryptedPassword: password })
-      console.log('success', success)
+      const { encryptedPassword } = await enterPassword({ profile, unencryptedPassword: password })
+      await testAuth({ encryptedPassword })
       onSubmitClick()
     }
   }

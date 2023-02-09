@@ -37,17 +37,11 @@ export const authSlice = createSlice({
       state.encryptedPassword = null
       state.profile = action.payload.profile
     },
-    setEncryptedPassword: (state, action: PayloadAction<{
-      encryptedPassword: string
-    }>) => {
-      state.encryptedPassword = action.payload.encryptedPassword
-      state.status = AuthStatus.NO_PASSWORD_VERIFICATION
-    },
     authSuccess: (state) => {
       state.status = AuthStatus.PASSWORD_VERIFIED
     },
     authFailed: (state) => {
-      state.status = AuthStatus.NO_PASSWORD
+      state.status = AuthStatus.PASSWORD_REQUIRED
       state.encryptedPassword = null
     },
     noProfileDuringInit: (state) => {
