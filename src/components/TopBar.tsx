@@ -1,12 +1,13 @@
 import CloseIcon from '@mui/icons-material/Close'
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined'
-import PersonIcon from '@mui/icons-material/Person'
+import PersonOffIcon from '@mui/icons-material/PersonOff'
 import { AppBar, Box, Button, IconButton, Toolbar, Typography } from '@mui/material'
 import { useRef, useState } from 'react'
 import { useAppSelector } from '../store'
 import { AuthMenu } from './auth/AuthMenu'
+import { AuthStatusIcon } from './auth/AuthStatusIcon'
 import { FileMenu } from './FileMenu'
-import { Jdenticon } from './Jdenticon'
+import { Identicon } from './Identicon'
 
 export function TopBar() {
   const fileMenuAnchor = useRef<HTMLButtonElement>(null)
@@ -69,19 +70,30 @@ export function TopBar() {
             {/* todo: turn this into notifications component */}
 
             {profile ? (
-              <Typography variant="body2" color="text.secondary">
+              <Button
+                ref={authMenuAnchor}
+                onClick={() => setAuthMenuOpen(!authMenuOpen)}
+                size="small"
+                color="inherit"
+                sx={{ textTransform: 'none' }}
+                startIcon={<AuthStatusIcon/>}
+                endIcon={authMenuOpen
+                  ? <CloseIcon sx={{ width: 30, height: 30 }}/>
+                  : <Identicon value={profile.name} size={30}/>}
+              >
                 {profile.name}
-              </Typography>
-            ) : null}
-            <IconButton
-              ref={authMenuAnchor}
-              onClick={() => setAuthMenuOpen(!authMenuOpen)}
-              edge="end"
-              color="inherit"
-              aria-label="authentication menu"
-            >
-              {authMenuOpen ? <CloseIcon/> : profile ? <Jdenticon value={profile.name} size={24}/> : <PersonIcon/>}
-            </IconButton>
+              </Button>
+            ) : (
+              <IconButton
+                ref={authMenuAnchor}
+                onClick={() => setAuthMenuOpen(!authMenuOpen)}
+                edge="end"
+                color="inherit"
+                aria-label="authentication menu"
+              >
+                {authMenuOpen ? <CloseIcon/> : <PersonOffIcon/>}
+              </IconButton>
+            )}
           </Toolbar>
         </AppBar>
       </Box>
@@ -95,6 +107,7 @@ export function TopBar() {
       {authMenuAnchor.current ? (
         <AuthMenu
           open={authMenuOpen}
+          setOpen={setAuthMenuOpen}
           anchorEl={authMenuAnchor.current}
           onClose={() => setAuthMenuOpen(false)}
         />

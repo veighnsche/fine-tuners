@@ -3,109 +3,16 @@ import { Box, Grow, Paper, Popper } from '@mui/material'
 import { styled as muiStyled } from '@mui/material/styles'
 import { ReactNode, useEffect, useState } from 'react'
 import { AuthStatus, ProfileType } from '../../models/Auth'
-import { useAppSelector } from '../../store'
+import { useAppDispatch, useAppSelector } from '../../store'
+import { clearCreatingProfileVehicle } from '../../store/auth.slice'
 import { AuthCreatePassword } from './AuthCreatePassword'
 import { AuthCreateProfile } from './AuthCreateProfile'
 import { AuthEditPassword } from './AuthEditPassword'
 import { AuthEditProfile } from './AuthEditProfile'
+import { AuthEnterPassword } from './AuthEnterPassword'
 import { AuthProfile } from './AuthProfile'
 import { AuthProfiles } from './AuthProfiles'
-
-interface TopBarMenuProps {
-  anchorEl: HTMLElement
-  open: boolean
-  onClose: () => void
-}
-
-enum AuthTabs {
-  CREATE_PROFILE,
-  CREATE_PASSWORD,
-  PROFILES,
-  PROFILE,
-  ENTER_PASSWORD,
-  EDIT_PROFILE,
-  EDIT_PASSWORD,
-}
-
-export const AuthMenu = ({ anchorEl, open, onClose }: TopBarMenuProps) => {
-
-  const status = useAppSelector(state => state.auth.status)
-  const [tab, setTab] = useState(AuthTabs.PROFILES)
-  const [profile, setProfile] = useState<ProfileType | undefined>()
-
-  useEffect(() => {
-    if (status === AuthStatus.NO_PROFILE_CREATED) {
-      setTab(AuthTabs.CREATE_PROFILE)
-    }
-  }, [status])
-
-  return (
-    <Popper
-      anchorEl={anchorEl}
-      open={open}
-    >
-      <Grow in={open}>
-        <StyledTabPaper elevation={6}>
-          <TabPanel value={tab} index={AuthTabs.CREATE_PROFILE}>
-            <AuthCreateProfile
-              canGoBack={status !== AuthStatus.NO_PROFILE_CREATED}
-              onBackClick={() => setTab(AuthTabs.PROFILES)}
-              onPasswordClick={() => setTab(AuthTabs.CREATE_PASSWORD)}
-            />
-          </TabPanel>
-          <TabPanel value={tab} index={AuthTabs.CREATE_PASSWORD}>
-            <AuthCreatePassword
-              onBackClick={() => setTab(AuthTabs.CREATE_PROFILE)}
-              onSubmitClick={() => setTab(AuthTabs.PROFILES)}
-            />
-          </TabPanel>
-          <TabPanel value={tab} index={AuthTabs.PROFILES}>
-            <AuthProfiles
-              onCreateClick={() => setTab(AuthTabs.CREATE_PROFILE)}
-              onProfileClick={profile => {
-                setProfile(profile)
-                setTab(AuthTabs.PROFILE)
-              }}
-            />
-          </TabPanel>
-          <TabPanel value={tab} index={AuthTabs.PROFILE}>
-            <AuthProfile
-              profile={profile}
-              onBackClick={() => setTab(AuthTabs.PROFILES)}
-              onEditClick={() => setTab(AuthTabs.EDIT_PROFILE)}
-            />
-          </TabPanel>
-          <TabPanel value={tab} index={AuthTabs.ENTER_PASSWORD}>
-            <AuthEditPassword
-              profile={profile}
-              onBackClick={() => setTab(AuthTabs.PROFILE)}
-              onSubmitClick={() => {
-                setTab(AuthTabs.PROFILES)
-                onClose()
-              }}
-            />
-          </TabPanel>
-          <TabPanel value={tab} index={AuthTabs.EDIT_PROFILE}>
-            <AuthEditProfile
-              profile={profile}
-              onBackClick={() => setTab(AuthTabs.PROFILE)}
-              onUseClick={() => setTab(AuthTabs.ENTER_PASSWORD)}
-              onSubmitClick={() => setTab(AuthTabs.PROFILE)}
-              onPasswordClick={() => setTab(AuthTabs.EDIT_PASSWORD)}
-            />
-          </TabPanel>
-          <TabPanel value={tab} index={AuthTabs.EDIT_PASSWORD}>
-            <AuthEditPassword
-              profile={profile}
-              onBackClick={() => setTab(AuthTabs.PROFILE)}
-              onSubmitClick={() => setTab(AuthTabs.PROFILE)}
-            />
-          </TabPanel>
-        </StyledTabPaper>
-      </Grow>
-    </Popper>
-  )
-}
+import { AuthRemoveProfile } from './AuthRemoveProfile'
 
 const StyledTabPaper = styled(Paper)`
   position: relative;
@@ -126,7 +33,7 @@ const StyledTabPanel = styled.div<{
   position: absolute;
   top: 0;
   left: ${({ value, index }) => (index - value) * 20}rem;
-  transition: left 0.5s ease-in-out;
+  transition: left 0.4s ease-in-out;
 
   padding: 10px;
 `
@@ -149,5 +56,158 @@ const TabPanel = ({ children, value, index }: { children: ReactNode, value: Auth
         {children}
       </StyledTabContent>
     </StyledTabPanel>
+  )
+}
+
+interface TopBarMenuProps {
+  anchorEl: HTMLElement
+  open: boolean
+  setOpen: (open: boolean) => void
+  onClose: () => void
+}
+
+enum AuthTabs {
+  CREATE_PROFILE,
+  CREATE_PASSWORD,
+  PROFILES,
+  PROFILE,
+  ENTER_PASSWORD,
+  EDIT_PROFILE,
+  EDIT_PASSWORD,
+  CONFIRM_REMOVE_PROFILE,
+}
+
+export const AuthMenu = ({ anchorEl, open, setOpen, onClose }: TopBarMenuProps) => {
+  const dispatch = useAppDispatch()
+  const currentProfile = useAppSelector(state => state.auth.profile)
+  const status = useAppSelector(state => state.auth.status)
+  const [tab, setTab] = useState(AuthTabs.PROFILES)
+  const [profile, setProfile] = useState<ProfileType | undefined>()
+
+  useEffect(() => {
+    if (status === AuthStatus.NO_PROFILE_CREATED) {
+      setTab(AuthTabs.CREATE_PROFILE)
+    }
+    if (status === AuthStatus.PASSWORD_REQUIRED) {
+      if (currentProfile) {
+        setProfile(currentProfile)
+        setTab(AuthTabs.ENTER_PASSWORD)
+      } else {
+        setTab(AuthTabs.PROFILES)
+      }
+      setOpen(true)
+    }
+    if (status === AuthStatus.PROFILE_REQUIRED) {
+      setTab(AuthTabs.PROFILES)
+      setOpen(true)
+    }
+  }, [status])
+
+  useEffect(() => {
+    if (tab === AuthTabs.PROFILES) {
+      setTimeout(() => {
+        setProfile(undefined)
+      }, 400)
+    }
+  }, [tab])
+
+  useEffect(() => {
+    if (!open) {
+      if (status === AuthStatus.NO_PROFILE_CREATED) {
+        setTab(AuthTabs.CREATE_PROFILE)
+      } else {
+        setTab(AuthTabs.PROFILES)
+      }
+    }
+  }, [open])
+
+  const handleClose = () => {
+    setTab(AuthTabs.PROFILES)
+    onClose()
+  }
+
+  return (
+    <Popper
+      anchorEl={anchorEl}
+      open
+      placement="bottom-end"
+    >
+      <Grow in={open} unmountOnExit>
+        <StyledTabPaper elevation={6}>
+          <TabPanel value={tab} index={AuthTabs.CREATE_PROFILE}>
+            <AuthCreateProfile
+              canGoBack={status !== AuthStatus.NO_PROFILE_CREATED}
+              onBackClick={() => setTab(AuthTabs.PROFILES)}
+              onPasswordClick={() => setTab(AuthTabs.CREATE_PASSWORD)}
+            />
+          </TabPanel>
+
+          <TabPanel value={tab} index={AuthTabs.CREATE_PASSWORD}>
+            <AuthCreatePassword
+              onBackClick={() => setTab(AuthTabs.CREATE_PROFILE)}
+              onSubmitClick={() => {
+                dispatch(clearCreatingProfileVehicle())
+                setTab(AuthTabs.PROFILES)
+              }}
+            />
+          </TabPanel>
+
+          <TabPanel value={tab} index={AuthTabs.PROFILES}>
+            <AuthProfiles
+              onCreateClick={() => setTab(AuthTabs.CREATE_PROFILE)}
+              onProfileClick={profile => {
+                setProfile(profile)
+                setTab(AuthTabs.PROFILE)
+              }}
+            />
+          </TabPanel>
+
+          <TabPanel value={tab} index={AuthTabs.PROFILE}>
+            <AuthProfile
+              profile={profile}
+              onUseClick={() => setTab(AuthTabs.ENTER_PASSWORD)}
+              onBackClick={() => setTab(AuthTabs.PROFILES)}
+              onEditProfileClick={() => setTab(AuthTabs.EDIT_PROFILE)}
+              onEditPasswordClick={() => setTab(AuthTabs.EDIT_PASSWORD)}
+              onRemoveClick={() => setTab(AuthTabs.CONFIRM_REMOVE_PROFILE)}
+            />
+          </TabPanel>
+
+          <TabPanel value={tab} index={AuthTabs.ENTER_PASSWORD}>
+            <AuthEnterPassword
+              profile={profile}
+              onBackClick={() => setTab(AuthTabs.PROFILES)}
+              onSubmitClick={handleClose}
+            />
+          </TabPanel>
+
+          <TabPanel value={tab} index={AuthTabs.EDIT_PROFILE}>
+            <AuthEditProfile
+              profile={profile}
+              onBackClick={() => setTab(AuthTabs.PROFILE)}
+              onUseClick={() => setTab(AuthTabs.ENTER_PASSWORD)}
+              onSubmitClick={() => setTab(AuthTabs.PROFILE)}
+              onPasswordClick={() => setTab(AuthTabs.EDIT_PASSWORD)}
+            />
+          </TabPanel>
+
+          <TabPanel value={tab} index={AuthTabs.EDIT_PASSWORD}>
+            <AuthEditPassword
+              profile={profile}
+              onBackClick={() => setTab(AuthTabs.PROFILE)}
+              onSubmitClick={() => setTab(AuthTabs.PROFILE)}
+            />
+          </TabPanel>
+
+          <TabPanel value={tab} index={AuthTabs.CONFIRM_REMOVE_PROFILE}>
+            <AuthRemoveProfile
+              profile={profile}
+              onBackClick={() => setTab(AuthTabs.PROFILE)}
+              onSubmitClick={() => setTab(AuthTabs.PROFILES)}
+            />
+          </TabPanel>
+        </StyledTabPaper>
+      </Grow>
+    </Popper>
   )
 }

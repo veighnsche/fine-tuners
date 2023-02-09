@@ -9,13 +9,8 @@ interface AuthProfileFormProps {
 }
 
 export const AuthEditProfile = ({ profile, onBackClick, onSubmitClick }: AuthProfileFormProps) => {
-  if (!profile) {
-    return (
-      <div>
-        AuthProfileForm
-      </div>
-    )
-  }
+  if (!profile) return null
+
   return (
     <div>
       AuthProfileForm

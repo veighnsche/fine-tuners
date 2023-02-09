@@ -1,13 +1,16 @@
-export function createPasswordSalt(): Uint8Array {
-  return crypto.getRandomValues(new Uint8Array(16))
-}
-
-export function passwordSaltToBase64(array: Uint8Array): string {
-  return btoa(String.fromCharCode(...array))
-}
-
-export function passwordSaltToUint8Array(base64: string): Uint8Array {
-  return new Uint8Array(Buffer.from(base64, 'base64'))
+/**
+ * Bundle of functions to manage Password salts
+ */
+export const passwordSalt = {
+  create(): Uint8Array {
+    return crypto.getRandomValues(new Uint8Array(16))
+  },
+  atob(array: Uint8Array): string {
+    return window.btoa(String.fromCharCode(...array))
+  },
+  btoa(base64: string): Uint8Array {
+    return new Uint8Array(window.atob(base64).split('').map((c) => c.charCodeAt(0)))
+  },
 }
 
 /**
@@ -66,7 +69,7 @@ export async function lockApiKey(toLock: string, encryptedPassword: string): Pro
     new TextEncoder().encode(toLock)
   )
 
-  return btoa(JSON.stringify({
+  return window.btoa(JSON.stringify({
     iv: Array.from(iv),
     encrypted: Array.from(new Uint8Array(encrypted)),
   }))
@@ -78,14 +81,14 @@ export async function lockApiKey(toLock: string, encryptedPassword: string): Pro
  * @param encryptedPassword
  */
 export async function unlockApiKey(toUnlock: string, encryptedPassword: string): Promise<string> {
-  const { iv, encrypted } = JSON.parse(Buffer.from(toUnlock, 'base64').toString('utf8'))
+  const { iv, encrypted } = JSON.parse(window.atob(toUnlock))
 
   const key = await crypto.subtle.importKey(
     'raw',
     new TextEncoder().encode(encryptedPassword),
     'AES-GCM',
     false,
-    ['decrypt']
+    ['decrypt'],
   )
 
   const decrypted = await crypto.subtle.decrypt(

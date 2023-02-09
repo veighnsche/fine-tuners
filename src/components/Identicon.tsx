@@ -8,7 +8,7 @@ export interface JdenticonProps {
   className?: string
 }
 
-export const Jdenticon = ({ value, size = 64, className }: JdenticonProps) => {
+export const Identicon = ({ value, size = 64, className }: JdenticonProps) => {
   const ref = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {

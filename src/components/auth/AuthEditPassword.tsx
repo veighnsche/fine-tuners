@@ -7,6 +7,8 @@ interface AuthProfileFormProps {
 }
 
 export const AuthEditPassword = ({ profile, onBackClick, onSubmitClick }: AuthProfileFormProps) => {
+  if (!profile) return null
+
   return (
     <div>
       AuthPassword

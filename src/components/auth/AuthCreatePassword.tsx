@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useAuth } from '../../auth'
 import { useAppSelector } from '../../store'
 import { apiKeyToSnippet } from '../../utils/snippet'
-import { Jdenticon } from '../Jdenticon'
+import { ProfileVertical } from './ProfileVertical'
 
 interface AuthProfileFormProps {
   onBackClick: () => void
@@ -28,6 +28,8 @@ export const AuthCreatePassword = ({ onBackClick, onSubmitClick }: AuthProfileFo
     }
   }
 
+  if (!creatingProfile) return null
+
   return (
     <Box
       display="flex"
@@ -42,41 +44,33 @@ export const AuthCreatePassword = ({ onBackClick, onSubmitClick }: AuthProfileFo
           back
         </Button>
       </Box>
-      {creatingProfile ? (
-        <>
-          <Box width="100%" flexGrow={1} display="flex" flexDirection="column" justifyContent="center"
-               alignItems="center">
-            <Jdenticon value={creatingProfile.name ?? ''}/>
-            <Typography mt={1} color="text.primary">
-              {creatingProfile.name}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {apiKeyToSnippet(creatingProfile.unencryptedApiKey)}
-            </Typography>
-          </Box>
+      <ProfileVertical
+        name={creatingProfile.name}
+        snippet={apiKeyToSnippet(creatingProfile.unencryptedApiKey)}
+      />
 
-          <Typography mt={1} color="text.primary" variant="caption">
-            Set a password to protect your api key
-          </Typography>
-          <TextField
-            type="password"
-            size="small"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            fullWidth
-          />
+      <Typography mt={1} color="text.primary" variant="caption">
+        Protect API Key with Password
+      </Typography>
+      <TextField
+        type="password"
+        size="small"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        fullWidth
+      />
 
-          <Typography mt={1} color="text.primary" variant="caption">
-            Confirm password
-          </Typography>
-          <TextField
-            type="password"
-            size="small"
-            value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
-            color={isPasswordValid ? 'success' : 'error'}
-            fullWidth
-          />
+      <Typography mt={1} color="text.primary" variant="caption">
+        Confirm Password
+      </Typography>
+      <TextField
+        type="password"
+        size="small"
+        value={confirmPassword}
+        onChange={e => setConfirmPassword(e.target.value)}
+        color={isPasswordValid ? 'success' : 'error'}
+        fullWidth
+      />
 
           <Button
             sx={{ mt: 1 }}
@@ -88,8 +82,6 @@ export const AuthCreatePassword = ({ onBackClick, onSubmitClick }: AuthProfileFo
           >
             Create Profile
           </Button>
-        </>
-      ) : null}
     </Box>
   )
 }

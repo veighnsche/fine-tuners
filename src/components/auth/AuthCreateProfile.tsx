@@ -76,9 +76,9 @@ export const AuthCreateProfile = ({ onPasswordClick, onBackClick, canGoBack }: A
         onClick={handlePasswordClick}
         disabled={!name || !unencryptedApiKey}
         fullWidth
+        endIcon={<ChevronRightIcon/>}
       >
-        Next: protect your api key
-        <ChevronRightIcon/>
+        Protect API Key
       </Button>
     </Box>
   )

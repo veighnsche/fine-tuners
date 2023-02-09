@@ -1,10 +1,11 @@
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import { Box, Button, List, ListItemAvatar, ListItemButton, ListItemText } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
+import PersonIcon from '@mui/icons-material/Person'
+import { Box, Button, Divider, List, ListItemAvatar, ListItemButton, ListItemText, Tooltip } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { fetchProfiles } from '../../auth/profile.store'
 import { ProfileType } from '../../models/Auth'
 import { useAppSelector } from '../../store'
-import { Jdenticon } from '../Jdenticon'
+import { Identicon } from '../Identicon'
 
 interface AuthProfilesProps {
   onProfileClick: (profile: ProfileType) => void
@@ -17,16 +18,19 @@ export const AuthProfiles = ({ onProfileClick, onCreateClick }: AuthProfilesProp
   return (
     <>
       <Box width="100%" p={1}>
-        <Button
-          color="inherit"
-          startIcon={<ChevronLeftIcon/>}
-          sx={{ textTransform: 'none' }}
-          onClick={onCreateClick}
-        >
-          create new profile
-        </Button>
+        <Tooltip title="Create new profile">
+          <Button
+            color="inherit"
+            sx={{ textTransform: 'none' }}
+            onClick={onCreateClick}
+          >
+            <AddIcon fontSize="small"/>
+            <PersonIcon/>
+          </Button>
+        </Tooltip>
       </Box>
-      <List>
+      <Divider sx={{ width: '100%' }}/>
+      <List sx={{ width: '100%', overflow: 'auto' }}>
         {profiles?.map(profile => (
           <ListItemButton
             key={profile.uuid}
@@ -34,7 +38,7 @@ export const AuthProfiles = ({ onProfileClick, onCreateClick }: AuthProfilesProp
             selected={profile.uuid === currentProfileUuid}
           >
             <ListItemAvatar>
-              <Jdenticon value={profile.name} size={32}/>
+              <Identicon value={profile.name} size={32}/>
             </ListItemAvatar>
             <ListItemText primary={profile.name} secondary={profile.snippet}/>
           </ListItemButton>
