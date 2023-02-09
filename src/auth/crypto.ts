@@ -1,12 +1,44 @@
+export function createPasswordSalt(): Uint8Array {
+  return crypto.getRandomValues(new Uint8Array(16))
+}
+
+export function passwordSaltToBase64(array: Uint8Array): string {
+  return btoa(String.fromCharCode(...array))
+}
+
+export function passwordSaltToUint8Array(base64: string): Uint8Array {
+  return new Uint8Array(Buffer.from(base64, 'base64'))
+}
+
 /**
- * Encrypts a password using the SHA256 algorithm
+ * Encrypts a password using the PBKDF2 algorithm
+ * Maximum length of the password complies with the maximum key length of the AES-GCM algorithm
  * @param toEncrypt
+ * @param salt
  */
-export async function encryptPassword(toEncrypt: string): Promise<string> {
+export async function encryptPassword(toEncrypt: string, salt: Uint8Array): Promise<string> {
   const utf8 = new TextEncoder().encode(toEncrypt)
-  const hashBuffer = await crypto.subtle.digest('SHA-256', utf8)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+  const iterations = 100000
+  const keyLength = 16
+
+  const key = await crypto.subtle.importKey(
+    'raw',
+    utf8,
+    { name: 'PBKDF2' },
+    false,
+    ['deriveBits']
+  )
+
+  const derivedKey = await crypto.subtle.deriveBits({
+    name: 'PBKDF2',
+    salt,
+    iterations,
+    hash: 'SHA-256'
+  }, key, keyLength * 8)
+
+  return Array.from(new Uint8Array(derivedKey))
+  .map((b) => b.toString(16).padStart(2, '0'))
+  .join('')
 }
 
 /**
@@ -19,7 +51,7 @@ export async function lockApiKey(toLock: string, encryptedPassword: string): Pro
 
   const key = await crypto.subtle.importKey(
     'raw',
-    new TextEncoder().encode(encryptedPassword),
+    new TextEncoder().encode(encryptedPassword).buffer,
     'AES-GCM',
     false,
     ['encrypt']
@@ -34,10 +66,10 @@ export async function lockApiKey(toLock: string, encryptedPassword: string): Pro
     new TextEncoder().encode(toLock)
   )
 
-  return Buffer.from(JSON.stringify({
+  return btoa(JSON.stringify({
     iv: Array.from(iv),
     encrypted: Array.from(new Uint8Array(encrypted)),
-  })).toString('base64')
+  }))
 }
 
 /**

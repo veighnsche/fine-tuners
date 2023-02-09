@@ -1,6 +1,6 @@
 import { LineType } from '../models/Line'
 import { DocumentState } from '../store/document.slice'
-import { fromJsonl, fromJsonlEdit, toJsonl, toJsonlEdit } from './json.parser'
+import { fromJsonl, fromJsonlEdit, toJsonl, toJsonlEdit } from './lines.json'
 
 interface CreateJsonlFileParams {
   lines: LineType[]

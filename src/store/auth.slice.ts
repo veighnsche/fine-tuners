@@ -1,27 +1,23 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ProfileType } from '../auth/profile.store'
-
-export enum AuthStatus {
-  UNINITIALIZED = 'UNINITIALIZED',
-  NO_PROFILE_CREATED = 'NO_PROFILE_CREATED',
-  NO_PROFILE_SELECTED = 'NO_PROFILE_SELECTED',
-  PROFILE_SELECTED = 'PROFILE_SELECTED',
-  PROFILE_LOCKED = 'PROFILE_LOCKED',
-  PROFILE_UNLOCKED = 'PROFILE_UNLOCKED',
-}
+import { AuthStatus, ProfileType } from '../models/Auth'
 
 export interface AuthState {
   encryptedPassword: string | null
   profile: Omit<ProfileType, 'id'> | null
   status: AuthStatus
   isDialogOpen: boolean
+  creatingProfileVehicle: {
+    name: string
+    unencryptedApiKey: string
+  } | null
 }
 
 export const initialState: AuthState = {
   encryptedPassword: null,
   profile: null,
-  status: AuthStatus.UNINITIALIZED,
+  status: AuthStatus.NOT_INITIALIZED,
   isDialogOpen: false,
+  creatingProfileVehicle: null,
 }
 
 export const authSlice = createSlice({
@@ -34,27 +30,27 @@ export const authSlice = createSlice({
     }>) => {
       state.encryptedPassword = action.payload.encryptedPassword
       state.profile = action.payload.profile
-      state.status = AuthStatus.PROFILE_LOCKED
+      state.status = AuthStatus.NO_PASSWORD_VERIFICATION
     },
     setEncryptedPassword: (state, action: PayloadAction<{
       encryptedPassword: string
     }>) => {
       state.encryptedPassword = action.payload.encryptedPassword
-      state.status = AuthStatus.PROFILE_LOCKED
+      state.status = AuthStatus.NO_PASSWORD_VERIFICATION
     },
     setLockedApiKey: (state, action: PayloadAction<{
       profile: ProfileType
     }>) => {
-      state.status = AuthStatus.PROFILE_SELECTED
+      state.status = AuthStatus.NO_PASSWORD
       state.encryptedPassword = null
       state.profile = action.payload.profile
       state.isDialogOpen = true
     },
     authSuccess: (state) => {
-      state.status = AuthStatus.PROFILE_UNLOCKED
+      state.status = AuthStatus.PASSWORD_VERIFIED
     },
     authFailed: (state) => {
-      state.status = AuthStatus.PROFILE_SELECTED
+      state.status = AuthStatus.NO_PASSWORD
       state.encryptedPassword = null
       state.isDialogOpen = true
     },
@@ -74,8 +70,14 @@ export const authSlice = createSlice({
       profile: ProfileType
     }>) => {
       state.profile = action.payload.profile
-      state.status = AuthStatus.PROFILE_SELECTED
+      state.status = AuthStatus.NO_PASSWORD
     },
+    setCreatingProfileVehicle: (state, action: PayloadAction<AuthState['creatingProfileVehicle']>) => {
+      state.creatingProfileVehicle = action.payload
+    },
+    clearCreatingProfileVehicle: (state) => {
+      state.creatingProfileVehicle = null
+    }
   },
 })
 
@@ -90,6 +92,8 @@ export const {
   noProfileDuringInit,
   noProfilesDuringInit,
   noEncryptedPasswordDuringInit,
+  setCreatingProfileVehicle,
+  clearCreatingProfileVehicle,
 } = authSlice.actions
 
 

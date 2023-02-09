@@ -1,35 +1,32 @@
+import { AuthStatus } from '../models/Auth'
 import { useAppDispatch, useAppSelector } from '../store'
-import {
-  AuthStatus,
-  noEncryptedPasswordDuringInit,
-  noProfileDuringInit,
-  noProfilesDuringInit,
-  setAuth,
-} from '../store/auth.slice'
-import { encryptPassword, lockApiKey, unlockApiKey } from './crypto'
+import { noEncryptedPasswordDuringInit, noProfileDuringInit, noProfilesDuringInit, setAuth } from '../store/auth.slice'
+import { apiKeyToSnippet } from '../utils/snippet'
+import { createPasswordSalt, encryptPassword, lockApiKey, passwordSaltToBase64, unlockApiKey } from './crypto'
 import {
   fetchEncryptedPasswordFromSession,
   removeEncryptedPasswordFromSession,
   saveEncryptedPasswordToSession,
 } from './encryptedPassword.store'
-import { addProfile, fetchCurrentProfile, fetchHasProfiles, setCurrentProfile } from './profile.store'
+import { addProfileStore, fetchCurrentProfile, fetchHasProfiles, setCurrentProfile } from './profile.store'
 
-interface AddApiAuthParams {
+interface AddProfileParams {
   name: string
   unencryptedApiKey: string
   unencryptedPassword: string
   use?: boolean
+  remember?: boolean
 }
 
 interface UseAuthHook {
   initializeAuth: () => Promise<void>;
   getApiKey: () => Promise<string>;
-  addApiAuth: ({
+  addProfile: ({
     name,
     unencryptedApiKey,
     unencryptedPassword,
     use,
-  }: AddApiAuthParams) => Promise<void>
+  }: AddProfileParams) => Promise<void>
 }
 
 export function useAuth(): UseAuthHook {
@@ -62,12 +59,24 @@ export function useAuth(): UseAuthHook {
     dispatch(setAuth({ encryptedPassword, profile }))
   }
 
-  async function addApiAuth({ name, unencryptedApiKey, unencryptedPassword, use }: AddApiAuthParams): Promise<void> {
-    const encryptedPassword = await encryptPassword(unencryptedPassword)
+  async function addProfile({
+    name,
+    unencryptedApiKey,
+    unencryptedPassword,
+    use,
+  }: AddProfileParams): Promise<void> {
+    const salt = createPasswordSalt()
+    const encryptedPassword = await encryptPassword(unencryptedPassword, salt)
     const lockedApiKey = await lockApiKey(unencryptedApiKey, encryptedPassword)
 
     await saveEncryptedPasswordToSession(encryptedPassword)
-    const profile = await addProfile({ name, lockedApiKey, vendor: 'openAI' })
+    const profile = await addProfileStore({
+      name,
+      lockedApiKey,
+      passwordSalt: passwordSaltToBase64(salt),
+      vendor: 'openAI',
+      snippet: apiKeyToSnippet(unencryptedApiKey),
+    })
 
     if (use) {
       dispatch(setAuth({ encryptedPassword, profile }))
@@ -76,7 +85,7 @@ export function useAuth(): UseAuthHook {
   }
 
   async function getApiKey(): Promise<string> {
-    if (status !== AuthStatus.PROFILE_UNLOCKED && status !== AuthStatus.PROFILE_LOCKED) {
+    if (status !== AuthStatus.PASSWORD_VERIFIED && status !== AuthStatus.NO_PASSWORD_VERIFICATION) {
       return Promise.reject(new Error('Cannot get API key when not unlocked'))
     }
 
@@ -90,7 +99,7 @@ export function useAuth(): UseAuthHook {
 
   return {
     initializeAuth,
-    addApiAuth,
+    addProfile,
     getApiKey,
   }
 }

@@ -1,18 +1,6 @@
-import Dexie, { IndexableType, Table } from 'dexie'
+import Dexie, { Table } from 'dexie'
 import { v4 as uuidv4 } from 'uuid'
-
-export interface ProfileType {
-  id?: IndexableType;
-  uuid?: string;
-  name: string;
-  lockedApiKey: string;
-  vendor: string;
-}
-
-export interface CurrentProfileType {
-  id?: IndexableType;
-  currentUuid: string;
-}
+import { CurrentProfileType, ProfileType } from '../models/Auth'
 
 export class ProfilesDexieDb extends Dexie {
   profiles!: Table<ProfileType>
@@ -21,7 +9,7 @@ export class ProfilesDexieDb extends Dexie {
   constructor() {
     super('fine-tuners-profiles')
     this.version(1).stores({
-      profiles: '++id, &uuid, name, locked_api_key, vendor',
+      profiles: '++id, &uuid, name, locked_api_key, password_salt, snippet, vendor',
       current: '++id, current_uuid',
     })
   }
@@ -29,7 +17,7 @@ export class ProfilesDexieDb extends Dexie {
 
 const keysDb = new ProfilesDexieDb()
 
-export async function addProfile(profile: ProfileType): Promise<ProfileType> {
+export async function addProfileStore(profile: ProfileType): Promise<ProfileType> {
   const newKey = {
     ...profile,
     uuid: uuidv4(),
