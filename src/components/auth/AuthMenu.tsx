@@ -12,7 +12,7 @@ import { AuthProfile } from './AuthProfile'
 import { AuthProfiles } from './AuthProfiles'
 
 interface TopBarMenuProps {
-  anchorEl: HTMLElement | null
+  anchorEl: HTMLElement
   open: boolean
   onClose: () => void
 }
@@ -28,6 +28,7 @@ enum AuthTabs {
 }
 
 export const AuthMenu = ({ anchorEl, open, onClose }: TopBarMenuProps) => {
+
   const status = useAppSelector(state => state.auth.status)
   const [tab, setTab] = useState(AuthTabs.PROFILES)
   const [profile, setProfile] = useState<ProfileType | undefined>()
@@ -41,8 +42,7 @@ export const AuthMenu = ({ anchorEl, open, onClose }: TopBarMenuProps) => {
   return (
     <Popper
       anchorEl={anchorEl}
-      open
-      placement="bottom-start"
+      open={open}
     >
       <Grow in={open}>
         <StyledTabPaper elevation={6}>
