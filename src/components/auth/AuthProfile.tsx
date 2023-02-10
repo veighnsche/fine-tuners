@@ -2,7 +2,6 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { Box, Button, Divider } from '@mui/material'
 import { useAuth } from '../../auth'
 import { ProfileType } from '../../models/Auth'
-import { useAppDispatch, useAppSelector } from '../../store'
 import { ProfileVertical } from './ProfileVertical'
 
 interface AuthProfileProps {
@@ -18,9 +17,7 @@ export const AuthProfile = ({
   onUseClick,
   onRemoveClick,
 }: AuthProfileProps) => {
-  const status = useAppSelector((state) => state.auth.status)
-  const dispatch = useAppDispatch()
-  const { pickProfile, testAuth } = useAuth()
+  const { pickProfile } = useAuth()
   if (!profile) {
     return null
   }

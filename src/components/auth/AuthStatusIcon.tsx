@@ -134,7 +134,11 @@ export const AuthStatusIcon = () => {
   const status = useAppSelector(state => state.auth.status)
   const noPasswordVerification = status === AuthStatus.NO_PASSWORD_VERIFICATION
 
-  if (status === AuthStatus.NO_PASSWORD || noPasswordVerification) {
+  if (
+    status === AuthStatus.PASSWORD_REQUIRED
+    || status === AuthStatus.NO_PASSWORD
+    || noPasswordVerification
+  ) {
     return (
       <Box display="flex" alignItems="center">
         {noPasswordVerification ? (
