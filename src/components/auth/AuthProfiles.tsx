@@ -1,13 +1,24 @@
 import AddIcon from '@mui/icons-material/Add'
+import LockOpenIcon from '@mui/icons-material/LockOpen'
 import PersonIcon from '@mui/icons-material/Person'
-import { Box, Button, Divider, List, ListItemAvatar, ListItemButton, ListItemText, Tooltip } from '@mui/material'
+import {
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  List,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useAuth } from '../../auth'
 import { fetchProfiles } from '../../auth/profile.store'
 import { AuthStatus, ProfileType } from '../../models/Auth'
 import { useAppSelector } from '../../store'
 import { Identicon } from '../Identicon'
-import { AuthStatusIcon } from './AuthStatusIcon'
 
 interface AuthProfilesProps {
   onProfileClick: (profile: ProfileType) => void
@@ -23,7 +34,7 @@ export const AuthProfiles = ({ onProfileClick, onCreateClick }: AuthProfilesProp
 
   return (
     <>
-      <Box width="100%" p={1} display="flex">
+      <Box width="100%" p={1} display="flex" alignItems="center">
         <Tooltip title="Create new profile">
           <Button
             color="inherit"
@@ -37,15 +48,20 @@ export const AuthProfiles = ({ onProfileClick, onCreateClick }: AuthProfilesProp
         <Box sx={{ flexGrow: 1 }}/>
         {unverified ? (
           <Tooltip title="Test connection">
-            <Button
+            <IconButton
               color="inherit"
+              size="small"
               sx={{ textTransform: 'none' }}
               onClick={() => testAuth()}
             >
-              <AuthStatusIcon/>
-            </Button>
+              <LockOpenIcon fontSize="small"/>
+            </IconButton>
           </Tooltip>
-        ) : null}
+        ) : (
+          <Typography variant="body2" color="success.main" sx={{ opacity: 0.5 }}>
+            Connected
+          </Typography>
+        )}
       </Box>
       <Divider sx={{ width: '100%' }}/>
       <List sx={{ width: '100%', overflow: 'auto' }}>

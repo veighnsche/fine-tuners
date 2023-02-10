@@ -7,10 +7,10 @@ import {
   noEncryptedPasswordDuringInit,
   noProfileDuringInit,
   noProfilesDuringInit,
-  requirePassword,
-  requireProfile,
+  requirePasswordCaptured,
+  requireProfileCaptured,
   setAuth,
-  setProfile,
+  setProfile, unsetProfile,
 } from '../store/auth.slice'
 import { apiKeyToSnippet } from '../utils/snippet'
 import { encryptPassword, lockApiKey, passwordSalt, unlockApiKey } from './crypto'
@@ -19,7 +19,13 @@ import {
   removeEncryptedPasswordFromSession,
   saveEncryptedPasswordToSession,
 } from './encryptedPassword.store'
-import { addProfileStore, fetchCurrentProfile, fetchHasProfiles, setCurrentProfile } from './profile.store'
+import {
+  addProfileStore,
+  fetchCurrentProfile,
+  fetchHasProfiles,
+  removeProfileStore,
+  setCurrentProfile,
+} from './profile.store'
 
 interface UseAuthHook {
   initializeAuth: () => Promise<void>;
@@ -32,8 +38,9 @@ interface UseAuthHook {
   pickProfile: ({ profile }: { profile: ProfileType }) => void
   enterPassword: ({ profile, unencryptedPassword }: EnterPasswordParams) =>
     Promise<{ encryptedPassword: string }>
-  testAuth: ({ encryptedPassword }?: { encryptedPassword?: string }) => Promise<void>
-  getApiKey: ({ encryptedPassword }?: { encryptedPassword?: string }) => Promise<string>;
+  testAuth: ({ encryptedPassword }?: { encryptedPassword?: string }) => Promise<boolean>
+  getApiKey: ({ encryptedPassword }?: { encryptedPassword?: string }) => Promise<string>
+  removeProfile: ({ profile }: { profile: ProfileType }) => Promise<void>
 }
 
 interface AddProfileParams {
@@ -120,11 +127,13 @@ export function useAuth(): UseAuthHook {
     const { encryptedPassword, profile } = currentProfile
     console.log({ encryptedPassword, profile })
     if (profile === null) {
+      const requireProfile = requireProfileCaptured(dispatch)
       dispatch(requireProfile())
       return Promise.reject('No profile selected')
     }
 
     if (encryptedPassword === null && encryptedPasswordParam === undefined) {
+      const requirePassword = requirePasswordCaptured(dispatch)
       dispatch(requirePassword())
       return Promise.reject('No password')
     }
@@ -137,11 +146,19 @@ export function useAuth(): UseAuthHook {
     const success = await testApiKey(apiKey)
     if (success) {
       dispatch(authSuccess())
+      return true
     }
-    else {
-      dispatch(authFailed())
+    dispatch(authFailed())
+    await removeEncryptedPasswordFromSession()
+    return false
+  }
+
+  const removeProfile: UseAuthHook['removeProfile'] = async ({ profile }) => {
+    if (profile.uuid === currentProfile.profile?.uuid) {
       await removeEncryptedPasswordFromSession()
+      dispatch(unsetProfile())
     }
+    await removeProfileStore(profile.uuid!)
   }
 
   return {
@@ -151,5 +168,6 @@ export function useAuth(): UseAuthHook {
     enterPassword,
     getApiKey,
     testAuth,
+    removeProfile,
   }
 }

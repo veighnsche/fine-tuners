@@ -76,10 +76,14 @@ export function TopBar() {
                   size="small"
                   color="inherit"
                   sx={{ textTransform: 'none' }}
-                  startIcon={<AuthStatusIcon/>}
-                  endIcon={authMenuOpen
-                    ? <CloseIcon sx={{ width: 30, height: 30 }}/>
-                    : <Identicon value={profile.name} size={30}/>}
+                  endIcon={(
+                    <>
+                      <AuthStatusIcon/>
+                      {authMenuOpen
+                        ? <CloseIcon sx={{ width: 30, height: 30 }}/>
+                        : <Identicon value={profile.name} size={30}/>}
+                    </>
+                  )}
                 >
                   {profile.name}
                 </Button>

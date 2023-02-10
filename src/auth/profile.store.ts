@@ -58,3 +58,7 @@ export async function setCurrentProfile(uuid: string): Promise<ProfileType | nul
   await keysDb.current.add({ currentUuid: uuid })
   return fetchProfile(uuid)
 }
+
+export async function removeProfileStore(uuid: string): Promise<void> {
+  await keysDb.profiles.where('uuid').equals(uuid).delete()
+}

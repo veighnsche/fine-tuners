@@ -2,14 +2,13 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { Box, Button, Divider } from '@mui/material'
 import { useAuth } from '../../auth'
 import { ProfileType } from '../../models/Auth'
+import { useAppDispatch, useAppSelector } from '../../store'
 import { ProfileVertical } from './ProfileVertical'
 
 interface AuthProfileProps {
   profile?: ProfileType
   onBackClick: () => void
   onUseClick: () => void
-  onEditProfileClick: () => void
-  onEditPasswordClick: () => void
   onRemoveClick: () => void
 }
 
@@ -17,11 +16,11 @@ export const AuthProfile = ({
   profile,
   onBackClick,
   onUseClick,
-  onEditProfileClick,
-  onEditPasswordClick,
   onRemoveClick,
 }: AuthProfileProps) => {
-  const { pickProfile } = useAuth()
+  const status = useAppSelector((state) => state.auth.status)
+  const dispatch = useAppDispatch()
+  const { pickProfile, testAuth } = useAuth()
   if (!profile) {
     return null
   }
@@ -55,21 +54,6 @@ export const AuthProfile = ({
         fullWidth
       >
         Use profile
-      </Button>
-      <Divider sx={{ width: '100%' }}/>
-      <Button
-        color="inherit"
-        onClick={onEditProfileClick}
-        fullWidth
-      >
-        Edit profile
-      </Button>
-      <Button
-        color="inherit"
-        onClick={onEditPasswordClick}
-        fullWidth
-      >
-        Edit password
       </Button>
       <Divider sx={{ width: '100%' }}/>
       <Button

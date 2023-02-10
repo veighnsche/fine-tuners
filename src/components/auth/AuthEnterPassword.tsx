@@ -1,5 +1,5 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, Link, TextField, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useAuth } from '../../auth'
 import { ProfileType } from '../../models/Auth'
@@ -8,10 +8,16 @@ import { ProfileVertical } from './ProfileVertical'
 interface AuthProfileFormProps {
   profile?: ProfileType
   onBackClick: () => void
+  onForgotPasswordClick: () => void
   onSubmitClick: () => void
 }
 
-export const AuthEnterPassword = ({ profile, onBackClick, onSubmitClick }: AuthProfileFormProps) => {
+export const AuthEnterPassword = ({
+  profile,
+  onBackClick,
+  onForgotPasswordClick,
+  onSubmitClick,
+}: AuthProfileFormProps) => {
   const { enterPassword, testAuth } = useAuth()
   const [password, setPassword] = useState<string>('')
   if (!profile) return null
@@ -57,6 +63,13 @@ export const AuthEnterPassword = ({ profile, onBackClick, onSubmitClick }: AuthP
         onChange={(e) => setPassword(e.target.value)}
         fullWidth
       />
+      <Link
+        color="primary"
+        onClick={onForgotPasswordClick}
+        sx={{ mt: 1, width: '100%', textAlign: 'center', textDecoration: 'none', cursor: 'pointer' }}
+      >
+        Forgot password?
+      </Link>
       <Button
         variant="contained"
         color="secondary"

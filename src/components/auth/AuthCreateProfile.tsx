@@ -31,7 +31,7 @@ export const AuthCreateProfile = ({ onPasswordClick, onBackClick, canGoBack }: A
       p={1}
     >
       {canGoBack ? (
-        <Box width="100%" display="flex" justifyContent="flex-end">
+        <Box width="100%" display="flex" justifyContent="flex-end" mb={1}>
           <Button
             color="inherit"
             endIcon={<ChevronRightIcon/>}
@@ -42,11 +42,20 @@ export const AuthCreateProfile = ({ onPasswordClick, onBackClick, canGoBack }: A
           </Button>
         </Box>
       ) : null}
-      <Alert severity="info" sx={{ mt: 1, flexGrow: 1, alignItems: 'center' }}>
+      <Alert severity="info" sx={{ flexGrow: 1, alignItems: 'center' }}>
         <AlertTitle>Important Notice</AlertTitle>
-        By creating a profile, you are confirming your acceptance of OpenAI's <Link
-        href="https://beta.openai.com/terms">Terms of Use</Link> and <Link href="https://beta.openai.com/privacy">Privacy
-        Policy</Link>. Please review these agreements before proceeding.
+        <Typography variant="body2">
+          By creating a profile, you are confirming your acceptance of OpenAI's
+          <Link href="https://beta.openai.com/terms" target="_blank"> Terms of Use</Link> and
+          <Link href="https://beta.openai.com/privacy" target="_blank"> Privacy Policy</Link>.
+          Please review these agreements before proceeding.
+        </Typography>
+        <br/>
+        <Typography variant="body2" fontWeight="bold">
+          You can go to the
+          <Link href="https://beta.openai.com/account/api-keys" target="_blank"> OpenAI API Keys</Link>
+          {' '}page to create a new API key.
+        </Typography>
       </Alert>
 
       <Typography mt={1} color="text.primary" variant="caption">

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AuthStatus, ProfileType } from '../models/Auth'
+import { useAppDispatch } from './index'
 
 export interface AuthState {
   encryptedPassword: string | null
@@ -37,6 +38,11 @@ export const authSlice = createSlice({
       state.encryptedPassword = null
       state.profile = action.payload.profile
     },
+    unsetProfile: (state) => {
+      state.status = AuthStatus.NO_PROFILE_SELECTED
+      state.profile = null
+      state.encryptedPassword = null
+    },
     authSuccess: (state) => {
       state.status = AuthStatus.PASSWORD_VERIFIED
     },
@@ -65,8 +71,14 @@ export const authSlice = createSlice({
     requireProfile: (state) => {
       state.status = AuthStatus.PROFILE_REQUIRED
     },
+    requireProfileCleanup: (state) => {
+      state.status = AuthStatus.NO_PROFILE_SELECTED
+    },
     requirePassword: (state) => {
       state.status = AuthStatus.PASSWORD_REQUIRED
+    },
+    requirePasswordCleanup: (state) => {
+      state.status = AuthStatus.NO_PASSWORD
     }
   },
 })
@@ -74,6 +86,7 @@ export const authSlice = createSlice({
 export const {
   setAuth,
   setProfile,
+  unsetProfile,
   authSuccess,
   authFailed,
   noProfileDuringInit,
@@ -82,8 +95,24 @@ export const {
   setCreatingProfileVehicle,
   clearCreatingProfileVehicle,
   requireProfile,
+  requireProfileCleanup,
   requirePassword,
+  requirePasswordCleanup,
 } = authSlice.actions
+
+export const requirePasswordCaptured = (dispatch: ReturnType<typeof useAppDispatch>): typeof requirePassword => {
+  setTimeout(() => {
+    dispatch(requirePasswordCleanup())
+  }, 400)
+  return requirePassword
+}
+
+export const requireProfileCaptured = (dispatch: ReturnType<typeof useAppDispatch>): typeof requireProfile => {
+  setTimeout(() => {
+    dispatch(requireProfileCleanup())
+  }, 400)
+  return requireProfile
+}
 
 
 export default authSlice.reducer

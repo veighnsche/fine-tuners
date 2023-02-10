@@ -7,9 +7,8 @@ import { useAppDispatch, useAppSelector } from '../../store'
 import { clearCreatingProfileVehicle } from '../../store/auth.slice'
 import { AuthCreatePassword } from './AuthCreatePassword'
 import { AuthCreateProfile } from './AuthCreateProfile'
-import { AuthEditPassword } from './AuthEditPassword'
-import { AuthEditProfile } from './AuthEditProfile'
 import { AuthEnterPassword } from './AuthEnterPassword'
+import { AuthForgotPassword } from './AuthForgotPassword'
 import { AuthProfile } from './AuthProfile'
 import { AuthProfiles } from './AuthProfiles'
 import { AuthRemoveProfile } from './AuthRemoveProfile'
@@ -67,13 +66,12 @@ interface TopBarMenuProps {
 }
 
 enum AuthTabs {
+  FORGOT_PASSWORD,
   CREATE_PROFILE,
   CREATE_PASSWORD,
   PROFILES,
   PROFILE,
   ENTER_PASSWORD,
-  EDIT_PROFILE,
-  EDIT_PASSWORD,
   CONFIRM_REMOVE_PROFILE,
 }
 
@@ -167,8 +165,6 @@ export const AuthMenu = ({ anchorEl, open, setOpen, onClose }: TopBarMenuProps) 
               profile={profile}
               onUseClick={() => setTab(AuthTabs.ENTER_PASSWORD)}
               onBackClick={() => setTab(AuthTabs.PROFILES)}
-              onEditProfileClick={() => setTab(AuthTabs.EDIT_PROFILE)}
-              onEditPasswordClick={() => setTab(AuthTabs.EDIT_PASSWORD)}
               onRemoveClick={() => setTab(AuthTabs.CONFIRM_REMOVE_PROFILE)}
             />
           </TabPanel>
@@ -177,25 +173,15 @@ export const AuthMenu = ({ anchorEl, open, setOpen, onClose }: TopBarMenuProps) 
             <AuthEnterPassword
               profile={profile}
               onBackClick={() => setTab(AuthTabs.PROFILES)}
+              onForgotPasswordClick={() => setTab(AuthTabs.FORGOT_PASSWORD)}
               onSubmitClick={handleClose}
             />
           </TabPanel>
 
-          <TabPanel value={tab} index={AuthTabs.EDIT_PROFILE}>
-            <AuthEditProfile
-              profile={profile}
-              onBackClick={() => setTab(AuthTabs.PROFILE)}
-              onUseClick={() => setTab(AuthTabs.ENTER_PASSWORD)}
-              onSubmitClick={() => setTab(AuthTabs.PROFILE)}
-              onPasswordClick={() => setTab(AuthTabs.EDIT_PASSWORD)}
-            />
-          </TabPanel>
-
-          <TabPanel value={tab} index={AuthTabs.EDIT_PASSWORD}>
-            <AuthEditPassword
-              profile={profile}
-              onBackClick={() => setTab(AuthTabs.PROFILE)}
-              onSubmitClick={() => setTab(AuthTabs.PROFILE)}
+          <TabPanel value={tab} index={AuthTabs.FORGOT_PASSWORD}>
+            <AuthForgotPassword
+              onCreateProfileClick={() => setTab(AuthTabs.CREATE_PROFILE)}
+              onBackClick={() => setTab(AuthTabs.PROFILES)}
             />
           </TabPanel>
 
@@ -203,7 +189,7 @@ export const AuthMenu = ({ anchorEl, open, setOpen, onClose }: TopBarMenuProps) 
             <AuthRemoveProfile
               profile={profile}
               onBackClick={() => setTab(AuthTabs.PROFILE)}
-              onSubmitClick={() => setTab(AuthTabs.PROFILES)}
+              onRemoveClick={() => setTab(AuthTabs.PROFILES)}
             />
           </TabPanel>
         </StyledTabPaper>

@@ -1,7 +1,7 @@
 import KeyIcon from '@mui/icons-material/Key'
 import LockIcon from '@mui/icons-material/Lock'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
-import { Avatar, AvatarGroup } from '@mui/material'
+import { Avatar, AvatarGroup, Slide } from '@mui/material'
 import { AuthStatus } from '../../models/Auth'
 import { useAppSelector } from '../../store'
 
@@ -31,9 +31,11 @@ export const AuthStatusIcon = () => {
 
   if (status === AuthStatus.PASSWORD_VERIFIED) {
     return (
-      <Avatar sx={{ width: 30, height: 30, bgcolor: 'success.main', opacity: 0.25 }}>
-        <LockOpenIcon fontSize="small"/>
-      </Avatar>
+      <Slide direction="left" in={true} timeout={500}>
+        <Avatar sx={{ width: 30, height: 30, bgcolor: 'success.main', opacity: 0.25 }}>
+          <LockOpenIcon fontSize="small"/>
+        </Avatar>
+      </Slide>
     )
   }
 
