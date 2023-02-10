@@ -1,9 +1,10 @@
 import CloseIcon from '@mui/icons-material/Close'
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined'
 import PersonOffIcon from '@mui/icons-material/PersonOff'
-import { AppBar, Box, Button, IconButton, Toolbar, Typography } from '@mui/material'
+import { Alert, AppBar, Box, Button, IconButton, Slide, Toolbar, Typography } from '@mui/material'
 import { useRef, useState } from 'react'
-import { useAppSelector } from '../store'
+import { useAppDispatch, useAppSelector } from '../store'
+import { hideNotification, removeNotification } from '../store/notifications.slice'
 import { AuthMenu } from './auth/AuthMenu'
 import { AuthStatusIcon } from './auth/AuthStatusIcon'
 import { FileMenu } from './FileMenu'
@@ -17,19 +18,8 @@ export function TopBar() {
 
   const profile = useAppSelector(state => state.auth.profile)
 
-  // todo: turn this into notifications component
-  // const hasNoProfiles = useAppSelector(state => state.auth.status === AuthStatus.NO_PROFILE_CREATED)
-  // const [showCreateProfileHint, setShowCreateProfileHint] = useState(hasNoProfiles)
-  //
-  // useEffect(() => {
-  //   setShowCreateProfileHint(hasNoProfiles)
-  //   if (hasNoProfiles) {
-  //     setTimeout(() => {
-  //       setShowCreateProfileHint(false)
-  //     }, 15000)
-  //   }
-  // }, [hasNoProfiles])
-  // todo: turn this into notifications component
+  const { notifications, shownNotifications } = useAppSelector(state => state.notifications)
+  const dispatch = useAppDispatch()
 
   return (
     <>
@@ -42,11 +32,11 @@ export function TopBar() {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-            <Typography variant="h6" color="inherit" component="div" height="48px">
+            <Typography variant="h6" color="inherit" component="div" lineHeight="60px">
               Fine Tuners
             </Typography>
           </Toolbar>
-          <Toolbar variant="dense" sx={{ display: 'flex', gap: 1 }}>
+          <Toolbar variant="dense" sx={{ display: 'flex', gap: 1, height: '60px' }}>
             <Button
               ref={fileMenuAnchor}
               onClick={() => setFileMenuOpen(true)}
@@ -55,19 +45,32 @@ export function TopBar() {
               sx={{ textTransform: 'none' }}
               startIcon={<FolderOutlinedIcon fontSize="small"/>}
             >
-              File
+              <Typography variant="body2" color="inherit" component="div">
+                File
+              </Typography>
             </Button>
             <Box sx={{ flexGrow: 1 }}/>
 
-            {/* todo: turn this into notifications component */}
-            {/*<Slide direction="left" in={showCreateProfileHint}>*/}
-            {/*  <Paper sx={{ p: 1 }}>*/}
-            {/*    <Typography variant="body2" color="text.secondary">*/}
-            {/*      Create a profile to connect to OpenAI*/}
-            {/*    </Typography>*/}
-            {/*  </Paper>*/}
-            {/*</Slide>*/}
-            {/* todo: turn this into notifications component */}
+            <Box display="flex" sx={{ gap: 1 }} p={0.5}>
+              {notifications.map(notification => {
+                return (
+                  <Slide
+                    key={notification.id}
+                    direction="left"
+                    in={shownNotifications.includes(notification.id)}
+                    onExited={() => dispatch(removeNotification(notification))}
+                  >
+                    <Alert
+                      severity={notification.severity}
+                      onClose={() => dispatch(hideNotification(notification))}
+                      variant="outlined"
+                    >
+                      {notification.message}
+                    </Alert>
+                  </Slide>
+                )
+              })}
+            </Box>
 
             <div ref={authMenuAnchor}>
               {profile ? (

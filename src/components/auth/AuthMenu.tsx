@@ -16,8 +16,8 @@ import { AuthRemoveProfile } from './AuthRemoveProfile'
 const StyledTabPaper = styled(Paper)`
   position: relative;
   overflow: hidden;
-  width: 20rem;
-  height: 40rem;
+  width: 24rem;
+  height: 32rem;
   display: flex;
   flex-wrap: nowrap;
 `
@@ -31,7 +31,7 @@ const StyledTabPanel = styled.div<{
 
   position: absolute;
   top: 0;
-  left: ${({ value, index }) => (index - value) * 20}rem;
+  left: ${({ value, index }) => (index - value) * 24}rem;
   transition: left 0.4s ease-in-out;
 
   padding: 10px;

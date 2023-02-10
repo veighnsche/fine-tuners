@@ -44,14 +44,14 @@ export const AuthCreateProfile = ({ onPasswordClick, onBackClick, canGoBack }: A
       ) : null}
       <Alert severity="info" sx={{ flexGrow: 1, alignItems: 'center' }}>
         <AlertTitle>Important Notice</AlertTitle>
-        <Typography variant="body2">
+        <Typography variant="body2" fontWeight="bold">
           By creating a profile, you are confirming your acceptance of OpenAI's
           <Link href="https://beta.openai.com/terms" target="_blank"> Terms of Use</Link> and
           <Link href="https://beta.openai.com/privacy" target="_blank"> Privacy Policy</Link>.
           Please review these agreements before proceeding.
         </Typography>
         <br/>
-        <Typography variant="body2" fontWeight="bold">
+        <Typography variant="body2">
           You can go to the
           <Link href="https://beta.openai.com/account/api-keys" target="_blank"> OpenAI API Keys</Link>
           {' '}page to create a new API key.

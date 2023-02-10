@@ -10,8 +10,10 @@ import {
   requirePasswordAsync,
   requireProfileAsync,
   setAuth,
-  setProfile, unsetProfile,
+  setProfile,
+  unsetProfile,
 } from '../store/auth.slice'
+import { useAddNotification } from '../store/notifications.slice'
 import { apiKeyToSnippet } from '../utils/snippet'
 import { encryptPassword, lockApiKey, passwordSalt, unlockApiKey } from './crypto'
 import {
@@ -63,13 +65,20 @@ export function useAuth(): UseAuthHook {
     profile: state.auth.profile,
   }))
   const dispatch = useAppDispatch()
+  const addNotification = useAddNotification()
+
 
   const initializeAuth: UseAuthHook['initializeAuth'] = async () => {
+    console.log('initializeAuth')
     const profile = await fetchCurrentProfile()
     if (profile === null) {
       const hasProfiles = await fetchHasProfiles()
       if (!hasProfiles) {
         dispatch(noProfilesDuringInit())
+        addNotification({
+          message: 'Create a profile to get started',
+          severity: 'info',
+        })
         return
       }
       dispatch(noProfileDuringInit())
