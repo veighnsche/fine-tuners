@@ -28,7 +28,7 @@ interface AuthProfilesProps {
 export const AuthProfiles = ({ onProfileClick, onCreateClick }: AuthProfilesProps) => {
   const currentProfileUuid = useAppSelector(state => state.auth.profile?.uuid)
   const profiles = useLiveQuery(fetchProfiles, [])
-  const unverified = useAppSelector(state => state.auth.status === AuthStatus.NO_PASSWORD_VERIFICATION)
+  const verified = useAppSelector(state => state.auth.status === AuthStatus.PASSWORD_VERIFIED)
   const { testAuth } = useAuth()
 
 
@@ -46,7 +46,11 @@ export const AuthProfiles = ({ onProfileClick, onCreateClick }: AuthProfilesProp
           </Button>
         </Tooltip>
         <Box sx={{ flexGrow: 1 }}/>
-        {unverified ? (
+        {verified ? (
+          <Typography variant="body2" color="success.main" sx={{ opacity: 0.5 }}>
+            Connected
+          </Typography>
+        ) : (
           <Tooltip title="Test connection">
             <IconButton
               color="inherit"
@@ -57,10 +61,6 @@ export const AuthProfiles = ({ onProfileClick, onCreateClick }: AuthProfilesProp
               <LockOpenIcon fontSize="small"/>
             </IconButton>
           </Tooltip>
-        ) : (
-          <Typography variant="body2" color="success.main" sx={{ opacity: 0.5 }}>
-            Connected
-          </Typography>
         )}
       </Box>
       <Divider sx={{ width: '100%' }}/>

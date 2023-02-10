@@ -94,24 +94,22 @@ export const {
   noEncryptedPasswordDuringInit,
   setCreatingProfileVehicle,
   clearCreatingProfileVehicle,
-  requireProfile,
-  requireProfileCleanup,
-  requirePassword,
-  requirePasswordCleanup,
 } = authSlice.actions
 
-export const requirePasswordCaptured = (dispatch: ReturnType<typeof useAppDispatch>): typeof requirePassword => {
+export const requirePasswordAsync = (dispatch: ReturnType<typeof useAppDispatch>): void => {
+  const { requirePassword, requirePasswordCleanup } = authSlice.actions
   setTimeout(() => {
     dispatch(requirePasswordCleanup())
-  }, 400)
-  return requirePassword
+  }, 1)
+  dispatch(requirePassword())
 }
 
-export const requireProfileCaptured = (dispatch: ReturnType<typeof useAppDispatch>): typeof requireProfile => {
+export const requireProfileAsync = (dispatch: ReturnType<typeof useAppDispatch>): void => {
+  const { requireProfile, requireProfileCleanup } = authSlice.actions
   setTimeout(() => {
     dispatch(requireProfileCleanup())
-  }, 400)
-  return requireProfile
+  }, 1)
+  dispatch(requireProfile())
 }
 
 

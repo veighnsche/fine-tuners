@@ -17,7 +17,7 @@ const StyledTabPaper = styled(Paper)`
   position: relative;
   overflow: hidden;
   width: 20rem;
-  height: 30rem;
+  height: 40rem;
   display: flex;
   flex-wrap: nowrap;
 `

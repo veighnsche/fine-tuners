@@ -7,8 +7,8 @@ import {
   noEncryptedPasswordDuringInit,
   noProfileDuringInit,
   noProfilesDuringInit,
-  requirePasswordCaptured,
-  requireProfileCaptured,
+  requirePasswordAsync,
+  requireProfileAsync,
   setAuth,
   setProfile, unsetProfile,
 } from '../store/auth.slice'
@@ -127,14 +127,12 @@ export function useAuth(): UseAuthHook {
     const { encryptedPassword, profile } = currentProfile
     console.log({ encryptedPassword, profile })
     if (profile === null) {
-      const requireProfile = requireProfileCaptured(dispatch)
-      dispatch(requireProfile())
+      requireProfileAsync(dispatch)
       return Promise.reject('No profile selected')
     }
 
     if (encryptedPassword === null && encryptedPasswordParam === undefined) {
-      const requirePassword = requirePasswordCaptured(dispatch)
-      dispatch(requirePassword())
+      requirePasswordAsync(dispatch)
       return Promise.reject('No password')
     }
 

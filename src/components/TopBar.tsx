@@ -85,7 +85,9 @@ export function TopBar() {
                     </>
                   )}
                 >
-                  {profile.name}
+                  <Typography variant="body2" color="inherit" component="div">
+                    {profile.name}
+                  </Typography>
                 </Button>
               ) : (
                 <IconButton
