@@ -4,6 +4,7 @@ import { RootState } from './index'
 
 interface PlaygroundSettingsState {
   isOpen: boolean;
+  prompt: string;
   model: string;
   modelOptions: string[];
   temperature: number;
@@ -17,6 +18,7 @@ interface PlaygroundSettingsState {
 
 const initialState: PlaygroundSettingsState = {
   isOpen: true,
+  prompt: '',
   model: 'davinci',
   modelOptions: ['davinci', 'curie', 'babbage', 'ada'],
   temperature: 0.7,
@@ -33,16 +35,19 @@ export const playgroundSettingsSlice = createSlice({
   initialState,
   reducers: {
     setPlaygroundSettingsOpen: (state, action: PayloadAction<{ isOpen: boolean }>) => {
-      state.isOpen = action.payload.isOpen;
+      state.isOpen = action.payload.isOpen
+    },
+    setPromptStore: (state, action: PayloadAction<{ prompt: string }>) => {
+      state.prompt = action.payload.prompt
     },
     setModel: (state, action: PayloadAction<{ model: string }>) => {
-      state.model = action.payload.model;
+      state.model = action.payload.model
     },
     setTemperature: (state, action: PayloadAction<{ temperature: number }>) => {
-      state.temperature = action.payload.temperature;
+      state.temperature = action.payload.temperature
     },
     setMaxTokens: (state, action: PayloadAction<{ maxTokens: number }>) => {
-      state.maxTokens = action.payload.maxTokens;
+      state.maxTokens = action.payload.maxTokens
     },
     setStopSequences: (state, action: PayloadAction<{ stopSequences: string[] }>) => {
       state.stopSequences = action.payload.stopSequences;
@@ -64,6 +69,7 @@ export const playgroundSettingsSlice = createSlice({
 
 export const {
   setPlaygroundSettingsOpen,
+  setPromptStore,
   setModel,
   setTemperature,
   setMaxTokens,
@@ -74,15 +80,28 @@ export const {
   setBestOf,
 } = playgroundSettingsSlice.actions
 
-export const selectPlaygroundSettings = (state: RootState): OpenAiCreateCompletionParameters => ({
-  model: state.playgroundSettings.model,
-  temperature: state.playgroundSettings.temperature,
-  max_tokens: state.playgroundSettings.maxTokens,
-  stop: state.playgroundSettings.stopSequences,
-  top_p: state.playgroundSettings.topP,
-  frequency_penalty: state.playgroundSettings.frequencyPenalty,
-  presence_penalty: state.playgroundSettings.presencePenalty,
-  best_of: state.playgroundSettings.bestOf,
+export const selectPlaygroundSettings = ({
+  playgroundSettings: {
+    stopSequences,
+    model,
+    presencePenalty,
+    temperature,
+    topP,
+    prompt,
+    frequencyPenalty,
+    maxTokens,
+    bestOf,
+  },
+}: RootState): OpenAiCreateCompletionParameters => ({
+  prompt,
+  model,
+  temperature,
+  max_tokens: maxTokens,
+  stop: stopSequences.length > 0 ? stopSequences : undefined,
+  top_p: topP,
+  frequency_penalty: frequencyPenalty,
+  presence_penalty: presencePenalty,
+  best_of: bestOf,
 })
 
 export default playgroundSettingsSlice.reducer

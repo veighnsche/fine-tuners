@@ -1,5 +1,4 @@
 import { Box, Theme, useTheme } from '@mui/material'
-import React from 'react'
 import { AuthWrapper } from '../auth/AuthWrapper'
 import { useAppSelector } from '../store'
 import { Lines } from './Lines'
@@ -21,20 +20,20 @@ function App() {
       <Box display="flex" sx={{ p: 1, flexGrow: 1 }} gap={1}>
         <Box sx={{
           transition: transition(theme),
-          flexGrow: isPlaygroundSettingsOpen ? 0.20 : 0.5,
+          width: isPlaygroundSettingsOpen ? '20vw' : '50vw',
         }}>
           <Lines/>
         </Box>
         <Box sx={{
           transition: transition(theme),
-          flexGrow: isPlaygroundSettingsOpen ? 0.80 : 0.5,
+          width: isPlaygroundSettingsOpen ? '67.5vw' : '50vw',
         }}>
           <Playground/>
         </Box>
         <Box sx={{
           transition: transition(theme),
           overflow: 'hidden',
-          width: isPlaygroundSettingsOpen ? '15rem' : 0,
+          width: isPlaygroundSettingsOpen ? '20rem' : 0,
         }}>
           <PlaygroundSettings/>
         </Box>

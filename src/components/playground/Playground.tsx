@@ -1,14 +1,25 @@
 import { Box, Button, ButtonGroup, Paper, Typography, useTheme } from '@mui/material'
+import { useState } from 'react'
+import { useOpenAI } from '../../openAI'
 import { useAppDispatch, useAppSelector } from '../../store'
-import { setPlaygroundSettingsOpen } from '../../store/playground.settings.slice'
+import { selectPlaygroundSettings, setPlaygroundSettingsOpen } from '../../store/playground.settings.slice'
 import { CompletePrompt } from './CompletePrompt'
 
 export const Playground = () => {
   const isPlaygroundSettingsOpen = useAppSelector(state => state.playgroundSettings.isOpen)
   const dispatch = useAppDispatch()
   const theme = useTheme()
-  const handleGenerate = () => {
+  const { createCompletionStream } = useOpenAI()
+  const settings = useAppSelector(selectPlaygroundSettings)
+  const [stream, setStream] = useState<ReadableStream>()
 
+  const handleGenerate = async () => {
+    const stream: ReadableStream = await createCompletionStream(settings)
+    setStream(stream)
+  }
+
+  const clearStream = () => {
+    setStream(undefined)
   }
 
   return (
@@ -32,7 +43,7 @@ export const Playground = () => {
           </Button>
         </ButtonGroup>
       </Box>
-      <CompletePrompt/>
+      <CompletePrompt stream={stream} clearStream={clearStream}/>
       <Box display="flex" flexDirection="row">
         <ButtonGroup>
           <Button

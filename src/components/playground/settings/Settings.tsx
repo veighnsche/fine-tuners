@@ -10,7 +10,7 @@ import { TopP } from './TopP'
 
 export const PlaygroundSettings = () => {
   return (
-    <Box display="flex" flexDirection="column" gap={2} px={1}>
+    <Box display="flex" flexDirection="column" gap={4} px={1}>
       <Model/>
       <Temperature/>
       <MaxTokens/>

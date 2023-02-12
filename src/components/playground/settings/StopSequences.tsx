@@ -1,4 +1,4 @@
-import { Box, Button, InputLabel, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Button, InputLabel, TextField, Tooltip } from '@mui/material'
 import { ChangeEvent } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../store'
 import { setStopSequences } from '../../../store/playground.settings.slice'
@@ -46,6 +46,7 @@ export const StopSequences = () => {
       ))}
       <Button
         size="small"
+        variant="outlined"
         onClick={handleAdd}
         fullWidth
         disabled={stopSequences.length >= 4}

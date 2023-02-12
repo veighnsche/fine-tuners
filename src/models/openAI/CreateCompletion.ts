@@ -20,11 +20,11 @@ export interface OpenAICreateCompletionResponse {
   object:  string;
   created: number;
   model:   string;
-  choices: Choice[];
+  choices: OpenAiChoice[];
   usage:   Usage;
 }
 
-interface Choice {
+interface OpenAiChoice {
   text:          string;
   index:         number;
   logprobs:      null;
