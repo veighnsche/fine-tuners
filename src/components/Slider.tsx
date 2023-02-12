@@ -31,11 +31,21 @@ interface SliderProps {
   label: string
   value: number
   onChange: (value: number) => void
-  sliderProps?: MuiSliderProps
+  sliderProps: MuiSliderProps & Required<Pick<MuiSliderProps, 'min' | 'max' | 'step'>>
   tooltip?: string
 }
 
 export const Slider = ({ label, value, onChange, sliderProps, tooltip }: SliderProps) => {
+  const handleChange = (value: number) => {
+    if (value > sliderProps.max) {
+      value = sliderProps.max
+    }
+    if (value < sliderProps.min) {
+      value = sliderProps.min
+    }
+    onChange(value)
+  }
+
   return (
     <SliderControl>
       <Tooltip title={tooltip} placement="left">
@@ -48,7 +58,7 @@ export const Slider = ({ label, value, onChange, sliderProps, tooltip }: SliderP
             size="small"
             variant="standard"
             value={value}
-            onChange={(e) => onChange(Number(e.target.value))}
+            onChange={(e) => handleChange(Number(e.target.value))}
             InputProps={{
               disableUnderline: true,
             }}

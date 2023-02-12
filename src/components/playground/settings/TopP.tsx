@@ -6,22 +6,6 @@ export const TopP = () => {
   const topP = useAppSelector(state => state.playgroundSettings.topP)
   const dispatch = useAppDispatch()
 
-  const sliderProps = {
-    min: 0,
-    max: 1,
-    step: 0.1,
-  }
-
-  const handleChange = (value: number) => {
-    if (value > sliderProps.max) {
-      value = sliderProps.max
-    }
-    if (value < sliderProps.min) {
-      value = sliderProps.min
-    }
-    dispatch(setTopP({ topP: value }))
-  }
-
   return (
     <Slider
       label="Top P"
@@ -32,7 +16,7 @@ export const TopP = () => {
         step: 0.1,
       }}
       value={topP}
-      onChange={handleChange}
+      onChange={(value) => dispatch(setTopP({ topP: value }))}
     />
   )
 }
