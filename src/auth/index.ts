@@ -1,9 +1,6 @@
 import { ProfileType } from '../models/Auth'
-import { useOpenAI } from '../openAI'
 import { useAppDispatch, useAppSelector } from '../store'
 import {
-  authFailed,
-  authSuccess,
   noEncryptedPasswordDuringInit,
   noProfileDuringInit,
   noProfilesDuringInit,
@@ -40,7 +37,6 @@ interface UseAuthHook {
   pickProfile: ({ profile }: { profile: ProfileType }) => void
   enterPassword: ({ profile, unencryptedPassword }: EnterPasswordParams) =>
     Promise<{ encryptedPassword: string }>
-  testAuth: ({ encryptedPassword }?: { encryptedPassword?: string }) => Promise<boolean>
   getApiKey: ({ encryptedPassword }?: { encryptedPassword?: string }) => Promise<string>
   removeProfile: ({ profile }: { profile: ProfileType }) => Promise<void>
 }
@@ -59,7 +55,6 @@ interface EnterPasswordParams {
 }
 
 export function useAuth(): UseAuthHook {
-  const { testApiKey } = useOpenAI()
   const currentProfile = useAppSelector((state) => ({
     encryptedPassword: state.auth.encryptedPassword,
     profile: state.auth.profile,
@@ -148,18 +143,6 @@ export function useAuth(): UseAuthHook {
     return unlockApiKey(profile.lockedApiKey, encryptedPasswordParam || encryptedPassword!)
   }
 
-  const testAuth: UseAuthHook['testAuth'] = async ({ encryptedPassword } = {}) => {
-    const apiKey = await getApiKey({ encryptedPassword })
-    const success = await testApiKey(apiKey)
-    if (success) {
-      dispatch(authSuccess())
-      return true
-    }
-    dispatch(authFailed())
-    await removeEncryptedPasswordFromSession()
-    return false
-  }
-
   const removeProfile: UseAuthHook['removeProfile'] = async ({ profile }) => {
     if (profile.uuid === currentProfile.profile?.uuid) {
       await removeEncryptedPasswordFromSession()
@@ -174,7 +157,6 @@ export function useAuth(): UseAuthHook {
     pickProfile,
     enterPassword,
     getApiKey,
-    testAuth,
     removeProfile,
   }
 }

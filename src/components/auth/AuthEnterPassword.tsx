@@ -3,6 +3,7 @@ import { Box, Button, Link, TextField, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useAuth } from '../../auth'
 import { ProfileType } from '../../models/Auth'
+import { useOpenAI } from '../../openAI'
 import { ProfileVertical } from './ProfileVertical'
 
 interface AuthProfileFormProps {
@@ -18,7 +19,8 @@ export const AuthEnterPassword = ({
   onForgotPasswordClick,
   onSubmitClick,
 }: AuthProfileFormProps) => {
-  const { enterPassword, testAuth } = useAuth()
+  const { enterPassword } = useAuth()
+  const { testAuth } = useOpenAI()
   const [password, setPassword] = useState<string>('')
   if (!profile) return null
 

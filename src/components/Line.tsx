@@ -9,11 +9,13 @@ interface LineProps {
   idx: number
 }
 
-const StyledDiv = styled.div`
+const Wrapper = styled.div`
   white-space: pre-wrap;
   display: inline-block;
   width: 100%;
   font-family: monospace;
+  
+  outline: 0 solid transparent;
 
   #completion {
     padding-left: 1px;
@@ -161,7 +163,8 @@ export const Line = ({ line, idx }: LineProps) => {
   }
 
   return (
-    <StyledDiv
+    <Wrapper
+      role="textbox"
       ref={parentRef}
       contentEditable
       suppressContentEditableWarning
@@ -171,6 +174,6 @@ export const Line = ({ line, idx }: LineProps) => {
     >
       <span id="prompt">{prompt}</span>
       <span id="completion">{completion}</span>
-    </StyledDiv>
+    </Wrapper>
   )
 }

@@ -4,6 +4,7 @@ import authReducer from './auth.slice'
 import documentReducer from './document.slice'
 import linesReducer from './lines.slice'
 import notificationsReducer from './notifications.slice'
+import playgroundSettingsReducer from './playground.settings.slice'
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     document: documentReducer,
     lines: linesReducer,
     notifications: notificationsReducer,
+    playgroundSettings: playgroundSettingsReducer,
   },
 })
 

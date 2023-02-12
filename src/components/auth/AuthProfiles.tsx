@@ -14,9 +14,9 @@ import {
   Typography,
 } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useAuth } from '../../auth'
 import { fetchProfiles } from '../../auth/profile.store'
 import { AuthStatus, ProfileType } from '../../models/Auth'
+import { useOpenAI } from '../../openAI'
 import { useAppSelector } from '../../store'
 import { Identicon } from '../Identicon'
 
@@ -29,7 +29,7 @@ export const AuthProfiles = ({ onProfileClick, onCreateClick }: AuthProfilesProp
   const currentProfileUuid = useAppSelector(state => state.auth.profile?.uuid)
   const profiles = useLiveQuery(fetchProfiles, [])
   const verified = useAppSelector(state => state.auth.status === AuthStatus.PASSWORD_VERIFIED)
-  const { testAuth } = useAuth()
+  const { testAuth } = useOpenAI()
 
 
   return (
