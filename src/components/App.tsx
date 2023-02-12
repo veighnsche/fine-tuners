@@ -27,15 +27,14 @@ function App() {
         </Box>
         <Box sx={{
           transition: transition(theme),
-          flexGrow: isPlaygroundSettingsOpen ? 0.65 : 0.5,
+          flexGrow: isPlaygroundSettingsOpen ? 0.80 : 0.5,
         }}>
           <Playground/>
         </Box>
         <Box sx={{
           transition: transition(theme),
           overflow: 'hidden',
-          flexGrow: isPlaygroundSettingsOpen ? 0.15 : 0,
-          width: 0,
+          width: isPlaygroundSettingsOpen ? '15rem' : 0,
         }}>
           <PlaygroundSettings/>
         </Box>

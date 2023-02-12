@@ -37,7 +37,7 @@ interface UseAuthHook {
   pickProfile: ({ profile }: { profile: ProfileType }) => void
   enterPassword: ({ profile, unencryptedPassword }: EnterPasswordParams) =>
     Promise<{ encryptedPassword: string }>
-  getApiKey: ({ encryptedPassword }?: { encryptedPassword?: string }) => Promise<string>
+  getApiKey: (params?: { encryptedPassword?: string }) => Promise<string>
   removeProfile: ({ profile }: { profile: ProfileType }) => Promise<void>
 }
 

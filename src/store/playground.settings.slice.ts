@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { OpenAiCreateCompletionParameters } from '../models/openAI/CreateCompletion'
+import { RootState } from './index'
 
 interface PlaygroundSettingsState {
   isOpen: boolean;
@@ -11,10 +13,6 @@ interface PlaygroundSettingsState {
   frequencyPenalty: number;
   presencePenalty: number;
   bestOf: number;
-  injectStartText: boolean;
-  injectedStartText: string;
-  injectRestartText: boolean;
-  injectedRestartText: string;
 }
 
 const initialState: PlaygroundSettingsState = {
@@ -28,10 +26,6 @@ const initialState: PlaygroundSettingsState = {
   frequencyPenalty: 0,
   presencePenalty: 0,
   bestOf: 1,
-  injectStartText: true,
-  injectedStartText: '',
-  injectRestartText: true,
-  injectedRestartText: '',
 };
 
 export const playgroundSettingsSlice = createSlice({
@@ -65,18 +59,6 @@ export const playgroundSettingsSlice = createSlice({
     setBestOf: (state, action: PayloadAction<{ bestOf: number }>) => {
       state.bestOf = action.payload.bestOf;
     },
-    setInjectStartText: (state, action: PayloadAction<{ injectStartText: boolean }>) => {
-      state.injectStartText = action.payload.injectStartText;
-    },
-    setInjectedStartText: (state, action: PayloadAction<{ injectedStartText: string }>) => {
-      state.injectedStartText = action.payload.injectedStartText;
-    },
-    setInjectRestartText: (state, action: PayloadAction<{ injectRestartText: boolean }>) => {
-      state.injectRestartText = action.payload.injectRestartText;
-    },
-    setInjectedRestartText: (state, action: PayloadAction<{ injectedRestartText: string }>) => {
-      state.injectedRestartText = action.payload.injectedRestartText;
-    },
   }
 })
 
@@ -90,10 +72,17 @@ export const {
   setFrequencyPenalty,
   setPresencePenalty,
   setBestOf,
-  setInjectStartText,
-  setInjectedStartText,
-  setInjectRestartText,
-  setInjectedRestartText,
 } = playgroundSettingsSlice.actions
+
+export const selectPlaygroundSettings = (state: RootState): OpenAiCreateCompletionParameters => ({
+  model: state.playgroundSettings.model,
+  temperature: state.playgroundSettings.temperature,
+  max_tokens: state.playgroundSettings.maxTokens,
+  stop: state.playgroundSettings.stopSequences,
+  top_p: state.playgroundSettings.topP,
+  frequency_penalty: state.playgroundSettings.frequencyPenalty,
+  presence_penalty: state.playgroundSettings.presencePenalty,
+  best_of: state.playgroundSettings.bestOf,
+})
 
 export default playgroundSettingsSlice.reducer
