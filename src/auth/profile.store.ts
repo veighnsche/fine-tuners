@@ -1,6 +1,6 @@
 import Dexie, { Table } from 'dexie'
 import { v4 as uuidv4 } from 'uuid'
-import { CurrentProfileType, ProfileType } from '../models/Auth'
+import { CurrentProfileType, ProfileType } from './auth.model'
 
 export class ProfilesDexieDb extends Dexie {
   profiles!: Table<ProfileType>

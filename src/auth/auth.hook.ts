@@ -1,4 +1,4 @@
-import { ProfileType } from '../models/Auth'
+import { ProfileType } from './auth.model'
 import { useAppDispatch, useAppSelector } from '../store'
 import {
   noEncryptedPasswordDuringInit,
@@ -9,7 +9,7 @@ import {
   setAuth,
   setProfile,
   unsetProfile,
-} from '../store/auth.slice'
+} from './auth.slice'
 import { useAddNotification } from '../store/notifications.slice'
 import { apiKeyToSnippet } from '../utils/snippet'
 import { encryptPassword, lockApiKey, passwordSalt, unlockApiKey } from './crypto'

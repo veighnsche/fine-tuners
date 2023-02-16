@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import authReducer from './auth.slice'
+import authReducer from '../auth/auth.slice'
 import documentReducer from './document.slice'
 import linesReducer from './lines.slice'
 import notificationsReducer from './notifications.slice'

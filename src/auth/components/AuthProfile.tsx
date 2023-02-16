@@ -1,7 +1,7 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { Box, Button, Divider } from '@mui/material'
-import { useAuth } from '../../auth'
-import { ProfileType } from '../../models/Auth'
+import { useAuth } from '../auth.hook'
+import { ProfileType } from '../auth.model'
 import { ProfileVertical } from './ProfileVertical'
 
 interface AuthProfileProps {
@@ -37,7 +37,7 @@ export const AuthProfile = ({
       p={1}
     >
       <Box width="100%">
-        <Button onClick={onBackClick} color="inherit" startIcon={<ChevronLeftIcon/>} sx={{ textTransform: 'none' }}>
+        <Button onClick={onBackClick} color="inherit" startIcon={<ChevronLeftIcon/>}>
           back
         </Button>
       </Box>

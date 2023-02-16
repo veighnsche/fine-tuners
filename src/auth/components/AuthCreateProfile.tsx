@@ -2,7 +2,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { Alert, AlertTitle, Box, Button, Link, TextField, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../store'
-import { setCreatingProfileVehicle } from '../../store/auth.slice'
+import { setCreatingProfileVehicle } from '../auth.slice'
 
 interface AuthProfileFormProps {
   onPasswordClick: () => void
@@ -35,7 +35,6 @@ export const AuthCreateProfile = ({ onPasswordClick, onBackClick, canGoBack }: A
           <Button
             color="inherit"
             endIcon={<ChevronRightIcon/>}
-            sx={{ textTransform: 'none' }}
             onClick={onBackClick}
           >
             profiles

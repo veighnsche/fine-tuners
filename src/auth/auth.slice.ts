@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AuthStatus, ProfileType } from '../models/Auth'
-import { useAppDispatch } from './index'
+import { AuthStatus, ProfileType } from './auth.model'
+import { useAppDispatch } from '../store'
 
 export interface AuthState {
   encryptedPassword: string | null

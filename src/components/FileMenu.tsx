@@ -17,18 +17,18 @@ export const FileMenu = ({ anchorEl, open, onClose }: TopBarMenuProps) => {
     onClose()
   }
 
-  const handleOpen = async () => {
+  const handleOpenFileClick = async () => {
     onClose()
     const file = await selectFile()
     console.log(file)
   }
 
-  const handleEditSave = () => {
+  const handleEditSaveClick = () => {
     onClose()
     createJsonlEditFile({ docState: getDocState(), lines: getLines(), name: 'test' })
   }
 
-  const handleSave = () => {
+  const handleSaveClick = () => {
     onClose()
     createJsonlFile({ lines: getLines(), name: 'test' })
   }
@@ -43,13 +43,13 @@ export const FileMenu = ({ anchorEl, open, onClose }: TopBarMenuProps) => {
       <MenuItem onClick={handleNewWindow}>New window</MenuItem>
       <Divider/>
       <Tooltip title="open .jsonl and .jsonl-edit files" placement="right">
-        <MenuItem onClick={handleOpen}>Open</MenuItem>
+        <MenuItem onClick={handleOpenFileClick}>Open</MenuItem>
       </Tooltip>
       <Tooltip title="for use in this program only" placement="right">
-        <MenuItem onClick={handleEditSave}>Save as .jsonl-edit</MenuItem>
+        <MenuItem onClick={handleEditSaveClick}>Save as .jsonl-edit</MenuItem>
       </Tooltip>
       <Tooltip title="for use in OpenAI" placement="right">
-        <MenuItem onClick={handleSave}>Save as .jsonl</MenuItem>
+        <MenuItem onClick={handleSaveClick}>Save as .jsonl</MenuItem>
       </Tooltip>
     </Menu>
   )

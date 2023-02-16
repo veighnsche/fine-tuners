@@ -14,11 +14,11 @@ import {
   Typography,
 } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { fetchProfiles } from '../../auth/profile.store'
-import { AuthStatus, ProfileType } from '../../models/Auth'
+import { fetchProfiles } from '../profile.store'
+import { AuthStatus, ProfileType } from '../auth.model'
 import { useOpenAI } from '../../openAI'
 import { useAppSelector } from '../../store'
-import { Identicon } from '../Identicon'
+import { Identicon } from '../../components/Identicon'
 
 interface AuthProfilesProps {
   onProfileClick: (profile: ProfileType) => void
@@ -38,7 +38,6 @@ export const AuthProfiles = ({ onProfileClick, onCreateClick }: AuthProfilesProp
         <Tooltip title="Create new profile">
           <Button
             color="inherit"
-            sx={{ textTransform: 'none' }}
             onClick={onCreateClick}
           >
             <AddIcon fontSize="small"/>
@@ -55,7 +54,6 @@ export const AuthProfiles = ({ onProfileClick, onCreateClick }: AuthProfilesProp
             <IconButton
               color="inherit"
               size="small"
-              sx={{ textTransform: 'none' }}
               onClick={() => testAuth()}
             >
               <LockOpenIcon fontSize="small"/>

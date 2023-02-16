@@ -3,7 +3,6 @@ import { OpenAiCreateCompletionParameters } from '../models/openAI/CreateComplet
 import { RootState } from './index'
 
 interface PlaygroundSettingsState {
-  isOpen: boolean;
   prompt: string;
   model: string;
   modelOptions: string[];
@@ -17,12 +16,11 @@ interface PlaygroundSettingsState {
 }
 
 const initialState: PlaygroundSettingsState = {
-  isOpen: true,
   prompt: '',
-  model: 'davinci',
+  model: 'curie',
   modelOptions: ['davinci', 'curie', 'babbage', 'ada'],
   temperature: 0.7,
-  maxTokens: 256,
+  maxTokens: 64,
   stopSequences: [],
   topP: 1,
   frequencyPenalty: 0,
@@ -34,9 +32,6 @@ export const playgroundSettingsSlice = createSlice({
   name: 'playgroundSettings',
   initialState,
   reducers: {
-    setPlaygroundSettingsOpen: (state, action: PayloadAction<{ isOpen: boolean }>) => {
-      state.isOpen = action.payload.isOpen
-    },
     setPromptStore: (state, action: PayloadAction<{ prompt: string }>) => {
       state.prompt = action.payload.prompt
     },
@@ -68,7 +63,6 @@ export const playgroundSettingsSlice = createSlice({
 })
 
 export const {
-  setPlaygroundSettingsOpen,
   setPromptStore,
   setModel,
   setTemperature,

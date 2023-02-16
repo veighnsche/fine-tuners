@@ -1,8 +1,8 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Alert, AlertTitle, Box, Button } from '@mui/material'
-import { useAuth } from '../../auth'
-import { ProfileType } from '../../models/Auth'
+import { useAuth } from '../auth.hook'
+import { ProfileType } from '../auth.model'
 import { ProfileVertical } from './ProfileVertical'
 
 interface AuthRemoveProfileProps {
@@ -34,7 +34,6 @@ export const AuthRemoveProfile = ({ profile, onBackClick, onRemoveClick }: AuthR
         <Button
           color="inherit"
           startIcon={<ChevronLeftIcon/>}
-          sx={{ textTransform: 'none' }}
           onClick={onBackClick}
         >
           profile

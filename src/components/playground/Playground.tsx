@@ -1,60 +1,94 @@
-import { Box, Button, ButtonGroup, Paper, Typography, useTheme } from '@mui/material'
-import { useState } from 'react'
+import { Box, Button, ButtonGroup, Paper, Theme, Typography } from '@mui/material'
+import { useRef } from 'react'
+import { v4 as uuid } from 'uuid'
+import { OpenAiCreateCompletionParameters } from '../../models/openAI/CreateCompletion'
 import { useOpenAI } from '../../openAI'
 import { useAppDispatch, useAppSelector } from '../../store'
-import { selectPlaygroundSettings, setPlaygroundSettingsOpen } from '../../store/playground.settings.slice'
-import { CompletePrompt } from './CompletePrompt'
+import { addHistoryItem } from '../../store/document.slice'
+import { selectPlaygroundSettings } from '../../store/playground.settings.slice'
+import { CompletePromptRefHandler } from '../TextEditor'
+import { TextEditorRedo } from '../TextEditorRedo'
 
-export const Playground = () => {
-  const isPlaygroundSettingsOpen = useAppSelector(state => state.playgroundSettings.isOpen)
+interface PlaygroundProps {
+  width: ReturnType<Theme['spacing']>
+}
+
+export const Playground = ({ width }: PlaygroundProps) => {
+  const { createCompletion } = useOpenAI()
   const dispatch = useAppDispatch()
-  const theme = useTheme()
-  const { createCompletionStream } = useOpenAI()
   const settings = useAppSelector(selectPlaygroundSettings)
-  const [stream, setStream] = useState<ReadableStream>()
+  const completePromptRef = useRef<CompletePromptRefHandler>(null)
+
+  const makeHistoryItem = (params: OpenAiCreateCompletionParameters) => ({
+    id: uuid(),
+    createdAt: new Date().toISOString(),
+    completion: completePromptRef.current?.completionText || '',
+    params,
+  })
 
   const handleGenerate = async () => {
-    const stream: ReadableStream = await createCompletionStream(settings)
-    setStream(stream)
+    if (completePromptRef.current) {
+      const params = {
+        ...settings,
+        prompt: completePromptRef.current.promptText,
+      }
+
+      for await (const { done, chunk } of createCompletion({ params })) {
+        if (done) {
+          dispatch(addHistoryItem({ historyItem: makeHistoryItem(params) }))
+          break
+        }
+        completePromptRef.current?.chunk(chunk)
+      }
+    }
   }
 
-  const clearStream = () => {
-    setStream(undefined)
+  const handleRedo = () => {
+    if (completePromptRef.current) {
+      completePromptRef.current?.redoCompletion()
+      handleGenerate()
+    }
   }
 
   return (
-    <Paper sx={{
-      p: 1,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 1,
-      height: `calc(100vh - ${theme.spacing(10)})`,
-    }}>
-      <Box display="flex">
-        <Typography variant="h6" color="inherit" component="div">
+    <Box
+      p={1}
+      width={width}
+      height="100%"
+    >
+      <Paper sx={{
+        p: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        gap: 1,
+      }}>
+        <Typography
+          variant="h6"
+          color="inherit"
+          component="div"
+        >
           Playground
         </Typography>
-        <Box sx={{ flexGrow: 1 }}/>
-        <ButtonGroup>
-          <Button onClick={() => {
-            dispatch(setPlaygroundSettingsOpen({ isOpen: !isPlaygroundSettingsOpen }))
-          }}>
-            Settings
-          </Button>
-        </ButtonGroup>
-      </Box>
-      <CompletePrompt stream={stream} clearStream={clearStream}/>
-      <Box display="flex" flexDirection="row">
-        <ButtonGroup>
-          <Button
-            onClick={handleGenerate}
-            variant="contained"
-          >
-            Generate
-          </Button>
-        </ButtonGroup>
-      </Box>
-
-    </Paper>
+        <TextEditorRedo ref={completePromptRef}/>
+        <Box display="flex" flexDirection="row">
+          <ButtonGroup>
+            <Button
+              onClick={handleGenerate}
+              variant="contained"
+            >
+              Generate
+            </Button>
+            <Button
+              onClick={handleRedo}
+              variant="contained"
+            >
+              Redo
+            </Button>
+          </ButtonGroup>
+        </Box>
+      </Paper>
+    </Box>
   )
 }
+

@@ -3,7 +3,7 @@ import KeyIcon from '@mui/icons-material/Key'
 import LockOpenIcon from '@mui/icons-material/LockOpenOutlined'
 import LockIcon from '@mui/icons-material/LockOutlined'
 import { Box } from '@mui/material'
-import { AuthStatus } from '../../models/Auth'
+import { AuthStatus } from '../auth.model'
 import { useAppSelector } from '../../store'
 
 /**

@@ -20,7 +20,6 @@ export const AuthForgotPassword = ({ onBackClick, onCreateProfileClick }: AuthFo
         <Button
           color="inherit"
           endIcon={<ChevronRightIcon/>}
-          sx={{ textTransform: 'none' }}
           onClick={onBackClick}
         >
           profiles

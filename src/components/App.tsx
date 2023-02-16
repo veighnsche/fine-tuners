@@ -1,41 +1,59 @@
-import { Box, Theme, useTheme } from '@mui/material'
-import { AuthWrapper } from '../auth/AuthWrapper'
-import { useAppSelector } from '../store'
-import { Lines } from './Lines'
+import { Box, useTheme } from '@mui/material'
+import { useRef } from 'react'
+import { AuthWrapper } from '../auth/auth.wrapper'
+import { HistoryItem } from '../store/document.slice'
+import { History } from './History'
+import { MidBar } from './MidBar'
 import { Playground } from './playground/Playground'
-import { PlaygroundSettings } from './playground/settings/Settings'
+import { PlaygroundSettings } from './playground/settings'
+import { CompletePromptRefHandler, TextEditor } from './TextEditor'
 import { TopBar } from './TopBar'
-
-const transition = (theme: Theme) => theme.transitions.create('all', {
-  easing: theme.transitions.easing.easeInOut,
-  duration: theme.transitions.duration.standard,
-})
+import { TrainingData } from './TrainingData'
 
 function App() {
-  const isPlaygroundSettingsOpen = useAppSelector(state => state.playgroundSettings.isOpen)
   const theme = useTheme()
+
+  const barHeight = theme.spacing(6)
+  const contentHeight = `calc(100vh - ${barHeight})`
+  const widthUnit = (units: number) => `calc(20vw * ${units})`
+
+  const completePromptRef = useRef<CompletePromptRefHandler>(null)
+
+  const handleHistoryItemClick = (item: HistoryItem) => {
+    completePromptRef.current?.setText({
+      prompt: item.params.prompt || '',
+      completion: item.completion,
+      from: 'history',
+    })
+  }
+
   return (
     <AuthWrapper>
-      <TopBar/>
-      <Box display="flex" sx={{ p: 1, flexGrow: 1 }} gap={1}>
-        <Box sx={{
-          transition: transition(theme),
-          width: isPlaygroundSettingsOpen ? '20vw' : '50vw',
-        }}>
-          <Lines/>
+      <Box>
+        <TopBar height={barHeight}/>
+        <Box height={contentHeight} display="flex">
+          <Playground width={widthUnit(4)}/>
+          <PlaygroundSettings width={widthUnit(1)} minWidth={theme.spacing(40)}/>
         </Box>
-        <Box sx={{
-          transition: transition(theme),
-          width: isPlaygroundSettingsOpen ? '67.5vw' : '50vw',
-        }}>
-          <Playground/>
-        </Box>
-        <Box sx={{
-          transition: transition(theme),
-          overflow: 'hidden',
-          width: isPlaygroundSettingsOpen ? '20rem' : 0,
-        }}>
-          <PlaygroundSettings/>
+        <MidBar height={barHeight}/>
+        <Box height={contentHeight} display="flex" gap={1} p={1}>
+          <History
+            width={widthUnit(0.75)}
+            minWidth={theme.spacing(30)}
+            onHistoryItemClick={handleHistoryItemClick}
+          />
+          <TrainingData
+            width={widthUnit(0.75)}
+            minWidth={theme.spacing(30)}
+          />
+          <Box
+            sx={{
+              width: widthUnit(3.5),
+              height: '100%',
+            }}
+          >
+            <TextEditor ref={completePromptRef}/>
+          </Box>
         </Box>
       </Box>
     </AuthWrapper>

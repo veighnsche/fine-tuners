@@ -1,8 +1,8 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { Box, Button, Link, TextField, Typography } from '@mui/material'
 import { useState } from 'react'
-import { useAuth } from '../../auth'
-import { ProfileType } from '../../models/Auth'
+import { useAuth } from '../auth.hook'
+import { ProfileType } from '../auth.model'
 import { useOpenAI } from '../../openAI'
 import { ProfileVertical } from './ProfileVertical'
 
@@ -46,7 +46,6 @@ export const AuthEnterPassword = ({
           onClick={onBackClick}
           color="inherit"
           startIcon={<ChevronLeftIcon/>}
-          sx={{ textTransform: 'none' }}
         >
           pick other profile
         </Button>
