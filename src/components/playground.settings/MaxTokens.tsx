@@ -1,6 +1,6 @@
-import { useAppDispatch, useAppSelector } from '../../../store'
-import { setMaxTokens } from '../../../store/playground.settings.slice'
-import { Slider } from '../../Slider'
+import { useAppDispatch, useAppSelector } from '../../store'
+import { setMaxTokens } from '../../store/playground.settings.slice'
+import { Slider } from '../Slider'
 
 export const MaxTokens = () => {
   const maxTokens = useAppSelector(state => state.playgroundSettings.maxTokens)

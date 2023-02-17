@@ -15,8 +15,6 @@ interface TopBarProps {
 }
 
 export const TopBar = ({ height }: TopBarProps) => {
-  const fileMenuAnchor = useRef<HTMLButtonElement>(null)
-  const [fileMenuOpen, setFileMenuOpen] = useState(false)
   const authMenuAnchor = useRef<HTMLDivElement>(null)
   const [authMenuOpen, setAuthMenuOpen] = useState(false)
 
@@ -40,17 +38,6 @@ export const TopBar = ({ height }: TopBarProps) => {
           </Typography>
         </Box>
         <Toolbar variant="dense" sx={{ display: 'flex', gap: 1, height }}>
-          <Button
-            ref={fileMenuAnchor}
-            onClick={() => setFileMenuOpen(true)}
-            size="small"
-            color="inherit"
-            startIcon={<FolderOutlinedIcon fontSize="small"/>}
-          >
-            <Typography variant="body2" color="inherit" component="div">
-              File
-            </Typography>
-          </Button>
           <Box sx={{ flexGrow: 1 }}/>
 
           <Box display="flex" sx={{ gap: 1 }} p={0.5}>
@@ -106,13 +93,6 @@ export const TopBar = ({ height }: TopBarProps) => {
           </div>
         </Toolbar>
       </AppBar>
-      {fileMenuOpen ? (
-        <FileMenu
-          open
-          anchorEl={fileMenuAnchor.current}
-          onClose={() => setFileMenuOpen(false)}
-        />
-      ) : null}
       {authMenuAnchor.current ? (
         <AuthMenu
           open={authMenuOpen}

@@ -1,6 +1,6 @@
-import { useAppDispatch, useAppSelector } from '../../../store'
-import { setFrequencyPenalty } from '../../../store/playground.settings.slice'
-import { Slider } from '../../Slider'
+import { useAppDispatch, useAppSelector } from '../../store'
+import { setFrequencyPenalty } from '../../store/playground.settings.slice'
+import { Slider } from '../Slider'
 
 export const FrequencyPenalty = () => {
   const frequencyPenalty = useAppSelector(state => state.playgroundSettings.frequencyPenalty)

@@ -1,6 +1,6 @@
-import { useAppDispatch, useAppSelector } from '../../../store'
-import { setTemperature } from '../../../store/playground.settings.slice'
-import { Slider } from '../../Slider'
+import { useAppDispatch, useAppSelector } from '../../store'
+import { setTemperature } from '../../store/playground.settings.slice'
+import { Slider } from '../Slider'
 
 export const Temperature = () => {
   const temperature = useAppSelector(state => state.playgroundSettings.temperature)

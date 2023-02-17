@@ -1,6 +1,6 @@
 import { Box, InputLabel, MenuItem, Select, Tooltip, Typography } from '@mui/material'
-import { useAppDispatch, useAppSelector } from '../../../store'
-import { setModel } from '../../../store/playground.settings.slice'
+import { useAppDispatch, useAppSelector } from '../../store'
+import { setModel } from '../../store/playground.settings.slice'
 
 export const Model = () => {
   const currentModel = useAppSelector(state => state.playgroundSettings.model)

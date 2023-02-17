@@ -1,7 +1,7 @@
 import { Box, Button, InputLabel, TextField, Tooltip } from '@mui/material'
 import { ChangeEvent } from 'react'
-import { useAppDispatch, useAppSelector } from '../../../store'
-import { setStopSequences } from '../../../store/playground.settings.slice'
+import { useAppDispatch, useAppSelector } from '../../store'
+import { setStopSequences } from '../../store/playground.settings.slice'
 
 export const StopSequences = () => {
   const stopSequences = useAppSelector(state => state.playgroundSettings.stopSequences)

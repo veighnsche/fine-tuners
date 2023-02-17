@@ -1,13 +1,12 @@
 import { Box, Button, ButtonGroup, Paper, Theme, Typography } from '@mui/material'
 import { useRef } from 'react'
 import { v4 as uuid } from 'uuid'
-import { OpenAiCreateCompletionParameters } from '../../models/openAI/CreateCompletion'
-import { useOpenAI } from '../../openAI'
-import { useAppDispatch, useAppSelector } from '../../store'
-import { addHistoryItem } from '../../store/document.slice'
-import { selectPlaygroundSettings } from '../../store/playground.settings.slice'
-import { CompletePromptRefHandler } from '../TextEditor'
-import { TextEditorRedo } from '../TextEditorRedo'
+import { OpenAiCreateCompletionParameters } from '../models/openAI/CreateCompletion'
+import { useOpenAI } from '../openAI'
+import { useAppDispatch, useAppSelector } from '../store'
+import { addHistoryItem } from '../store/document.slice'
+import { selectPlaygroundSettings } from '../store/playground.settings.slice'
+import { TextEditorRefHandler, TextEditor } from "./TextEditor";
 
 interface PlaygroundProps {
   width: ReturnType<Theme['spacing']>
@@ -17,7 +16,7 @@ export const Playground = ({ width }: PlaygroundProps) => {
   const { createCompletion } = useOpenAI()
   const dispatch = useAppDispatch()
   const settings = useAppSelector(selectPlaygroundSettings)
-  const completePromptRef = useRef<CompletePromptRefHandler>(null)
+  const completePromptRef = useRef<TextEditorRefHandler>(null)
 
   const makeHistoryItem = (params: OpenAiCreateCompletionParameters) => ({
     id: uuid(),
@@ -70,7 +69,7 @@ export const Playground = ({ width }: PlaygroundProps) => {
         >
           Playground
         </Typography>
-        <TextEditorRedo ref={completePromptRef}/>
+        <TextEditor ref={completePromptRef}/>
         <Box display="flex" flexDirection="row">
           <ButtonGroup>
             <Button

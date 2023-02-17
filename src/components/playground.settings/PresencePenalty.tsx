@@ -1,6 +1,6 @@
-import { useAppDispatch, useAppSelector } from '../../../store'
-import { setPresencePenalty } from '../../../store/playground.settings.slice'
-import { Slider } from '../../Slider'
+import { useAppDispatch, useAppSelector } from '../../store'
+import { setPresencePenalty } from '../../store/playground.settings.slice'
+import { Slider } from '../Slider'
 
 export const PresencePenalty = () => {
   const presencePenalty = useAppSelector(state => state.playgroundSettings.presencePenalty)

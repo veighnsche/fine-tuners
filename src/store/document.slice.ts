@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { OpenAiCreateCompletionParameters } from '../models/openAI/CreateCompletion'
 
-export interface HistoryItem {
+export interface HistoryItemType {
   id: string
   completion: string
   createdAt: string
@@ -12,7 +12,8 @@ export interface DocumentState {
   userId: string
   name: string
   openAiFileId: string
-  history: HistoryItem[]
+  history: HistoryItemType[]
+  isNameDialogOpen: boolean
 }
 
 export const initialState: DocumentState = {
@@ -20,6 +21,8 @@ export const initialState: DocumentState = {
   name: '',
   openAiFileId: '',
   history: [],
+  // TODO: move the boolean to the appropriate place
+  isNameDialogOpen: false,
 }
 
 export const documentSlice = createSlice({
@@ -31,7 +34,7 @@ export const documentSlice = createSlice({
     }>) => {
       state.userId = action.payload.userId
     },
-    setName: (state, action: PayloadAction<{
+    setDocumentName: (state, action: PayloadAction<{
       name: string
     }>) => {
       state.name = action.payload.name
@@ -42,19 +45,28 @@ export const documentSlice = createSlice({
       state.openAiFileId = action.payload.openAiFileId
     },
     addHistoryItem: (state, action: PayloadAction<{
-      historyItem: HistoryItem
+      historyItem: HistoryItemType
     }>) => {
       state.history.push(action.payload.historyItem)
     },
-
+    removeFromHistory: (state, action: PayloadAction<{
+      id: string
+    }>) => {
+      state.history = state.history.filter(item => item.id !== action.payload.id)
+    },
+    toggleNameDialog: (state) => {
+      state.isNameDialogOpen = !state.isNameDialogOpen
+    }
   },
 })
 
 export const {
   setUserId,
-  setName,
+  setDocumentName,
   setOpenAiFileId,
   addHistoryItem,
+  removeFromHistory,
+  toggleNameDialog,
 } = documentSlice.actions
 
 export default documentSlice.reducer

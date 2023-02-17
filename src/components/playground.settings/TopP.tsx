@@ -1,6 +1,6 @@
-import { useAppDispatch, useAppSelector } from '../../../store'
-import { setTopP } from '../../../store/playground.settings.slice'
-import { Slider } from '../../Slider'
+import { useAppDispatch, useAppSelector } from '../../store'
+import { setTopP } from '../../store/playground.settings.slice'
+import { Slider } from '../Slider'
 
 export const TopP = () => {
   const topP = useAppSelector(state => state.playgroundSettings.topP)

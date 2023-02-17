@@ -1,64 +1,83 @@
-import { alpha, Box, useTheme } from '@mui/material'
-import { ClipboardEvent, forwardRef, useImperativeHandle, useRef } from 'react'
+import { alpha, Box, useTheme } from "@mui/material";
+import { ClipboardEvent, forwardRef, useImperativeHandle, useRef, useState } from "react";
 
-export interface CompletePromptRefHandler {
-  get promptText(): string
+export interface TextEditorRefHandler {
+  get promptText(): string;
 
-  get completionText(): string
+  get completionText(): string;
 
-  get text(): string
+  get text(): string;
 
-  chunk(chunk: string): void
+  get trainingData(): {
+    prompt: string
+    completion: string
+  };
+
+  get historyId(): string;
+
+  chunk(chunk: string): void;
 
   setText(text: {
     prompt: string,
     completion: string,
-    from: 'history' | 'training'
-  }): void
+    id?: string,
+    from: "history" | "training"
+  }): void;
 
-  redoCompletion(): void
+  redoCompletion(): void;
 }
 
-export const TextEditor = forwardRef<CompletePromptRefHandler>((props, ref) => {
-  const promptRef = useRef<HTMLSpanElement>(null)
-  const completionRef = useRef<HTMLSpanElement>(null)
+export const TextEditor = forwardRef<TextEditorRefHandler>((_, ref) => {
+  const promptRef = useRef<HTMLSpanElement>(null);
+  const completionRef = useRef<HTMLSpanElement>(null);
+  const [historyId, setHistoryId] = useState<string | undefined>(undefined);
 
   useImperativeHandle(ref, () => ({
     get promptText() {
-      return promptRef.current!.innerText
+      return promptRef.current!.innerText;
     },
     get completionText() {
-      return completionRef.current!.innerText
+      return completionRef.current!.innerText;
     },
     get text() {
-      return promptRef.current!.innerText + completionRef.current!.innerText
+      return promptRef.current!.innerText + completionRef.current!.innerText;
+    },
+    get trainingData() {
+      return {
+        prompt: promptRef.current!.innerText,
+        completion: completionRef.current!.innerText,
+      };
+    },
+    get historyId() {
+      return historyId!;
     },
     chunk(chunk: string) {
-      completionRef.current!.innerText += chunk
+      completionRef.current!.innerText += chunk;
     },
-    setText({ prompt, completion }: { prompt: string, completion: string }) {
-      promptRef.current!.innerText = prompt
-      completionRef.current!.innerText = completion
+    setText({ prompt, completion, id }) {
+      setHistoryId(id);
+      promptRef.current!.innerText = prompt;
+      completionRef.current!.innerText = completion;
     },
     redoCompletion() {
-      completionRef.current!.innerText = ''
+      completionRef.current!.innerText = "";
     },
-  }))
+  }));
 
-  const theme = useTheme()
-  const backgroundColor = alpha(theme.palette.success.main, 0.5)
+  const theme = useTheme();
+  const backgroundColor = alpha(theme.palette.success.main, 0.5);
 
   const handleBoxClick = () => {
-    if (promptRef.current && completionRef.current!.innerText === '') {
-      promptRef.current.focus()
+    if (promptRef.current && completionRef.current!.innerText === "") {
+      promptRef.current.focus();
     }
-  }
+  };
 
   const handlePaste = (e: ClipboardEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    const text = e.clipboardData.getData('text')
-    document.execCommand('insertHTML', false, text)
-  }
+    e.preventDefault();
+    const text = e.clipboardData.getData("text");
+    document.execCommand("insertHTML", false, text);
+  };
 
   return (
     <Box
@@ -69,7 +88,7 @@ export const TextEditor = forwardRef<CompletePromptRefHandler>((props, ref) => {
       p={1}
       onClick={handleBoxClick}
       sx={{
-        cursor: 'text',
+        cursor: "text",
       }}
     >
       <span
@@ -78,7 +97,7 @@ export const TextEditor = forwardRef<CompletePromptRefHandler>((props, ref) => {
         suppressContentEditableWarning
         onPaste={handlePaste}
         style={{
-          outline: '0 solid transparent',
+          outline: "0 solid transparent",
         }}
       />
       <span
@@ -88,10 +107,10 @@ export const TextEditor = forwardRef<CompletePromptRefHandler>((props, ref) => {
         onPaste={handlePaste}
         style={{
           backgroundColor,
-          outline: '0 solid transparent',
+          outline: "0 solid transparent",
           paddingLeft: 1,
         }}
       />
     </Box>
-  )
-})
+  );
+});

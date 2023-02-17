@@ -96,7 +96,7 @@ export const AuthMenu = ({ anchorEl, open, setOpen, onClose }: TopBarMenuProps) 
       setOpen(true)
     }
     if (status === AuthStatus.PROFILE_REQUIRED) {
-      setTab(AuthTabs.PROFILES)
+      setTab(AuthTabs.CREATE_PROFILE)
       setOpen(true)
     }
   }, [status])

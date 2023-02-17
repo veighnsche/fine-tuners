@@ -7,7 +7,7 @@ interface CreateJsonlFileParams {
   name: string
 }
 
-export function createJsonlFile({ lines, name }: CreateJsonlFileParams) {
+export function downloadJsonlFile({ lines, name }: CreateJsonlFileParams) {
   const jsonl = toJsonl(lines)
   const blob = new Blob([jsonl], { type: 'application/jsonl' })
   const url = URL.createObjectURL(blob)
@@ -21,7 +21,7 @@ interface CreateJsonlFileEditParams extends CreateJsonlFileParams {
   docState: DocumentState
 }
 
-export function createJsonlEditFile({ docState, lines, name }: CreateJsonlFileEditParams) {
+export function downloadJsonlEditFile({ docState, lines, name }: CreateJsonlFileEditParams) {
   const jsonl = toJsonlEdit(docState, lines)
   const blob = new Blob([jsonl], { type: 'application/jsonl-edit' })
   const url = URL.createObjectURL(blob)
@@ -77,4 +77,10 @@ export function loadFile(file: File): Promise<JsonlFileType> {
     }
     reader.readAsText(file)
   })
+}
+
+export function createJsonLFile({ lines, name }: { lines: LineType[], name: string }): File {
+  const jsonl = toJsonl(lines)
+  const blob = new Blob([jsonl], { type: 'application/jsonl' })
+  return new File([blob], `${name}.jsonl`, { type: 'application/jsonl' })
 }
