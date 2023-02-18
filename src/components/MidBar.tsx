@@ -1,22 +1,22 @@
-import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
-import { Box, Button, Theme, Typography, useTheme } from "@mui/material";
-import { useRef, useState } from "react";
-import { OpenAiIcon } from "../icons/openAiIcon";
-import { FileMenu } from "./FileMenu";
-import { OpenAiMenu } from "./OpenAiMenu";
+import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined'
+import { Box, Button, Theme, Typography, useTheme } from '@mui/material'
+import { useRef, useState } from 'react'
+import { OpenAiIcon } from '../icons/openAiIcon'
+import { FileMenu } from './FileMenu'
+import { OpenAiMenu } from './OpenAiMenu'
 
 interface MidBarProps {
-  height: ReturnType<Theme["spacing"]>;
+  height: ReturnType<Theme['spacing']>;
 }
 
 export const MidBar = ({ height }: MidBarProps) => {
-  const theme = useTheme();
+  const theme = useTheme()
 
-  const fileMenuAnchor = useRef<HTMLButtonElement>(null);
-  const [fileMenuOpen, setFileMenuOpen] = useState(false);
+  const fileMenuAnchor = useRef<HTMLButtonElement>(null)
+  const [fileMenuOpen, setFileMenuOpen] = useState(false)
 
-  const openAiAnchor = useRef<HTMLButtonElement>(null);
-  const [openAiMenuOpen, setOpenAiMenuOpen] = useState(false);
+  const openAiAnchor = useRef<HTMLButtonElement>(null)
+  const [openAiMenuOpen, setOpenAiMenuOpen] = useState(false)
 
   return (
     <>
@@ -72,5 +72,5 @@ export const MidBar = ({ height }: MidBarProps) => {
         />
       ) : null}
     </>
-  );
-};
+  )
+}

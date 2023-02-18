@@ -6,7 +6,7 @@ import { useOpenAI } from '../openAI'
 import { useAppDispatch, useAppSelector } from '../store'
 import { addHistoryItem } from '../store/document.slice'
 import { selectPlaygroundSettings } from '../store/playground.settings.slice'
-import { TextEditorRefHandler, TextEditor } from "./TextEditor";
+import { TextEditor, TextEditorRefHandler } from './TextEditor'
 
 interface PlaygroundProps {
   width: ReturnType<Theme['spacing']>

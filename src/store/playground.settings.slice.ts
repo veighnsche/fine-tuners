@@ -26,7 +26,7 @@ const initialState: PlaygroundSettingsState = {
   frequencyPenalty: 0,
   presencePenalty: 0,
   bestOf: 1,
-};
+}
 
 export const playgroundSettingsSlice = createSlice({
   name: 'playgroundSettings',
@@ -45,21 +45,21 @@ export const playgroundSettingsSlice = createSlice({
       state.maxTokens = action.payload.maxTokens
     },
     setStopSequences: (state, action: PayloadAction<{ stopSequences: string[] }>) => {
-      state.stopSequences = action.payload.stopSequences;
+      state.stopSequences = action.payload.stopSequences
     },
     setTopP: (state, action: PayloadAction<{ topP: number }>) => {
-      state.topP = action.payload.topP;
+      state.topP = action.payload.topP
     },
     setFrequencyPenalty: (state, action: PayloadAction<{ frequencyPenalty: number }>) => {
-      state.frequencyPenalty = action.payload.frequencyPenalty;
+      state.frequencyPenalty = action.payload.frequencyPenalty
     },
     setPresencePenalty: (state, action: PayloadAction<{ presencePenalty: number }>) => {
-      state.presencePenalty = action.payload.presencePenalty;
+      state.presencePenalty = action.payload.presencePenalty
     },
     setBestOf: (state, action: PayloadAction<{ bestOf: number }>) => {
-      state.bestOf = action.payload.bestOf;
+      state.bestOf = action.payload.bestOf
     },
-  }
+  },
 })
 
 export const {

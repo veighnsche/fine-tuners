@@ -1,7 +1,7 @@
-import { Divider, Menu, MenuItem, Tooltip } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../store";
-import { toggleNameDialog } from "../store/dialogs.slice";
-import { downloadJsonlEditFile, downloadJsonlFile, selectFile } from "../utils/files";
+import { Divider, Menu, MenuItem, Tooltip } from '@mui/material'
+import { useAppDispatch, useAppSelector } from '../store'
+import { toggleNameDialog } from '../store/dialogs.slice'
+import { downloadJsonlEditFile, downloadJsonlFile, selectFile } from '../utils/files'
 
 interface TopBarMenuProps {
   anchorEl: HTMLElement | null;
@@ -10,48 +10,48 @@ interface TopBarMenuProps {
 }
 
 export const FileMenu = ({ anchorEl, open, onClose }: TopBarMenuProps) => {
-  const getLines = useAppSelector(state => () => state.lines.lines);
-  const getDocState = useAppSelector(state => () => state.document);
-  const documentName = useAppSelector(state => state.document.name);
-  const dispatch = useAppDispatch();
+  const getLines = useAppSelector(state => () => state.lines.lines)
+  const getDocState = useAppSelector(state => () => state.document)
+  const documentName = useAppSelector(state => state.document.name)
+  const dispatch = useAppDispatch()
 
   const handleNewWindow = () => {
-    window.open(window.location.href, "_blank");
-    onClose();
-  };
+    window.open(window.location.href, '_blank')
+    onClose()
+  }
 
   const handleOpenFileClick = async () => {
-    onClose();
-    const file = await selectFile();
+    onClose()
+    const file = await selectFile()
     // todo: MAKE IT DO SOMETHING
-    console.log(file);
-  };
+    console.log(file)
+  }
 
   const handleRename = () => {
-    onClose();
-    dispatch(toggleNameDialog());
-  };
+    onClose()
+    dispatch(toggleNameDialog())
+  }
 
   const handleEditSaveClick = () => {
-    onClose();
+    onClose()
     downloadJsonlEditFile({
       docState: getDocState(),
       lines: getLines(),
       name: documentName,
-    });
-  };
+    })
+  }
 
   const handleSaveClick = () => {
-    onClose();
-    downloadJsonlFile({ lines: getLines(), name: documentName });
-  };
+    onClose()
+    downloadJsonlFile({ lines: getLines(), name: documentName })
+  }
 
   return (
     <Menu
       anchorEl={anchorEl}
       open={open}
       onClose={onClose}
-      sx={{ "& .MuiPaper-root": { width: 300 } }}
+      sx={{ '& .MuiPaper-root': { width: 300 } }}
     >
       <MenuItem onClick={handleNewWindow}>New window</MenuItem>
       <Divider/>
@@ -67,5 +67,5 @@ export const FileMenu = ({ anchorEl, open, onClose }: TopBarMenuProps) => {
         <MenuItem onClick={handleSaveClick}>Save as .jsonl</MenuItem>
       </Tooltip>
     </Menu>
-  );
-};
+  )
+}

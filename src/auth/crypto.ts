@@ -29,14 +29,14 @@ export async function encryptPassword(toEncrypt: string, salt: Uint8Array): Prom
     utf8,
     { name: 'PBKDF2' },
     false,
-    ['deriveBits']
+    ['deriveBits'],
   )
 
   const derivedKey = await crypto.subtle.deriveBits({
     name: 'PBKDF2',
     salt,
     iterations,
-    hash: 'SHA-256'
+    hash: 'SHA-256',
   }, key, keyLength * 8)
 
   return Array.from(new Uint8Array(derivedKey))
@@ -57,7 +57,7 @@ export async function lockApiKey(toLock: string, encryptedPassword: string): Pro
     new TextEncoder().encode(encryptedPassword).buffer,
     'AES-GCM',
     false,
-    ['encrypt']
+    ['encrypt'],
   )
 
   const encrypted = await crypto.subtle.encrypt(
@@ -66,7 +66,7 @@ export async function lockApiKey(toLock: string, encryptedPassword: string): Pro
       iv,
     },
     key,
-    new TextEncoder().encode(toLock)
+    new TextEncoder().encode(toLock),
   )
 
   return window.btoa(JSON.stringify({
@@ -97,7 +97,7 @@ export async function unlockApiKey(toUnlock: string, encryptedPassword: string):
       iv: new Uint8Array(iv),
     },
     key,
-    new Uint8Array(encrypted)
+    new Uint8Array(encrypted),
   )
 
   return new TextDecoder().decode(decrypted)

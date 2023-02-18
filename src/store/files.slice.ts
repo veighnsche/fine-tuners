@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LineType } from "../models/Line";
-import { OpenAiFile } from "../models/openAI/Files";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { LineType } from '../models/Line'
+import { OpenAiFile } from '../models/openAI/Files'
 
 interface FilesState {
   files: OpenAiFile[];
@@ -10,32 +10,32 @@ interface FilesState {
 const initialState: FilesState = {
   files: [],
   currentLines: null,
-};
+}
 
 export const filesSlice = createSlice({
-  name: "files",
+  name: 'files',
   initialState,
   reducers: {
     setFiles: (state, action: PayloadAction<{
       files: OpenAiFile[];
     }>) => {
-      state.files = action.payload.files;
+      state.files = action.payload.files
     },
     unsetCurrentFile: (state) => {
-      state.currentLines = null;
+      state.currentLines = null
     },
     setCurrentLines: (state, action: PayloadAction<{
       lines: LineType[];
     }>) => {
-      state.currentLines = action.payload.lines;
+      state.currentLines = action.payload.lines
     },
   },
-});
+})
 
 export const {
   setFiles,
   unsetCurrentFile,
   setCurrentLines,
-} = filesSlice.actions;
+} = filesSlice.actions
 
-export default filesSlice.reducer;
+export default filesSlice.reducer

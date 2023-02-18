@@ -14,11 +14,11 @@ import {
   Typography,
 } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { fetchProfiles } from '../profile.store'
-import { AuthStatus, ProfileType } from '../auth.model'
+import { Identicon } from '../../components/Identicon'
 import { useOpenAI } from '../../openAI'
 import { useAppSelector } from '../../store'
-import { Identicon } from '../../components/Identicon'
+import { AuthStatus, ProfileType } from '../auth.model'
+import { fetchProfiles } from '../profile.store'
 
 interface AuthProfilesProps {
   onProfileClick: (profile: ProfileType) => void

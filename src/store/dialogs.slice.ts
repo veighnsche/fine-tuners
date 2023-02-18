@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit'
 
 export interface DialogsState {
   isNameDialogOpen: boolean
@@ -20,7 +20,7 @@ export const dialogsSlice = createSlice({
     toggleFilesDialog: (state) => {
       state.isFilesDialogOpen = !state.isFilesDialogOpen
     },
-  }
+  },
 })
 
 export const { toggleNameDialog, toggleFilesDialog } = dialogsSlice.actions

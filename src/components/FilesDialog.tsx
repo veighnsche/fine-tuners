@@ -11,12 +11,12 @@ import {
   ListItemText,
   Paper,
   useTheme,
-} from "@mui/material";
-import { Fragment } from "react";
-import { useOpenAI } from "../openAI";
-import { useAppDispatch, useAppSelector } from "../store";
-import { setCurrentLines } from "../store/files.slice";
-import { timestampToDateTime } from "../utils/dates";
+} from '@mui/material'
+import { Fragment } from 'react'
+import { useOpenAI } from '../openAI'
+import { useAppDispatch, useAppSelector } from '../store'
+import { setCurrentLines } from '../store/files.slice'
+import { timestampToDateTime } from '../utils/dates'
 
 interface FilesDialogProps {
   open: boolean;
@@ -24,26 +24,26 @@ interface FilesDialogProps {
 }
 
 export const FilesDialog = ({ open, onClose }: FilesDialogProps) => {
-  const dispatch = useAppDispatch();
-  const files = useAppSelector(state => state.files.files);
-  const lines = useAppSelector(state => state.files.currentLines);
-  const { fetchFileContent } = useOpenAI();
-  const theme = useTheme();
+  const dispatch = useAppDispatch()
+  const files = useAppSelector(state => state.files.files)
+  const lines = useAppSelector(state => state.files.currentLines)
+  const { fetchFileContent } = useOpenAI()
+  const theme = useTheme()
 
   const handleClick = async (id: string) => {
-    const content = await fetchFileContent({ id });
-    dispatch(setCurrentLines(content));
-  };
+    const content = await fetchFileContent({ id })
+    dispatch(setCurrentLines(content))
+  }
 
   return (
     <Dialog
       open={open}
       maxWidth="xl"
-      sx={{ "& .MuiDialog-paper": { width: "80%", height: "80vh" } }}
+      sx={{ '& .MuiDialog-paper': { width: '80%', height: '80vh' } }}
       onClose={onClose}
     >
       <Box display="flex" gap={1} height="100%">
-        <Paper sx={{ width: "30%", height: "100%" }} square>
+        <Paper sx={{ width: '30%', height: '100%' }} square>
           <List>
             {files.map((file, idx) => (
               <Fragment key={file.id}>
@@ -84,5 +84,5 @@ export const FilesDialog = ({ open, onClose }: FilesDialogProps) => {
         ) : null}
       </Box>
     </Dialog>
-  );
-};
+  )
+}

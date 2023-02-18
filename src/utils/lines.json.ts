@@ -6,7 +6,7 @@ export function fromJson(json: string): LineType {
   return {
     prompt,
     completion,
-    taught: 0
+    taught: 0,
   }
 }
 
@@ -32,7 +32,7 @@ export function fromJsonl(jsonl: string): {
 
 export function toJsonl(lines: LineType[], isEdit?: boolean): string {
   return lines.map(
-    isEdit ? toJsonEdit : toJson
+    isEdit ? toJsonEdit : toJson,
   ).join('\n')
 }
 

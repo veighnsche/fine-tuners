@@ -2,8 +2,8 @@ import styled from '@emotion/styled'
 import { Box, Grow, Paper, Popper } from '@mui/material'
 import { styled as muiStyled } from '@mui/material/styles'
 import { ReactNode, useEffect, useState } from 'react'
-import { AuthStatus, ProfileType } from '../auth.model'
 import { useAppDispatch, useAppSelector } from '../../store'
+import { AuthStatus, ProfileType } from '../auth.model'
 import { clearCreatingProfileVehicle } from '../auth.slice'
 import { AuthCreatePassword } from './AuthCreatePassword'
 import { AuthCreateProfile } from './AuthCreateProfile'
@@ -90,7 +90,8 @@ export const AuthMenu = ({ anchorEl, open, setOpen, onClose }: TopBarMenuProps) 
       if (currentProfile) {
         setProfile(currentProfile)
         setTab(AuthTabs.ENTER_PASSWORD)
-      } else {
+      }
+      else {
         setTab(AuthTabs.PROFILES)
       }
       setOpen(true)
@@ -113,7 +114,8 @@ export const AuthMenu = ({ anchorEl, open, setOpen, onClose }: TopBarMenuProps) 
     if (!open) {
       if (status === AuthStatus.NO_PROFILE_CREATED) {
         setTab(AuthTabs.CREATE_PROFILE)
-      } else {
+      }
+      else {
         setTab(AuthTabs.PROFILES)
       }
     }

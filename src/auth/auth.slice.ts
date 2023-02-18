@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AuthStatus, ProfileType } from './auth.model'
 import { useAppDispatch } from '../store'
+import { AuthStatus, ProfileType } from './auth.model'
 
 export interface AuthState {
   encryptedPassword: string | null
@@ -79,7 +79,7 @@ export const authSlice = createSlice({
     },
     requirePasswordCleanup: (state) => {
       state.status = AuthStatus.NO_PASSWORD
-    }
+    },
   },
 })
 

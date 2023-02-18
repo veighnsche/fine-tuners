@@ -1,7 +1,7 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import { useState } from "react";
-import { useAppDispatch } from "../store";
-import { setDocumentName } from "../store/document.slice";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
+import { useState } from 'react'
+import { useAppDispatch } from '../store'
+import { setDocumentName } from '../store/document.slice'
 
 interface NameDialogProps {
   open: boolean;
@@ -9,11 +9,11 @@ interface NameDialogProps {
 }
 
 export const NameDialog = ({ open, onClose }: NameDialogProps) => {
-  const dispatch = useAppDispatch();
-  const [name, setName] = useState("");
+  const dispatch = useAppDispatch()
+  const [name, setName] = useState('')
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth={"sm"} fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth={'sm'} fullWidth>
       <DialogTitle>Rename</DialogTitle>
       <DialogContent>
         <TextField
@@ -32,11 +32,11 @@ export const NameDialog = ({ open, onClose }: NameDialogProps) => {
           Cancel
         </Button>
         <Button onClick={() => {
-          dispatch(setDocumentName({ name }));
+          dispatch(setDocumentName({ name }))
         }}>
           Rename
         </Button>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}

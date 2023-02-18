@@ -1,9 +1,9 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { Box, Button, TextField, Typography } from '@mui/material'
 import { useState } from 'react'
-import { useAuth } from '../auth.hook'
 import { useAppSelector } from '../../store'
 import { apiKeyToSnippet } from '../../utils/snippet'
+import { useAuth } from '../auth.hook'
 import { ProfileVertical } from './ProfileVertical'
 
 interface AuthProfileFormProps {
@@ -72,16 +72,16 @@ export const AuthCreatePassword = ({ onBackClick, onSubmitClick }: AuthProfileFo
         fullWidth
       />
 
-          <Button
-            sx={{ mt: 1 }}
-            variant="contained"
-            onClick={handleSubmitClick}
-            disabled={!password || !confirmPassword}
-            color="secondary"
-            fullWidth
-          >
-            Create Profile
-          </Button>
+      <Button
+        sx={{ mt: 1 }}
+        variant="contained"
+        onClick={handleSubmitClick}
+        disabled={!password || !confirmPassword}
+        color="secondary"
+        fullWidth
+      >
+        Create Profile
+      </Button>
     </Box>
   )
 }

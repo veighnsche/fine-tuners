@@ -1,5 +1,7 @@
-import { ProfileType } from './auth.model'
 import { useAppDispatch, useAppSelector } from '../store'
+import { useAddNotification } from '../store/notifications.slice'
+import { apiKeyToSnippet } from '../utils/snippet'
+import { ProfileType } from './auth.model'
 import {
   noEncryptedPasswordDuringInit,
   noProfileDuringInit,
@@ -10,8 +12,6 @@ import {
   setProfile,
   unsetProfile,
 } from './auth.slice'
-import { useAddNotification } from '../store/notifications.slice'
-import { apiKeyToSnippet } from '../utils/snippet'
 import { encryptPassword, lockApiKey, passwordSalt, unlockApiKey } from './crypto'
 import {
   fetchEncryptedPasswordFromSession,

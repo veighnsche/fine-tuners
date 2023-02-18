@@ -1,7 +1,7 @@
 import { ReactNode, useEffect } from 'react'
-import { AuthStatus } from './auth.model'
 import { useAppSelector } from '../store'
 import { useAuth } from './auth.hook'
+import { AuthStatus } from './auth.model'
 
 export const AuthWrapper = ({ children }: { children: ReactNode }) => {
   const status = useAppSelector(state => state.auth.status)

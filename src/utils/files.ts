@@ -65,13 +65,13 @@ export function loadFile(file: File): Promise<JsonlFileType> {
       if (type === 'jsonl') {
         resolve({
           ...fromJsonl(text),
-          type: 'jsonl'
+          type: 'jsonl',
         })
       }
       if (type === 'jsonl-edit') {
         resolve({
           ...fromJsonlEdit(text),
-          type: 'jsonl-edit'
+          type: 'jsonl-edit',
         })
       }
     }

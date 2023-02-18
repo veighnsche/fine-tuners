@@ -1,4 +1,4 @@
-import { Box, InputLabel, MenuItem, Select, Tooltip, Typography } from '@mui/material'
+import { Box, InputLabel, MenuItem, Select, Tooltip } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../../store'
 import { setModel } from '../../store/playground.settings.slice'
 

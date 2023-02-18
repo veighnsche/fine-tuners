@@ -1,24 +1,24 @@
-import HistoryIcon from "@mui/icons-material/History";
-import { Box, Divider, List, Paper, Theme, Typography } from "@mui/material";
-import { Fragment } from "react";
-import { useAppSelector } from "../store";
-import { HistoryItemType } from "../store/document.slice";
-import { HistoryItem } from "./HistoryItem";
+import HistoryIcon from '@mui/icons-material/History'
+import { Box, Divider, List, Paper, Theme, Typography } from '@mui/material'
+import { Fragment } from 'react'
+import { useAppSelector } from '../store'
+import { HistoryItemType } from '../store/document.slice'
+import { HistoryItem } from './HistoryItem'
 
 interface HistoryProps {
-  width: ReturnType<Theme["spacing"]>;
-  minWidth: ReturnType<Theme["spacing"]>;
+  width: ReturnType<Theme['spacing']>;
+  minWidth: ReturnType<Theme['spacing']>;
   onHistoryItemClick: (item: HistoryItemType) => void;
 }
 
 export const History = ({ width, minWidth, onHistoryItemClick }: HistoryProps) => {
-  const historyItems = useAppSelector(state => state.document.history);
+  const historyItems = useAppSelector(state => state.document.history)
   return (
     <Paper sx={{
       p: 1,
-      display: "flex",
-      flexDirection: "column",
-      height: "100%",
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
       gap: 1,
       width,
       minWidth,
@@ -69,5 +69,5 @@ export const History = ({ width, minWidth, onHistoryItemClick }: HistoryProps) =
       )}
 
     </Paper>
-  );
-};
+  )
+}

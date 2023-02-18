@@ -1,25 +1,25 @@
-import DataObjectIcon from "@mui/icons-material/DataObject";
-import { Box, Divider, List, Paper, Theme, Typography } from "@mui/material";
-import { Fragment } from "react";
-import { LineType } from "../models/Line";
-import { useAppSelector } from "../store";
-import { TrainingDataItem } from "./TrainingDataItem";
+import DataObjectIcon from '@mui/icons-material/DataObject'
+import { Box, Divider, List, Paper, Theme, Typography } from '@mui/material'
+import { Fragment } from 'react'
+import { LineType } from '../models/Line'
+import { useAppSelector } from '../store'
+import { TrainingDataItem } from './TrainingDataItem'
 
 interface HistoryProps {
-  width: ReturnType<Theme["spacing"]>;
-  minWidth: ReturnType<Theme["spacing"]>;
+  width: ReturnType<Theme['spacing']>;
+  minWidth: ReturnType<Theme['spacing']>;
   onLineClick: (line: LineType) => void;
 }
 
 export const TrainingData = ({ width, minWidth, onLineClick }: HistoryProps) => {
-  const lines = useAppSelector(state => state.lines.lines);
+  const lines = useAppSelector(state => state.lines.lines)
 
   return (
     <Paper sx={{
       p: 1,
-      display: "flex",
-      flexDirection: "column",
-      height: "100%",
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
       gap: 1,
       width,
       minWidth,
@@ -69,5 +69,5 @@ export const TrainingData = ({ width, minWidth, onLineClick }: HistoryProps) => 
         </List>
       )}
     </Paper>
-  );
-};
+  )
+}

@@ -1,13 +1,13 @@
 export interface OpenAIFilesObject {
-  data:   OpenAiFile[];
+  data: OpenAiFile[];
   object: string;
 }
 
 export interface OpenAiFile {
-  id:         string;
-  object:     string;
-  bytes:      number;
+  id: string;
+  object: string;
+  bytes: number;
   created_at: number;
-  filename:   string;
-  purpose:    string;
+  filename: string;
+  purpose: string;
 }

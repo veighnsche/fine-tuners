@@ -4,5 +4,5 @@ import { ComponentProps } from 'react'
 export interface NotificationType {
   id: string
   message: string
-  severity: ComponentProps<typeof Alert>["severity"]
+  severity: ComponentProps<typeof Alert>['severity']
 }

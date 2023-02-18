@@ -16,23 +16,23 @@ export interface OpenAiCreateCompletionParameters {
 }
 
 export interface OpenAICreateCompletionResponse {
-  id:      string;
-  object:  string;
+  id: string;
+  object: string;
   created: number;
-  model:   string;
+  model: string;
   choices: OpenAiChoice[];
-  usage:   Usage;
+  usage: Usage;
 }
 
 interface OpenAiChoice {
-  text:          string;
-  index:         number;
-  logprobs:      null;
+  text: string;
+  index: number;
+  logprobs: null;
   finish_reason: string;
 }
 
 interface Usage {
-  prompt_tokens:     number;
+  prompt_tokens: number;
   completion_tokens: number;
-  total_tokens:      number;
+  total_tokens: number;
 }
