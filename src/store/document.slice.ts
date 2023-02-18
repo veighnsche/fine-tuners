@@ -13,7 +13,6 @@ export interface DocumentState {
   name: string
   openAiFileId: string
   history: HistoryItemType[]
-  isNameDialogOpen: boolean
 }
 
 export const initialState: DocumentState = {
@@ -21,8 +20,6 @@ export const initialState: DocumentState = {
   name: '',
   openAiFileId: '',
   history: [],
-  // TODO: move the boolean to the appropriate place
-  isNameDialogOpen: false,
 }
 
 export const documentSlice = createSlice({
@@ -54,9 +51,6 @@ export const documentSlice = createSlice({
     }>) => {
       state.history = state.history.filter(item => item.id !== action.payload.id)
     },
-    toggleNameDialog: (state) => {
-      state.isNameDialogOpen = !state.isNameDialogOpen
-    }
   },
 })
 
@@ -66,7 +60,6 @@ export const {
   setOpenAiFileId,
   addHistoryItem,
   removeFromHistory,
-  toggleNameDialog,
 } = documentSlice.actions
 
 export default documentSlice.reducer

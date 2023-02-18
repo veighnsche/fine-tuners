@@ -26,7 +26,7 @@ export const linesSlice = createSlice({
       });
     },
     addLine: (state, action: PayloadAction<{
-      line: Omit<LineType, 'taught'>
+      line: Omit<LineType, "taught">
     }>) => {
       state.lines.push({
         ...action.payload.line,
@@ -59,11 +59,9 @@ export const {
   incTaught,
 } = linesSlice.actions;
 
-export const selectLinesForUpload = (state: RootState) => {
-  return state.lines.lines.map((line) => {
-    const { taught, ...rest } = line;
-    return rest;
-  });
-}
+export const selectLinesForUpload = (state: RootState) => state.lines.lines.map((line) => {
+  const { taught, ...rest } = line;
+  return rest;
+});
 
 export default linesSlice.reducer;

@@ -1,5 +1,9 @@
 import { Divider, Menu, MenuItem } from "@mui/material";
 import { useOpenAI } from "../openAI";
+import { useAppDispatch } from "../store";
+import { toggleFilesDialog } from "../store/dialogs.slice";
+import { setFiles } from "../store/files.slice";
+import { useAddNotification } from "../store/notifications.slice";
 
 interface OpenAiMenuProps {
   open: boolean;
@@ -9,15 +13,14 @@ interface OpenAiMenuProps {
 
 
 export const OpenAiMenu = ({ open, anchorEl, onClose }: OpenAiMenuProps) => {
-  // upload training data file to openAI
-  // upload and train the training data file
-  // train an uploaded training data file
-
-  const { uploadCurrentLines } = useOpenAI();
+  const { uploadCurrentLines, fetchFiles } = useOpenAI();
+  const dispatch = useAppDispatch();
+  const addNotification = useAddNotification()
 
   const handleUpload = () => {
+    onClose();
     uploadCurrentLines().then(() => {
-      onClose();
+      addNotification({ message: "Uploaded to OpenAI", severity: "success" });
     });
   };
 
@@ -29,8 +32,11 @@ export const OpenAiMenu = ({ open, anchorEl, onClose }: OpenAiMenuProps) => {
 
   };
 
-  const handleEditSaveClick = () => {
-
+  const handleViewFiles = async () => {
+    onClose();
+    dispatch(toggleFilesDialog());
+    const files = await fetchFiles();
+    dispatch(setFiles({ files }));
   };
 
   return (
@@ -42,10 +48,9 @@ export const OpenAiMenu = ({ open, anchorEl, onClose }: OpenAiMenuProps) => {
     >
       <MenuItem onClick={handleUpload}>Upload</MenuItem>
       <MenuItem onClick={handleTrain}>Train</MenuItem>
-      <Divider/>
       <MenuItem onClick={handleTrainUploaded}>Upload & Train</MenuItem>
       <Divider/>
-      <MenuItem onClick={handleEditSaveClick}>Download</MenuItem>
+      <MenuItem onClick={handleViewFiles}>View uploaded files</MenuItem>
     </Menu>
   );
 };

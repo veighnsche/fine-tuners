@@ -3,19 +3,20 @@ import { useAuth } from "../auth/auth.hook";
 import { authFailed, authSuccess } from "../auth/auth.slice";
 import { removeEncryptedPasswordFromSession } from "../auth/encryptedPassword.store";
 import { OpenAiCreateCompletionParameters, OpenAICreateCompletionResponse } from "../models/openAI/CreateCompletion";
+import { OpenAiFile, OpenAIFilesObject } from "../models/openAI/Files";
 import { useAppDispatch, useAppSelector } from "../store";
 import { selectLinesForUpload } from "../store/lines.slice";
 import { createJsonLFile } from "../utils/files";
+import { fromJsonl } from "../utils/lines.json";
 
 export function useOpenAI() {
   const { getApiKey } = useAuth();
   const dispatch = useAppDispatch();
   const lines = useAppSelector(selectLinesForUpload);
+  const documentName = useAppSelector(state => state.document.name);
 
   return {
-    async testAuth({
-                     encryptedPassword,
-                   }: {
+    async testAuth({ encryptedPassword }: {
       encryptedPassword?: string
     } = {}): Promise<boolean> {
       const apiKey = await getApiKey({ encryptedPassword });
@@ -37,9 +38,7 @@ export function useOpenAI() {
       return false;
     },
 
-    async* createCompletion({
-                              params,
-                            }: {
+    async* createCompletion({ params }: {
       params: OpenAiCreateCompletionParameters;
     }): AsyncGenerator<{
       chunk: string;
@@ -98,7 +97,7 @@ export function useOpenAI() {
     async uploadCurrentLines() {
       const file: File = createJsonLFile({
         lines,
-        name: "test",
+        name: documentName,
       });
 
       const apiKey = await getApiKey();
@@ -121,6 +120,34 @@ export function useOpenAI() {
 
       const json = await res.json();
       console.log(json);
+    },
+    async fetchFiles(): Promise<OpenAiFile[]> {
+      const apiKey = await getApiKey();
+      const filesObject = await wretch("https://api.openai.com/v1/files")
+        .auth(`Bearer ${apiKey}`)
+        .get()
+        .json<OpenAIFilesObject>();
+
+      return filesObject.data;
+    },
+    async fetchFileContent({ id }: {
+      id: string;
+    }): Promise<ReturnType<typeof fromJsonl>> {
+      const apiKey = await getApiKey();
+      const blob = await wretch(`https://api.openai.com/v1/files/${id}/content`)
+        .auth(`Bearer ${apiKey}`)
+        .get()
+        .blob()
+        .catch(err => {
+          console.error(err);
+          throw err;
+        });
+
+      const text = await blob.text();
+      return fromJsonl(text);
+    },
+    async trainFile() {
+
     },
   };
 }

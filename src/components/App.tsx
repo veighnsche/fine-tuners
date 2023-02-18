@@ -3,8 +3,10 @@ import { useRef } from "react";
 import { AuthWrapper } from "../auth/auth.wrapper";
 import { LineType } from "../models/Line";
 import { useAppDispatch, useAppSelector } from "../store";
-import { HistoryItemType, toggleNameDialog } from "../store/document.slice";
+import { toggleFilesDialog, toggleNameDialog } from "../store/dialogs.slice";
+import { HistoryItemType } from "../store/document.slice";
 import { EditText } from "./EditText";
+import { FilesDialog } from "./FilesDialog";
 import { History } from "./History";
 import { MidBar } from "./MidBar";
 import { NameDialog } from "./NameDialog";
@@ -24,7 +26,8 @@ function App() {
 
   const editTextRef = useRef<TextEditorRefHandler>(null);
 
-  const isNameDialogOpen = useAppSelector(state => state.document.isNameDialogOpen);
+  const isNameDialogOpen = useAppSelector(state => state.dialogs.isNameDialogOpen);
+  const isFilesDialogOpen = useAppSelector(state => state.dialogs.isFilesDialogOpen);
 
   const handleHistoryItemClick = (item: HistoryItemType) => {
     editTextRef.current?.setText({
@@ -72,6 +75,9 @@ function App() {
         </Box>
         {isNameDialogOpen ? (
           <NameDialog open={isNameDialogOpen} onClose={() => dispatch(toggleNameDialog())}/>
+        ) : null}
+        {isFilesDialogOpen ? (
+          <FilesDialog open={isFilesDialogOpen} onClose={() => dispatch(toggleFilesDialog())}/>
         ) : null}
       </>
     </AuthWrapper>

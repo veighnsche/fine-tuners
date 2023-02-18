@@ -1,43 +1,41 @@
-import CloseIcon from '@mui/icons-material/Close'
-import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined'
-import PersonOffIcon from '@mui/icons-material/PersonOff'
-import { Alert, AppBar, Box, Button, IconButton, Slide, Theme, Toolbar, Typography } from '@mui/material'
-import { useRef, useState } from 'react'
-import { AuthMenu } from '../auth/components/AuthMenu'
-import { AuthStatusIcon } from '../auth/components/AuthStatusIcon'
-import { useAppDispatch, useAppSelector } from '../store'
-import { hideNotification, removeNotification } from '../store/notifications.slice'
-import { FileMenu } from './FileMenu'
-import { Identicon } from './Identicon'
+import CloseIcon from "@mui/icons-material/Close";
+import PersonOffIcon from "@mui/icons-material/PersonOff";
+import { Alert, AppBar, Box, Button, IconButton, Slide, Theme, Toolbar, Typography } from "@mui/material";
+import { useRef, useState } from "react";
+import { AuthMenu } from "../auth/components/AuthMenu";
+import { AuthStatusIcon } from "../auth/components/AuthStatusIcon";
+import { useAppDispatch, useAppSelector } from "../store";
+import { hideNotification, removeNotification } from "../store/notifications.slice";
+import { Identicon } from "./Identicon";
 
 interface TopBarProps {
-  height: ReturnType<Theme['spacing']>
+  height: ReturnType<Theme["spacing"]>;
 }
 
 export const TopBar = ({ height }: TopBarProps) => {
-  const authMenuAnchor = useRef<HTMLDivElement>(null)
-  const [authMenuOpen, setAuthMenuOpen] = useState(false)
+  const authMenuAnchor = useRef<HTMLDivElement>(null);
+  const [authMenuOpen, setAuthMenuOpen] = useState(false);
 
-  const profile = useAppSelector(state => state.auth.profile)
+  const profile = useAppSelector(state => state.auth.profile);
 
-  const { notifications, shownNotifications } = useAppSelector(state => state.notifications)
-  const dispatch = useAppDispatch()
+  const { notifications, shownNotifications } = useAppSelector(state => state.notifications);
+  const dispatch = useAppDispatch();
 
   return (
     <>
       <AppBar position="relative" sx={{ height }}>
         <Box sx={{
-          position: 'absolute',
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+          position: "absolute",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}>
           <Typography variant="h6" color="inherit" component="div" lineHeight={height}>
-            Fine Tuners
+            GPT-3 alignment tool
           </Typography>
         </Box>
-        <Toolbar variant="dense" sx={{ display: 'flex', gap: 1, height }}>
+        <Toolbar variant="dense" sx={{ display: "flex", gap: 1, height }}>
           <Box sx={{ flexGrow: 1 }}/>
 
           <Box display="flex" sx={{ gap: 1 }} p={0.5}>
@@ -57,7 +55,7 @@ export const TopBar = ({ height }: TopBarProps) => {
                     {notification.message}
                   </Alert>
                 </Slide>
-              )
+              );
             })}
           </Box>
 
@@ -102,5 +100,5 @@ export const TopBar = ({ height }: TopBarProps) => {
         />
       ) : null}
     </>
-  )
-}
+  );
+};
