@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { v4 as uuid } from 'uuid'
 import { LineType } from '../models/Line'
 import { RootState } from './index'
 
@@ -21,8 +22,9 @@ export const linesSlice = createSlice({
     },
     newLine: (state) => {
       state.lines.push({
-        prompt: 'This is the prompt.',
-        completion: '\n\nThis is the completion.',
+        id: uuid(),
+        prompt: 'This is the prompt ###',
+        completion: 'This is the completion. END',
       })
     },
     addLine: (state, action: PayloadAction<{
@@ -33,20 +35,37 @@ export const linesSlice = createSlice({
         taught: 0,
       })
     },
+    addLines: (state, action: PayloadAction<{
+      lines: Omit<LineType, 'taught'>[]
+    }>) => {
+      const lines = action.payload.lines.map((line) => ({
+        ...line,
+        taught: 0,
+      }))
+      state.lines.push(...lines)
+    },
     updateLine: (state, action: PayloadAction<{
-      idx: number
+      id: string
       prompt: string
       completion: string
     }>) => {
-      const { idx, prompt, completion } = action.payload
-      state.lines[idx].prompt = prompt
-      state.lines[idx].completion = completion
+      const { id, prompt, completion } = action.payload
+      const line = state.lines.find((line) => line.id === id)
+      if (line) {
+        line.prompt = prompt
+        line.completion = completion
+      }
     },
     incTaught: (state, action: PayloadAction<{
       idx: number
     }>) => {
       const taught = state.lines[action.payload.idx].taught || 0
       state.lines[action.payload.idx].taught = taught + 1
+    },
+    removeLine: (state, action: PayloadAction<{
+      id: string
+    }>) => {
+      state.lines = state.lines.filter((line) => line.id !== action.payload.id)
     },
   },
 })
@@ -55,8 +74,10 @@ export const {
   setLines,
   newLine,
   addLine,
+  addLines,
   updateLine,
   incTaught,
+  removeLine,
 } = linesSlice.actions
 
 export const selectLinesForUpload = (state: RootState) => state.lines.lines.map((line) => {

@@ -1,5 +1,8 @@
 import { alpha, Box, useTheme } from '@mui/material'
 import { ClipboardEvent, forwardRef, useImperativeHandle, useRef, useState } from 'react'
+import { useAppDispatch } from '../store'
+import { setEditTextFrom } from '../store/app.slice'
+import { v4 as uuid } from 'uuid'
 
 export interface TextEditorRefHandler {
   get promptText(): string;
@@ -9,28 +12,34 @@ export interface TextEditorRefHandler {
   get text(): string;
 
   get trainingData(): {
+    id: string,
     prompt: string
     completion: string
   };
 
-  get historyId(): string;
+  get id(): string;
 
   chunk(chunk: string): void;
 
   setText(text: {
     prompt: string,
     completion: string,
-    id?: string,
+    id: string,
     from: 'history' | 'training'
   }): void;
 
   redoCompletion(): void;
 }
 
-export const TextEditor = forwardRef<TextEditorRefHandler>((_, ref) => {
+interface TextEditorProps {
+  onBlur?: () => void;
+}
+
+export const TextEditor = forwardRef<TextEditorRefHandler, TextEditorProps>(({ onBlur }, ref) => {
   const promptRef = useRef<HTMLSpanElement>(null)
   const completionRef = useRef<HTMLSpanElement>(null)
-  const [historyId, setHistoryId] = useState<string | undefined>(undefined)
+  const [id, setId] = useState<string | undefined>(undefined)
+  const dispatch = useAppDispatch()
 
   useImperativeHandle(ref, () => ({
     get promptText() {
@@ -44,20 +53,22 @@ export const TextEditor = forwardRef<TextEditorRefHandler>((_, ref) => {
     },
     get trainingData() {
       return {
+        id: id || uuid(),
         prompt: promptRef.current!.innerText,
         completion: completionRef.current!.innerText,
       }
     },
-    get historyId() {
-      return historyId!
+    get id() {
+      return id!
     },
     chunk(chunk: string) {
       completionRef.current!.innerText += chunk
     },
-    setText({ prompt, completion, id }) {
-      setHistoryId(id)
+    setText({ prompt, completion, id, from }) {
+      setId(id)
       promptRef.current!.innerText = prompt
       completionRef.current!.innerText = completion
+      dispatch(setEditTextFrom({ from }))
     },
     redoCompletion() {
       completionRef.current!.innerText = ''
@@ -79,6 +90,12 @@ export const TextEditor = forwardRef<TextEditorRefHandler>((_, ref) => {
     document.execCommand('insertHTML', false, text)
   }
 
+  const handleBlur = () => {
+    if (onBlur) {
+      onBlur()
+    }
+  }
+
   return (
     <Box
       height="100%"
@@ -96,6 +113,7 @@ export const TextEditor = forwardRef<TextEditorRefHandler>((_, ref) => {
         contentEditable
         suppressContentEditableWarning
         onPaste={handlePaste}
+        onBlur={handleBlur}
         style={{
           outline: '0 solid transparent',
         }}
@@ -105,6 +123,7 @@ export const TextEditor = forwardRef<TextEditorRefHandler>((_, ref) => {
         contentEditable
         suppressContentEditableWarning
         onPaste={handlePaste}
+        onBlur={handleBlur}
         style={{
           backgroundColor,
           outline: '0 solid transparent',

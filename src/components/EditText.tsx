@@ -1,8 +1,7 @@
 import { Box, Button, ButtonGroup, Theme } from '@mui/material'
 import { forwardRef, MutableRefObject } from 'react'
-import { useAppDispatch } from '../store'
-import { removeFromHistory } from '../store/document.slice'
-import { addLine } from '../store/lines.slice'
+import { useAppDispatch, useAppSelector } from '../store'
+import { addLine, removeLine, updateLine } from '../store/lines.slice'
 import { TextEditor, TextEditorRefHandler } from './TextEditor'
 
 interface EditTextProps {
@@ -12,16 +11,24 @@ interface EditTextProps {
 export const EditText = forwardRef<TextEditorRefHandler, EditTextProps>(
   ({ width }, ref) => {
     const dispatch = useAppDispatch()
-
+    const from = useAppSelector(state => state.app.editTextFrom)
 
     const handleAddToTraining = () => {
       const currentRef = ref as MutableRefObject<TextEditorRefHandler>
       const line = currentRef.current.trainingData
-      const id = currentRef.current.historyId
       dispatch(addLine({ line }))
-      dispatch(removeFromHistory({ id }))
     }
 
+    const handleRemoveFromTraining = () => {
+      const currentRef = ref as MutableRefObject<TextEditorRefHandler>
+      const { id } = currentRef.current.trainingData
+      dispatch(removeLine({ id }))
+    }
+
+    const handleBlur = () => {
+      const currentRef = ref as MutableRefObject<TextEditorRefHandler>
+      dispatch(updateLine(currentRef.current.trainingData))
+    }
 
     return (
       <Box
@@ -31,18 +38,32 @@ export const EditText = forwardRef<TextEditorRefHandler, EditTextProps>(
         flexDirection="column"
         gap={1}
       >
-        <TextEditor ref={ref}/>
+        <TextEditor ref={ref} onBlur={handleBlur} />
+        {from ? (
+          <Box display="flex" flexDirection="row">
+            <ButtonGroup>
 
-        <Box display="flex" flexDirection="row">
-          <ButtonGroup>
-            <Button
-              onClick={handleAddToTraining}
-              variant="contained"
-            >
-              Add to training data
-            </Button>
-          </ButtonGroup>
-        </Box>
+              {from === 'history' ? (
+                <Button
+                  onClick={handleAddToTraining}
+                  variant="contained"
+                >
+                  Add to training data
+                </Button>
+              ) : null}
+
+              {from === 'training' ? (
+                <Button
+                  onClick={handleRemoveFromTraining}
+                  variant="contained"
+                >
+                  Remove from training data
+                </Button>
+              ) : null}
+
+            </ButtonGroup>
+          </Box>
+        ) : null}
       </Box>
     )
   },

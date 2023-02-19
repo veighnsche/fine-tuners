@@ -69,12 +69,14 @@ export const authSlice = createSlice({
       state.creatingProfileVehicle = null
     },
     requireProfile: (state) => {
+      window.scrollTo(0, 0)
       state.status = AuthStatus.PROFILE_REQUIRED
     },
     requireProfileCleanup: (state) => {
       state.status = AuthStatus.NO_PROFILE_SELECTED
     },
     requirePassword: (state) => {
+      window.scrollTo(0, 0)
       state.status = AuthStatus.PASSWORD_REQUIRED
     },
     requirePasswordCleanup: (state) => {

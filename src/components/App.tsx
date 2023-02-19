@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import { AuthWrapper } from '../auth/auth.wrapper'
 import { LineType } from '../models/Line'
 import { useAppDispatch, useAppSelector } from '../store'
-import { toggleFilesDialog, toggleNameDialog } from '../store/dialogs.slice'
+import { toggleFilesDialog, toggleNameDialog } from '../store/app.slice'
 import { HistoryItemType } from '../store/document.slice'
 import { EditText } from './EditText'
 import { FilesDialog } from './FilesDialog'
@@ -22,12 +22,12 @@ function App() {
 
   const barHeight = theme.spacing(6)
   const contentHeight = `calc(100vh - ${barHeight})`
-  const widthUnit = (units: number) => `calc(20vw * ${units})`
+  const widthUnit = (units: number) => `${(100 / 5) * units}%`
 
   const editTextRef = useRef<TextEditorRefHandler>(null)
 
-  const isNameDialogOpen = useAppSelector(state => state.dialogs.isNameDialogOpen)
-  const isFilesDialogOpen = useAppSelector(state => state.dialogs.isFilesDialogOpen)
+  const isNameDialogOpen = useAppSelector(state => state.app.isNameDialogOpen)
+  const isFilesDialogOpen = useAppSelector(state => state.app.isFilesDialogOpen)
 
   const handleHistoryItemClick = (item: HistoryItemType) => {
     editTextRef.current?.setText({
@@ -40,6 +40,7 @@ function App() {
 
   const handleLineClick = (line: LineType) => {
     editTextRef.current?.setText({
+      id: line.id,
       prompt: line.prompt,
       completion: line.completion,
       from: 'training',
@@ -73,12 +74,21 @@ function App() {
             />
           </Box>
         </Box>
+
         {isNameDialogOpen ? (
-          <NameDialog open={isNameDialogOpen} onClose={() => dispatch(toggleNameDialog())}/>
+          <NameDialog
+            open={isNameDialogOpen}
+            onClose={() => dispatch(toggleNameDialog())}
+          />
         ) : null}
+
         {isFilesDialogOpen ? (
-          <FilesDialog open={isFilesDialogOpen} onClose={() => dispatch(toggleFilesDialog())}/>
+          <FilesDialog
+            open={isFilesDialogOpen}
+            onClose={() => dispatch(toggleFilesDialog())}
+          />
         ) : null}
+
       </>
     </AuthWrapper>
   )

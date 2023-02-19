@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from '../store'
 import { useAddNotification } from '../store/notifications.slice'
 import { apiKeyToSnippet } from '../utils/snippet'
-import { ProfileType } from './auth.model'
+import { AuthStatus, ProfileType } from './auth.model'
 import {
   noEncryptedPasswordDuringInit,
   noProfileDuringInit,
@@ -27,7 +27,11 @@ import {
 } from './profile.store'
 
 interface UseAuthHook {
-  initializeAuth: () => Promise<void>;
+  initializeAuth: () => Promise<{
+    status: AuthStatus
+    profile?: ProfileType
+    encryptedPassword?: string
+  }>;
   addProfile: ({
     name,
     unencryptedApiKey,
@@ -37,7 +41,7 @@ interface UseAuthHook {
   pickProfile: ({ profile }: { profile: ProfileType }) => void
   enterPassword: ({ profile, unencryptedPassword }: EnterPasswordParams) =>
     Promise<{ encryptedPassword: string }>
-  getApiKey: (params?: { encryptedPassword?: string }) => Promise<string>
+  getApiKey: (params?: { encryptedPassword?: string, profile?: ProfileType }) => Promise<string>
   removeProfile: ({ profile }: { profile: ProfileType }) => Promise<void>
 }
 
@@ -64,7 +68,6 @@ export function useAuth(): UseAuthHook {
 
 
   const initializeAuth: UseAuthHook['initializeAuth'] = async () => {
-    console.log('initializeAuth')
     const profile = await fetchCurrentProfile()
     if (profile === null) {
       const hasProfiles = await fetchHasProfiles()
@@ -74,20 +77,32 @@ export function useAuth(): UseAuthHook {
           message: 'Create a profile to get started',
           severity: 'info',
         })
-        return
+        return {
+          status: AuthStatus.NO_PROFILE_CREATED,
+        }
       }
       dispatch(noProfileDuringInit())
       removeEncryptedPasswordFromSession()
-      return
+      return {
+        status: AuthStatus.NO_PROFILE_SELECTED,
+      }
     }
 
     const encryptedPassword = await fetchEncryptedPasswordFromSession()
     if (encryptedPassword === null) {
       dispatch(noEncryptedPasswordDuringInit({ profile }))
-      return
+      return {
+        status: AuthStatus.NO_PASSWORD,
+        profile,
+      }
     }
 
     dispatch(setAuth({ encryptedPassword, profile }))
+    return {
+      status: AuthStatus.NO_PASSWORD_VERIFICATION,
+      profile,
+      encryptedPassword,
+    }
   }
 
   const addProfile: UseAuthHook['addProfile'] = async ({
@@ -127,10 +142,13 @@ export function useAuth(): UseAuthHook {
     return { encryptedPassword }
   }
 
-  const getApiKey: UseAuthHook['getApiKey'] = async ({ encryptedPassword: encryptedPasswordParam } = {}) => {
+  const getApiKey: UseAuthHook['getApiKey'] = async ({
+    encryptedPassword: encryptedPasswordParam,
+    profile: profileParam,
+  } = {}) => {
     const { encryptedPassword, profile } = currentProfile
-    console.log({ encryptedPassword, profile })
-    if (profile === null) {
+
+    if (profile === null && profileParam === undefined) {
       requireProfileAsync(dispatch)
       return Promise.reject('No profile selected')
     }
@@ -140,7 +158,10 @@ export function useAuth(): UseAuthHook {
       return Promise.reject('No password')
     }
 
-    return unlockApiKey(profile.lockedApiKey, encryptedPasswordParam || encryptedPassword!)
+    return unlockApiKey(
+      profile?.lockedApiKey || profileParam!.lockedApiKey!,
+      encryptedPasswordParam || encryptedPassword!,
+    )
   }
 
   const removeProfile: UseAuthHook['removeProfile'] = async ({ profile }) => {

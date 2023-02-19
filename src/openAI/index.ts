@@ -1,9 +1,10 @@
 import wretch from 'wretch'
 import { useAuth } from '../auth/auth.hook'
+import { ProfileType } from '../auth/auth.model'
 import { authFailed, authSuccess } from '../auth/auth.slice'
 import { removeEncryptedPasswordFromSession } from '../auth/encryptedPassword.store'
 import { OpenAiCreateCompletionParameters, OpenAICreateCompletionResponse } from '../models/openAI/CreateCompletion'
-import { OpenAiFile, OpenAIFilesObject } from '../models/openAI/Files'
+import { OpenAiFile, OpenAiFileDeleteResponse, OpenAIFilesObject } from '../models/openAI/Files'
 import { useAppDispatch, useAppSelector } from '../store'
 import { selectLinesForUpload } from '../store/lines.slice'
 import { createJsonLFile } from '../utils/files'
@@ -16,28 +17,28 @@ export function useOpenAI() {
   const documentName = useAppSelector(state => state.document.name)
 
   return {
-    async testAuth({ encryptedPassword }: {
+    async testAuth({ encryptedPassword, profile }: {
       encryptedPassword?: string
+      profile?: ProfileType
     } = {}): Promise<boolean> {
-      const apiKey = await getApiKey({ encryptedPassword })
+      const apiKey = await getApiKey({ encryptedPassword, profile })
 
-      const success = await wretch('https://api.openai.com/v1/models/davinci')
+      const res = await wretch('https://api.openai.com/v1/models/davinci')
       .auth(`Bearer ${apiKey}`)
       .get()
-      .unauthorized(() => false)
-      .json()
-      .then(() => true)
-      .catch(() => false)
+      .unauthorized(async () => {
+        dispatch(authFailed())
+        await removeEncryptedPasswordFromSession()
+        return { ok: false }
+      })
+      .res()
 
-      if (success) {
+      if (res.ok) {
         dispatch(authSuccess())
         return true
       }
-      dispatch(authFailed())
-      await removeEncryptedPasswordFromSession()
       return false
     },
-
     async* createCompletion({ params }: {
       params: OpenAiCreateCompletionParameters;
     }): AsyncGenerator<{
@@ -161,6 +162,19 @@ export function useOpenAI() {
 
       const text = await blob.text()
       return fromJsonl(text)
+    },
+    async deleteFile({ id }: {
+      id: string;
+    }): Promise<OpenAiFileDeleteResponse> {
+      const apiKey = await getApiKey()
+      return wretch(`https://api.openai.com/v1/files/${id}`)
+      .auth(`Bearer ${apiKey}`)
+      .delete()
+      .unauthorized(() => {
+        dispatch(authFailed())
+        throw new Error('OpenAI API request failed')
+      })
+      .res()
     },
     async trainFile() {
 

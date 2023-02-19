@@ -11,3 +11,9 @@ export interface OpenAiFile {
   filename: string;
   purpose: string;
 }
+
+export interface OpenAiFileDeleteResponse {
+  id: string;
+  object: string;
+  deleted: boolean;
+}

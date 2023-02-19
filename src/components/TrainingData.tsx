@@ -1,8 +1,10 @@
+import AddIcon from '@mui/icons-material/Add'
 import DataObjectIcon from '@mui/icons-material/DataObject'
-import { Box, Divider, List, Paper, Theme, Typography } from '@mui/material'
+import { Box, Divider, IconButton, List, Paper, Theme, Typography } from '@mui/material'
 import { Fragment } from 'react'
 import { LineType } from '../models/Line'
-import { useAppSelector } from '../store'
+import { useAppDispatch, useAppSelector } from '../store'
+import { newLine } from '../store/lines.slice'
 import { TrainingDataItem } from './TrainingDataItem'
 
 interface HistoryProps {
@@ -13,6 +15,11 @@ interface HistoryProps {
 
 export const TrainingData = ({ width, minWidth, onLineClick }: HistoryProps) => {
   const lines = useAppSelector(state => state.lines.lines)
+  const dispatch = useAppDispatch()
+
+  const handleAddLine = () => {
+    dispatch(newLine())
+  }
 
   return (
     <Paper sx={{
@@ -37,6 +44,15 @@ export const TrainingData = ({ width, minWidth, onLineClick }: HistoryProps) => 
         >
           Training Data
         </Typography>
+        <Box sx={{
+          flexGrow: 1,
+        }}/>
+        <IconButton
+          size="small"
+          onClick={() => handleAddLine()}
+        >
+          <AddIcon fontSize="small"/>
+        </IconButton>
       </Box>
       {lines.length === 0 ? (
         <Box

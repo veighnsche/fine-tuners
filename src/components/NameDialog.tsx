@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
-import { useState } from 'react'
-import { useAppDispatch } from '../store'
+import { useEffect, useRef, useState } from 'react'
+import { useAppDispatch, useAppSelector } from '../store'
 import { setDocumentName } from '../store/document.slice'
 
 interface NameDialogProps {
@@ -10,30 +10,46 @@ interface NameDialogProps {
 
 export const NameDialog = ({ open, onClose }: NameDialogProps) => {
   const dispatch = useAppDispatch()
-  const [name, setName] = useState('')
+  const documentName = useAppSelector(state => state.document.name)
+  const [name, setName] = useState(documentName)
+  const ref = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    setTimeout(() => {
+      ref.current?.focus()
+    }, 100)
+  }, [open])
+
+  const handleSubmit = () => {
+    dispatch(setDocumentName({ name }))
+    onClose()
+  }
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'sm'} fullWidth>
       <DialogTitle>Rename</DialogTitle>
       <DialogContent>
         <TextField
+          inputRef={ref}
           value={name}
           onChange={e => setName(e.target.value)}
-          autoFocus
           margin="dense"
           id="name"
           label="Document name"
           fullWidth
           variant="standard"
+          onKeyDown={e => {
+            if (e.key === 'Enter') {
+              handleSubmit()
+            }
+          }}
         />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>
           Cancel
         </Button>
-        <Button onClick={() => {
-          dispatch(setDocumentName({ name }))
-        }}>
+        <Button onClick={handleSubmit}>
           Rename
         </Button>
       </DialogActions>

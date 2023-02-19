@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import authReducer from '../auth/auth.slice'
-import dialogsReducer from './dialogs.slice'
+import appReducer from './app.slice'
 import documentReducer from './document.slice'
 import filesReducer from './files.slice'
 import linesReducer from './lines.slice'
@@ -11,7 +11,7 @@ import playgroundSettingsReducer from './playground.settings.slice'
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    dialogs: dialogsReducer,
+    app: appReducer,
     document: documentReducer,
     files: filesReducer,
     lines: linesReducer,
