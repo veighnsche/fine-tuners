@@ -7,6 +7,7 @@ import filesReducer from './files.slice'
 import linesReducer from './lines.slice'
 import notificationsReducer from './notifications.slice'
 import playgroundSettingsReducer from './playground.settings.slice'
+import trainSettingsReducer from './train.settings.slice'
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     lines: linesReducer,
     notifications: notificationsReducer,
     playgroundSettings: playgroundSettingsReducer,
+    trainSettings: trainSettingsReducer,
   },
 })
 

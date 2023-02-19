@@ -1,13 +1,8 @@
 import {
-  alpha,
   Box,
-  Button,
-  ButtonGroup,
   Dialog,
   Divider,
   IconButton,
-  ImageList,
-  ImageListItem,
   List,
   ListItem,
   ListItemButton,
@@ -16,15 +11,16 @@ import {
   Menu,
   MenuItem,
   Paper,
-  useTheme,
 } from '@mui/material'
 import { Fragment, MouseEvent, useState } from 'react'
 import { OpenAiFile } from '../models/openAI/Files'
 import { useOpenAI } from '../openAI'
 import { useAppDispatch, useAppSelector } from '../store'
 import { deleteFileStore, setCurrentLines, unsetCurrentFile } from '../store/files.slice'
-import { addLines } from '../store/lines.slice'
+import { setTrainingFile } from '../store/train.settings.slice'
 import { timestampToDateTime } from '../utils/dates'
+import { FileContents } from './FileContents'
+import { FileTrain } from './FileTrain'
 
 interface FilesDialogProps {
   open: boolean;
@@ -34,15 +30,13 @@ interface FilesDialogProps {
 export const FilesDialog = ({ open, onClose }: FilesDialogProps) => {
   const dispatch = useAppDispatch()
   const files = useAppSelector(state => state.files.files)
-  const lines = useAppSelector(state => state.files.currentLines)
   const { fetchFileContent, deleteFile } = useOpenAI()
-  const theme = useTheme()
-  const [selected, setSelected] = useState<number[]>([])
   const [optionsAnchorEl, setOptionsAnchorEl] = useState<HTMLElement | null>(null)
   const [selectedFile, setSelectedFile] = useState<OpenAiFile | null>(null)
   const isOptionsOpen = Boolean(optionsAnchorEl)
+  const [showing, setShowing] = useState<'contents' | 'train'>('contents')
 
-  const handleClick = async (id: string) => {
+  const handleFileClick = async (id: string) => {
     const content = await fetchFileContent({ id })
     dispatch(setCurrentLines(content))
   }
@@ -50,31 +44,6 @@ export const FilesDialog = ({ open, onClose }: FilesDialogProps) => {
   const handleClose = () => {
     dispatch(unsetCurrentFile())
     onClose()
-  }
-
-  const handleAddToTrainingData = () => {
-    if (!lines) return
-    const newLines = lines.filter((_, idx) => selected.includes(idx))
-    dispatch(addLines({ lines: newLines }))
-  }
-
-  const handleSelectAll = () => {
-    if (!lines) return
-    if (selected.length === lines.length) {
-      setSelected([])
-    }
-    else {
-      setSelected(lines.map((_, idx) => idx))
-    }
-  }
-
-  const handleLineClick = (idx: number) => {
-    if (selected.includes(idx)) {
-      setSelected(selected.filter(i => i !== idx))
-    }
-    else {
-      setSelected([...selected, idx])
-    }
   }
 
   const handleOptionsClick = (e: MouseEvent<HTMLButtonElement>, file: OpenAiFile) => {
@@ -85,7 +54,6 @@ export const FilesDialog = ({ open, onClose }: FilesDialogProps) => {
 
   const handleMenuClose = () => {
     setOptionsAnchorEl(null)
-    setSelectedFile(null)
   }
 
   const handleFileDelete = async () => {
@@ -93,6 +61,19 @@ export const FilesDialog = ({ open, onClose }: FilesDialogProps) => {
     const id = selectedFile.id
     await deleteFile({ id })
     dispatch(deleteFileStore({ id }))
+    setSelectedFile(null)
+    handleMenuClose()
+  }
+
+  const handleViewContents = async () => {
+    await handleFileClick(selectedFile!.id)
+    setShowing('contents')
+    handleMenuClose()
+  }
+
+  const handleTrain = async () => {
+    dispatch(setTrainingFile({ trainingFile: selectedFile! }))
+    setShowing('train')
     handleMenuClose()
   }
 
@@ -105,13 +86,13 @@ export const FilesDialog = ({ open, onClose }: FilesDialogProps) => {
         onClose={handleClose}
       >
         <Box display="flex" gap={1} height="100%">
-          <Paper sx={{ width: '30%', height: '100%' }} square>
+          <Paper sx={{ width: '33%', height: '100%' }} square>
             <List>
               {files.map((file, idx) => (
                 <Fragment key={file.id}>
                   {idx !== 0 && <Divider/>}
                   <ListItem disablePadding>
-                    <ListItemButton onClick={() => handleClick(file.id)}>
+                    <ListItemButton onClick={() => handleFileClick(file.id)}>
                       <ListItemText
                         primary={file.filename}
                         secondary={timestampToDateTime(file.created_at)}
@@ -127,50 +108,8 @@ export const FilesDialog = ({ open, onClose }: FilesDialogProps) => {
               ))}
             </List>
           </Paper>
-          {lines ? (
-            <Box display="flex" flexDirection="column" width="66%" height="100%">
-              <Box width="100%" height="100%" overflow="auto">
-                <ImageList variant="masonry" cols={2} gap={8}>
-                  {lines.map((item, idx) => (
-                    <ImageListItem key={idx}>
-                      <Box
-                        border={`1px solid ${selected.includes(idx) ? theme.palette.success.main : theme.palette.divider}`}
-                        borderRadius={1}
-                        p={1}
-                        height="100%"
-                        overflow="auto"
-                        sx={{
-                          cursor: 'pointer',
-                        }}
-                        onClick={() => handleLineClick(idx)}
-                      >
-                        <span>{item.prompt}</span>
-                        <span style={{ backgroundColor: alpha(theme.palette.success.main, 0.5) }}>
-                          {item.completion}
-                        </span>
-                      </Box>
-                    </ImageListItem>
-                  ))}
-                </ImageList>
-              </Box>
-              <Box display="flex" flexDirection="row" p={1}>
-                <ButtonGroup>
-                  <Button
-                    onClick={handleSelectAll}
-                    variant="contained"
-                  >
-                    Select all
-                  </Button>
-                  <Button
-                    onClick={handleAddToTrainingData}
-                    variant="contained"
-                  >
-                    Add to training data
-                  </Button>
-                </ButtonGroup>
-              </Box>
-            </Box>
-          ) : null}
+          {showing === 'contents' ? <FileContents/> : null}
+          {showing === 'train' ? <FileTrain/> : null}
         </Box>
       </Dialog>
       {isOptionsOpen ? (
@@ -180,6 +119,13 @@ export const FilesDialog = ({ open, onClose }: FilesDialogProps) => {
           onClose={handleMenuClose}
           sx={{ '& .MuiMenu-paper': { width: 200 } }}
         >
+          <MenuItem onClick={handleTrain}>
+            Train
+          </MenuItem>
+          <Divider/>
+          <MenuItem onClick={handleViewContents}>
+            View contents
+          </MenuItem>
           <MenuItem onClick={handleFileDelete}>
             Delete
           </MenuItem>

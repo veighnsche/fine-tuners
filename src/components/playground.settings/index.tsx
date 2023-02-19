@@ -13,25 +13,23 @@ interface PlaygroundSettingsProps {
   minWidth: ReturnType<Theme['spacing']>
 }
 
-export const PlaygroundSettings = ({ width, minWidth }: PlaygroundSettingsProps) => {
-  return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      gap={4}
-      px={1}
-      width={width}
-      minWidth={minWidth}
-      p={4}
-    >
-      <Model/>
-      <Temperature/>
-      <MaxTokens/>
-      <StopSequences/>
-      <TopP/>
-      <FrequencyPenalty/>
-      <PresencePenalty/>
-      <BestOf/>
-    </Box>
-  )
-}
+export const PlaygroundSettings = ({ width, minWidth }: PlaygroundSettingsProps) => (
+  <Box
+    display="flex"
+    flexDirection="column"
+    gap={4}
+    px={1}
+    width={width}
+    minWidth={minWidth}
+    p={4}
+  >
+    <Model/>
+    <Temperature/>
+    <MaxTokens/>
+    <StopSequences/>
+    <TopP/>
+    <FrequencyPenalty/>
+    <PresencePenalty/>
+    <BestOf/>
+  </Box>
+)
