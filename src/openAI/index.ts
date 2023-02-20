@@ -5,6 +5,12 @@ import { authFailed, authSuccess } from '../auth/auth.slice'
 import { removeEncryptedPasswordFromSession } from '../auth/encryptedPassword.store'
 import { OpenAiCreateCompletionParameters, OpenAICreateCompletionResponse } from '../models/openAI/CreateCompletion'
 import { OpenAiFile, OpenAiFileDeleteResponse, OpenAIFilesObject } from '../models/openAI/Files'
+import {
+  OpenAiFineTuningEvent,
+  OpenAiFineTuningParams,
+  OpenAiFineTune,
+  OpenAiFineTuneObject,
+} from '../models/openAI/FineTuning'
 import { useAppDispatch, useAppSelector } from '../store'
 import { selectLinesForUpload } from '../store/lines.slice'
 import { createJsonLFile } from '../utils/files'
@@ -176,8 +182,85 @@ export function useOpenAI() {
       })
       .res()
     },
-    async trainFile() {
+    async* trainFile({
+      params,
+    }: {
+      params: OpenAiFineTuningParams
+    }): AsyncGenerator<{
+      chunk: unknown;
+      done: boolean;
+    }> {
+      const apiKey = await getApiKey()
+      const res = await wretch('https://api.openai.com/v1/fine-tunes')
+      .auth(`Bearer ${apiKey}`)
+      .post(params)
+      .unauthorized(() => {
+        dispatch(authFailed())
+        throw new Error('OpenAI API request failed')
+      })
+      .json<OpenAiFineTune>()
 
+      console.log("res", res)
+
+      const eventList = await wretch(`https://api.openai.com/v1/fine-tunes/${res.id}/events?stream=true`)
+      .auth(`Bearer ${apiKey}`)
+      .get()
+      .res()
+
+      if (!eventList.ok || !eventList.body) {
+        throw new Error('OpenAI API request failed')
+      }
+
+      const reader = eventList.body.getReader()
+
+      readerLoop:
+        while (true) {
+          const { value, done } = await reader.read()
+          if (done) {
+            break
+          }
+
+          const decoded = new TextDecoder('utf-8')
+          .decode(value)
+
+          console.log("decoded", decoded)
+
+          const filtered = decoded
+          .split('data: ')
+
+          for (const data of filtered) {
+            const trimmed = data.trim()
+            if (trimmed === '') {
+              continue
+            }
+
+            if (trimmed === '[DONE]') {
+              yield {
+                chunk: '',
+                done: true,
+              }
+              break readerLoop
+            }
+
+            const parsed: OpenAiFineTuningEvent = JSON.parse(trimmed)
+
+            yield {
+              chunk: parsed,
+              done: false,
+            }
+          }
+        }
+    },
+    async listFineTunes(): Promise<OpenAiFineTuneObject> {
+      const apiKey = await getApiKey()
+      return wretch('https://api.openai.com/v1/fine-tunes')
+      .auth(`Bearer ${apiKey}`)
+      .get()
+      .unauthorized(() => {
+        dispatch(authFailed())
+        throw new Error('OpenAI API request failed')
+      })
+      .json<OpenAiFineTuneObject>()
     },
   }
 }

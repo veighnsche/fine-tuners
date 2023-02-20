@@ -1,11 +1,36 @@
 import { Box, InputLabel, MenuItem, Select, Tooltip } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { AuthStatus } from '../../auth/auth.model'
+import { OpenAiFineTune } from '../../models/openAI/FineTuning'
+import { useOpenAI } from '../../openAI'
 import { useAppDispatch, useAppSelector } from '../../store'
 import { setModel } from '../../store/playground.settings.slice'
 
 export const Model = () => {
+  const connected = useAppSelector(state => state.auth.status === AuthStatus.PASSWORD_VERIFIED)
   const currentModel = useAppSelector(state => state.playgroundSettings.model)
   const modelOptions = useAppSelector(state => state.playgroundSettings.modelOptions)
   const dispatch = useAppDispatch()
+  const { listFineTunes } = useOpenAI()
+  const [fineTunes, setFineTunes] = useState<OpenAiFineTune[]>([])
+
+  useEffect(() => {
+    if (connected) {
+      listFineTunes()
+      .then((models) => {
+        setFineTunes(models.data)
+      })
+    }
+  }, [connected])
+
+  function makeModelOptions() {
+    // from modelOptions and fineTunes, make a list of models
+    // that the user can choose from
+    const models = new Set<string>()
+    modelOptions.forEach((model) => models.add(model))
+    fineTunes.forEach((fineTune) => models.add(fineTune.fine_tuned_model))
+    return Array.from(models)
+  }
 
   return (
     <Box>
@@ -25,7 +50,7 @@ export const Model = () => {
           dispatch(setModel({ model: event.target.value }))
         }}
       >
-        {modelOptions.map((model) => (
+        {makeModelOptions().map((model) => (
           <MenuItem key={model} value={model}>{model}</MenuItem>
         ))}
       </Select>

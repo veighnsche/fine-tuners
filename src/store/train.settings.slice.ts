@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { OpenAiFile } from '../models/openAI/Files'
+import { OpenAiFineTuningParams } from '../models/openAI/FineTuning'
 import { RootState } from './index'
 
 export interface TrainSettingsState {
@@ -65,9 +66,9 @@ export const selectTrainSettings = ({
     nEpochs,
     promptLossWeight,
   },
-}: RootState) => {
-  const settings: Record<string, any> = {
-    training_file: trainingFile?.id,
+}: RootState): OpenAiFineTuningParams => {
+  const settings: OpenAiFineTuningParams = {
+    training_file: trainingFile!.id,
   }
   if (model && model !== 'curie') {
     settings['model'] = model
