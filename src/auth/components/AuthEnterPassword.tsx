@@ -1,8 +1,8 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { Box, Button, Link, TextField, Typography } from '@mui/material'
 import { useState } from 'react'
-import { useOpenAI } from '../../openAI'
-import { useAuth } from '../auth.hook'
+import { useOpenAI } from '../../hooks/openAI'
+import { useAuth } from '../hooks'
 import { ProfileType } from '../auth.model'
 import { ProfileVertical } from './ProfileVertical'
 
@@ -20,14 +20,14 @@ export const AuthEnterPassword = ({
   onSubmitClick,
 }: AuthProfileFormProps) => {
   const { enterPassword } = useAuth()
-  const { testAuth } = useOpenAI()
+  const { verifyAuth } = useOpenAI()
   const [password, setPassword] = useState<string>('')
   if (!profile) return null
 
   async function handleSubmitClick() {
     if (profile && password.length > 0) {
       const { encryptedPassword } = await enterPassword({ profile, unencryptedPassword: password })
-      await testAuth({ encryptedPassword })
+      await verifyAuth({ encryptedPassword })
       onSubmitClick()
     }
   }

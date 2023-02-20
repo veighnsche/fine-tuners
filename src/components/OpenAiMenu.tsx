@@ -1,5 +1,5 @@
 import { Divider, Menu, MenuItem } from '@mui/material'
-import { useOpenAI } from '../openAI'
+import { useOpenAI } from '../hooks/openAI'
 import { useAppDispatch, useAppSelector } from '../store'
 import { toggleFilesDialog, toggleNameDialog } from '../store/app.slice'
 import { setFiles } from '../store/files.slice'
@@ -13,7 +13,7 @@ interface OpenAiMenuProps {
 
 
 export const OpenAiMenu = ({ open, anchorEl, onClose }: OpenAiMenuProps) => {
-  const { uploadCurrentLines, fetchFiles } = useOpenAI()
+  const { uploadFile, fetchFileList } = useOpenAI()
   const dispatch = useAppDispatch()
   const addNotification = useAddNotification()
   const documentName = useAppSelector(state => state.document.name)
@@ -24,22 +24,22 @@ export const OpenAiMenu = ({ open, anchorEl, onClose }: OpenAiMenuProps) => {
       dispatch(toggleNameDialog())
       return
     }
-    uploadCurrentLines().then(() => {
+    uploadFile().then(() => {
       addNotification({ message: 'Uploaded to OpenAI', severity: 'success' })
     })
   }
 
   const handleTrain = () => {
-
+    // todo: unimplemented
   }
 
   const handleTrainUploaded = () => {
-
+    // todo: unimplemented
   }
 
   const handleViewFiles = async () => {
     onClose()
-    const files = await fetchFiles()
+    const files = await fetchFileList()
     dispatch(setFiles({ files }))
     dispatch(toggleFilesDialog())
   }

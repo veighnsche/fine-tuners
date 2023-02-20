@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import { Fragment, MouseEvent, useState } from 'react'
 import { OpenAiFile } from '../models/openAI/Files'
-import { useOpenAI } from '../openAI'
+import { useOpenAI } from '../hooks/openAI'
 import { useAppDispatch, useAppSelector } from '../store'
 import { deleteFileStore, setCurrentLines, unsetCurrentFile } from '../store/files.slice'
 import { setTrainingFile } from '../store/train.settings.slice'
@@ -30,14 +30,14 @@ interface FilesDialogProps {
 export const FilesDialog = ({ open, onClose }: FilesDialogProps) => {
   const dispatch = useAppDispatch()
   const files = useAppSelector(state => state.files.files)
-  const { fetchFileContent, deleteFile } = useOpenAI()
+  const { fetchFile, deleteFile } = useOpenAI()
   const [optionsAnchorEl, setOptionsAnchorEl] = useState<HTMLElement | null>(null)
   const [selectedFile, setSelectedFile] = useState<OpenAiFile | null>(null)
   const isOptionsOpen = Boolean(optionsAnchorEl)
   const [showing, setShowing] = useState<'contents' | 'train'>('contents')
 
   const handleFileClick = async (id: string) => {
-    const content = await fetchFileContent({ id })
+    const content = await fetchFile({ id })
     dispatch(setCurrentLines(content))
   }
 

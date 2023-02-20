@@ -1,22 +1,38 @@
-import { Box, Button, ButtonGroup, Paper } from '@mui/material'
+import styled from "@emotion/styled";
+import { Box, Button, ButtonGroup, Paper, Theme, Typography, useTheme } from "@mui/material";
 import { useRef } from 'react'
 import { OpenAiFineTuningEvent } from '../models/openAI/FineTuning'
-import { useOpenAI } from '../openAI'
+import { useOpenAI } from '../hooks/openAI'
 import { useAppSelector } from '../store'
 import { selectTrainSettings } from '../store/train.settings.slice'
 import { TrainSettings } from './train.settings'
+
+const StyledPaper = styled(Paper, {
+  shouldForwardProp: (prop) => prop !== 'theme',
+})<{
+  theme: Theme
+}>`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: ${({ theme }) => theme.spacing(1)};
+  
+  p {
+    margin: 0;
+    padding: 0;
+  }
+`
 
 export const FileTrain = () => {
   const settings = useAppSelector(selectTrainSettings)
   const { trainFile } = useOpenAI()
   const paperRef = useRef<HTMLDivElement>(null)
+  const theme = useTheme()
 
   const handleTrain = async () => {
-    // trainFile({ params: settings })
     const trainingEvents = await trainFile({ params: settings })
 
     for await (const event of trainingEvents) {
-      console.log(event)
       const p = document.createElement('p')
       p.innerText = (event.chunk as OpenAiFineTuningEvent).message
       paperRef.current!.appendChild(p)
@@ -43,18 +59,11 @@ export const FileTrain = () => {
         minWidth="34%"
         p={1}
       >
-        <Paper
-          sx={{
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1,
-            p: 1,
-          }}
-          ref={paperRef}
-        >
-          Training Progress
-        </Paper>
+        <StyledPaper ref={paperRef} theme={theme}>
+          <Typography variant="h6" component="p">
+            Training Progress
+          </Typography>
+        </StyledPaper>
       </Box>
     </>
   )

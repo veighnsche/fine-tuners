@@ -4,7 +4,7 @@ import { AuthStatus } from '../../auth/auth.model'
 import { OpenAiFineTune } from '../../models/openAI/FineTuning'
 import { useOpenAI } from '../../hooks/openAI'
 import { useAppDispatch, useAppSelector } from '../../store'
-import { setModel } from '../../store/playground.settings.slice'
+import { setModel } from '../../store/train.settings.slice'
 
 export const Model = () => {
   const connected = useAppSelector(state => state.auth.status === AuthStatus.PASSWORD_VERIFIED)
@@ -35,7 +35,7 @@ export const Model = () => {
   return (
     <Box>
       <Tooltip
-        title="The model determines what kind of words and phrases the AI language model will generate. We have four models to choose from: Davinci, Curie, Babbage, and Ada. Davinci has the most buttons to press and Ada has the fewest. Each button helps the AI language model know what kind of words to use and how to use them."
+        title="The model determines what kind of words and phrases the AI language model will generate. The standard models are: Davinci, Curie, Babbage, and Ada. Davinci has the most buttons to press and Ada has the fewest. Each button helps the AI language model know what kind of words to use and how to use them."
         placement="left"
       >
         <InputLabel>

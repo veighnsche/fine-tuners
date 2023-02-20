@@ -2,7 +2,7 @@ import { Box, Button, ButtonGroup, Paper, Theme, Typography } from '@mui/materia
 import { useRef } from 'react'
 import { v4 as uuid } from 'uuid'
 import { OpenAiCreateCompletionParameters } from '../models/openAI/CreateCompletion'
-import { useOpenAI } from '../openAI'
+import { useOpenAI } from '../hooks/openAI'
 import { useAppDispatch, useAppSelector } from '../store'
 import { addHistoryItem } from '../store/document.slice'
 import { selectPlaygroundSettings } from '../store/playground.settings.slice'

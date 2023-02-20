@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import { Model } from '../playground.settings/Model'
+import { Model } from "./Model"
 import { TrainingFile } from './TrainingFile'
 
 export const TrainSettings = () => {

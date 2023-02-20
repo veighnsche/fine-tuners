@@ -1,6 +1,6 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { Box, Button, Divider } from '@mui/material'
-import { useAuth } from '../auth.hook'
+import { useAuth } from '../hooks'
 import { ProfileType } from '../auth.model'
 import { ProfileVertical } from './ProfileVertical'
 

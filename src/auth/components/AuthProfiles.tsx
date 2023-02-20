@@ -15,7 +15,7 @@ import {
 } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Identicon } from '../../components/Identicon'
-import { useOpenAI } from '../../openAI'
+import { useOpenAI } from '../../hooks/openAI'
 import { useAppSelector } from '../../store'
 import { AuthStatus, ProfileType } from '../auth.model'
 import { fetchProfiles } from '../profile.store'
@@ -29,7 +29,7 @@ export const AuthProfiles = ({ onProfileClick, onCreateClick }: AuthProfilesProp
   const currentProfileUuid = useAppSelector(state => state.auth.profile?.uuid)
   const profiles = useLiveQuery(fetchProfiles, [])
   const verified = useAppSelector(state => state.auth.status === AuthStatus.PASSWORD_VERIFIED)
-  const { testAuth } = useOpenAI()
+  const { verifyAuth } = useOpenAI()
 
 
   return (
@@ -54,7 +54,7 @@ export const AuthProfiles = ({ onProfileClick, onCreateClick }: AuthProfilesProp
             <IconButton
               color="inherit"
               size="small"
-              onClick={() => testAuth()}
+              onClick={() => verifyAuth()}
             >
               <LockOpenIcon fontSize="small"/>
             </IconButton>

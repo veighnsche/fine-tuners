@@ -1,7 +1,7 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Alert, AlertTitle, Box, Button } from '@mui/material'
-import { useAuth } from '../auth.hook'
+import { useAuth } from '../hooks'
 import { ProfileType } from '../auth.model'
 import { ProfileVertical } from './ProfileVertical'
 

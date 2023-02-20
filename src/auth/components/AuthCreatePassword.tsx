@@ -3,7 +3,7 @@ import { Box, Button, TextField, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useAppSelector } from '../../store'
 import { apiKeyToSnippet } from '../../utils/snippet'
-import { useAuth } from '../auth.hook'
+import { useAuth } from '../hooks'
 import { ProfileVertical } from './ProfileVertical'
 
 interface AuthProfileFormProps {
