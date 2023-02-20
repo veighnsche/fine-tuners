@@ -8,7 +8,7 @@ import { setModel } from '../../store/playground.settings.slice'
 
 export const Model = () => {
   const connected = useAppSelector(state => state.auth.status === AuthStatus.PASSWORD_VERIFIED)
-  const currentModel = useAppSelector(state => state.playgroundSettings.model)
+  const currentModel = useAppSelector(state => state.trainSettings.model)
   const modelOptions = useAppSelector(state => state.playgroundSettings.modelOptions)
   const dispatch = useAppDispatch()
   const { fetchFineTunesList } = useOpenAI()
