@@ -1,9 +1,9 @@
-import { useAppDispatch } from "../../store";
-import { useAddNotification } from "../../store/notifications.slice";
-import { AuthStatus, ProfileType } from "../auth.model";
-import { noEncryptedPasswordDuringInit, noProfileDuringInit, noProfilesDuringInit, setAuth } from "../auth.slice";
-import { fetchEncryptedPasswordFromSession, removeEncryptedPasswordFromSession } from "../encryptedPassword.store";
-import { fetchCurrentProfile, fetchHasProfiles } from "../profile.store";
+import { useAppDispatch } from '../../store'
+import { useAddNotification } from '../../store/notifications.slice'
+import { AuthStatus, ProfileType } from '../auth.model'
+import { noEncryptedPasswordDuringInit, noProfileDuringInit, noProfilesDuringInit, setAuth } from '../auth.slice'
+import { fetchEncryptedPasswordFromSession, removeEncryptedPasswordFromSession } from '../encryptedPassword.store'
+import { fetchCurrentProfile, fetchHasProfiles } from '../profile.store'
 
 interface UseAuthInitialize {
   status: AuthStatus
@@ -12,7 +12,7 @@ interface UseAuthInitialize {
 }
 
 export const useAuthInitialize = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
   const addNotification = useAddNotification()
 
   return async (): Promise<UseAuthInitialize> => {

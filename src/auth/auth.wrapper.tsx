@@ -1,10 +1,10 @@
 import { ReactNode, useEffect } from 'react'
-import { useEffectOnce } from '../hooks/useEffectOnce'
 import { useOpenAI } from '../hooks/openAI'
+import { useEffectOnce } from '../hooks/useEffectOnce'
 import { useAppDispatch, useAppSelector } from '../store'
 import { setFineTunes } from '../store/fineTunes.slice'
-import { useAuth } from './hooks'
 import { AuthStatus } from './auth.model'
+import { useAuth } from './hooks'
 
 export const AuthWrapper = ({ children }: { children: ReactNode }) => {
   const status = useAppSelector(state => state.auth.status)

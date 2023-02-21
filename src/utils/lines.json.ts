@@ -1,6 +1,6 @@
+import { v4 as uuid } from 'uuid'
 import { LineType } from '../models/Line'
 import { DocumentState } from '../store/document.slice'
-import { v4 as uuid } from 'uuid'
 
 export function fromJson(json: string): LineType {
   const { prompt, completion } = JSON.parse(json)

@@ -38,7 +38,7 @@ export const PlaygroundEdit = forwardRef<TextEditorRefHandler, EditTextProps>(
         flexDirection="column"
         gap={1}
       >
-        <TextEditor ref={ref} onBlur={handleBlur} />
+        <TextEditor ref={ref} onBlur={handleBlur}/>
         {from ? (
           <Box display="flex" flexDirection="row">
             <ButtonGroup>

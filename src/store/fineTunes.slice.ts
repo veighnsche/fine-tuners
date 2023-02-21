@@ -18,7 +18,7 @@ export const fineTunesSlice = createSlice({
     }>) => {
       state.fineTunes = action.payload.fineTunes
     },
-  }
+  },
 })
 
 export const { setFineTunes } = fineTunesSlice.actions

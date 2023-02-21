@@ -1,8 +1,8 @@
 import { alpha, Box, useTheme } from '@mui/material'
 import { ClipboardEvent, forwardRef, useImperativeHandle, useRef, useState } from 'react'
+import { v4 as uuid } from 'uuid'
 import { useAppDispatch } from '../store'
 import { setEditTextFrom } from '../store/app.slice'
-import { v4 as uuid } from 'uuid'
 
 export interface TextEditorRefHandler {
   get promptText(): string;

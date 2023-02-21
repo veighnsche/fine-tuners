@@ -1,8 +1,8 @@
-import styled from "@emotion/styled";
-import { Box, Button, ButtonGroup, Paper, Theme, Typography, useTheme } from "@mui/material";
+import styled from '@emotion/styled'
+import { Box, Button, ButtonGroup, Paper, Theme, Typography, useTheme } from '@mui/material'
 import { useRef } from 'react'
-import { OpenAiFineTuningEvent } from '../models/openAI/FineTuning'
 import { useOpenAI } from '../hooks/openAI'
+import { OpenAiFineTuningEvent } from '../models/openAI/FineTuning'
 import { useAppSelector } from '../store'
 import { selectTrainSettings } from '../store/train.settings.slice'
 import { TrainSettings } from './train.settings'
@@ -42,8 +42,8 @@ export const FileTrain = () => {
   return (
     <>
       <Box display="flex" flexDirection="column" gap={1} width="33%" minWidth="33%" p={1}>
-        <TrainSettings />
-        <Box sx={{ flexGrow: 1 }} />
+        <TrainSettings/>
+        <Box sx={{ flexGrow: 1 }}/>
         <ButtonGroup>
           <Button
             variant="contained"

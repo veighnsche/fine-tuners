@@ -1,8 +1,8 @@
-import { useAppDispatch } from "../../store";
-import { ProfileType } from "../auth.model";
-import { setAuth } from "../auth.slice";
-import { encryptPassword, passwordSalt } from "../crypto";
-import { saveEncryptedPasswordToSession } from "../encryptedPassword.store";
+import { useAppDispatch } from '../../store'
+import { ProfileType } from '../auth.model'
+import { setAuth } from '../auth.slice'
+import { encryptPassword, passwordSalt } from '../crypto'
+import { saveEncryptedPasswordToSession } from '../encryptedPassword.store'
 
 interface UsePasswordEnterParams {
   profile: ProfileType
@@ -14,7 +14,7 @@ interface UsePasswordEnter {
 }
 
 export const usePasswordEnter = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
 
   return async ({ profile, unencryptedPassword }: UsePasswordEnterParams): Promise<UsePasswordEnter> => {
     const salt = passwordSalt.btoa(profile.passwordSalt)

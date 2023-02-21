@@ -1,76 +1,76 @@
-import wretch from "wretch";
-import { useAuth } from "../../auth/hooks";
-import { authFailed } from "../../auth/auth.slice";
-import { OpenAiFineTune, OpenAiFineTuningEvent, OpenAiFineTuningParams } from "../../models/openAI/FineTuning";
-import { useAppDispatch } from "../../store";
+import wretch from 'wretch'
+import { authFailed } from '../../auth/auth.slice'
+import { useAuth } from '../../auth/hooks'
+import { OpenAiFineTune, OpenAiFineTuningEvent, OpenAiFineTuningParams } from '../../models/openAI/FineTuning'
+import { useAppDispatch } from '../../store'
 
 interface UseFileTrainParams {
   params: OpenAiFineTuningParams;
 }
 
 export const useFileTrain = () => {
-  const { getApiKey } = useAuth();
-  const dispatch = useAppDispatch();
+  const { getApiKey } = useAuth()
+  const dispatch = useAppDispatch()
 
   return async function* ({ params }: UseFileTrainParams) {
-    const apiKey = await getApiKey();
-    const res = await wretch("https://api.openai.com/v1/fine-tunes")
-      .auth(`Bearer ${apiKey}`)
-      .post(params)
-      .unauthorized(() => {
-        dispatch(authFailed());
-        throw new Error("OpenAI API request failed");
-      })
-      .json<OpenAiFineTune>();
+    const apiKey = await getApiKey()
+    const res = await wretch('https://api.openai.com/v1/fine-tunes')
+    .auth(`Bearer ${apiKey}`)
+    .post(params)
+    .unauthorized(() => {
+      dispatch(authFailed())
+      throw new Error('OpenAI API request failed')
+    })
+    .json<OpenAiFineTune>()
 
-    console.log("res", res);
+    console.log('res', res)
 
     const eventList = await wretch(`https://api.openai.com/v1/fine-tunes/${res.id}/events?stream=true`)
-      .auth(`Bearer ${apiKey}`)
-      .get()
-      .res();
+    .auth(`Bearer ${apiKey}`)
+    .get()
+    .res()
 
     if (!eventList.ok || !eventList.body) {
-      throw new Error("OpenAI API request failed");
+      throw new Error('OpenAI API request failed')
     }
 
-    const reader = eventList.body.getReader();
+    const reader = eventList.body.getReader()
 
     readerLoop: while (true) {
-      const { value, done } = await reader.read();
+      const { value, done } = await reader.read()
       if (done) {
-        break;
+        break
       }
 
-      const decoded = new TextDecoder("utf-8")
-        .decode(value);
+      const decoded = new TextDecoder('utf-8')
+      .decode(value)
 
-      console.log("decoded", decoded);
+      console.log('decoded', decoded)
 
       const filtered = decoded
-        .split("data: ");
+      .split('data: ')
 
       for (const data of filtered) {
-        const trimmed = data.trim();
-        if (trimmed === "") {
-          continue;
+        const trimmed = data.trim()
+        if (trimmed === '') {
+          continue
         }
 
-        if (trimmed === "[DONE]") {
+        if (trimmed === '[DONE]') {
           yield {
-            chunk: "",
+            chunk: '',
             done: true,
-          };
-          break readerLoop;
+          }
+          break readerLoop
         }
 
-        const parsed: OpenAiFineTuningEvent = JSON.parse(trimmed);
+        const parsed: OpenAiFineTuningEvent = JSON.parse(trimmed)
 
         yield {
           chunk: parsed,
           done: false,
-        };
+        }
       }
     }
-  };
-};
+  }
+}

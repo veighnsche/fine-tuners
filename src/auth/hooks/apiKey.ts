@@ -1,18 +1,19 @@
-import { useAppDispatch, useAppSelector } from "../../store";
-import { ProfileType } from "../auth.model";
-import { requirePasswordAsync, requireProfileAsync } from "../auth.slice";
-import { unlockApiKey } from "../crypto";
+import { useAppDispatch, useAppSelector } from '../../store'
+import { ProfileType } from '../auth.model'
+import { requirePasswordAsync, requireProfileAsync } from '../auth.slice'
+import { unlockApiKey } from '../crypto'
 
 interface UseGetApiKeyParams {
   encryptedPassword?: string;
   profile?: ProfileType;
 }
+
 export const useGetApiKey = () => {
   const currentProfile = useAppSelector((state) => ({
     encryptedPassword: state.auth.encryptedPassword,
     profile: state.auth.profile,
-  }));
-  const dispatch = useAppDispatch();
+  }))
+  const dispatch = useAppDispatch()
 
   return async ({ encryptedPassword: encryptedPasswordParam, profile: profileParam }: UseGetApiKeyParams = {}) => {
     const { encryptedPassword, profile } = currentProfile
@@ -31,5 +32,5 @@ export const useGetApiKey = () => {
       profile?.lockedApiKey || profileParam!.lockedApiKey!,
       encryptedPasswordParam || encryptedPassword!,
     )
-  };
+  }
 }

@@ -2,8 +2,8 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { Box, Button, Link, TextField, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useOpenAI } from '../../hooks/openAI'
-import { useAuth } from '../hooks'
 import { ProfileType } from '../auth.model'
+import { useAuth } from '../hooks'
 import { ProfileVertical } from './ProfileVertical'
 
 interface AuthProfileFormProps {
