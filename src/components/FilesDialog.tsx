@@ -13,10 +13,10 @@ import {
   Paper,
 } from '@mui/material'
 import { Fragment, MouseEvent, useState } from 'react'
-import { OpenAiFile } from '../models/openAI/Files'
 import { useOpenAI } from '../hooks/openAI'
+import { OpenAiFile } from '../models/openAI/Files'
 import { useAppDispatch, useAppSelector } from '../store'
-import { deleteFileStore, setCurrentLines, unsetCurrentFile } from '../store/files.slice'
+import { deleteFileStore, selectFineTuneFiles, setCurrentLines, unsetCurrentFile } from '../store/files.slice'
 import { setTrainingFile } from '../store/train.settings.slice'
 import { timestampToDateTime } from '../utils/dates'
 import { FileContents } from './FileContents'
@@ -28,13 +28,14 @@ interface FilesDialogProps {
 }
 
 export const FilesDialog = ({ open, onClose }: FilesDialogProps) => {
-  const dispatch = useAppDispatch()
-  const files = useAppSelector(state => state.files.files)
-  const { fetchFile, deleteFile } = useOpenAI()
   const [optionsAnchorEl, setOptionsAnchorEl] = useState<HTMLElement | null>(null)
   const [selectedFile, setSelectedFile] = useState<OpenAiFile | null>(null)
-  const isOptionsOpen = Boolean(optionsAnchorEl)
   const [showing, setShowing] = useState<'contents' | 'train'>('contents')
+
+  const dispatch = useAppDispatch()
+  const files = useAppSelector(selectFineTuneFiles)
+  const { fetchFile, deleteFile } = useOpenAI()
+  const isOptionsOpen = Boolean(optionsAnchorEl)
 
   const handleFileClick = async (id: string) => {
     const content = await fetchFile({ id })

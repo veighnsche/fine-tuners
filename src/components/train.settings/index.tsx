@@ -1,8 +1,12 @@
 import { Box } from '@mui/material'
-import { Model } from "./Model"
+import { useAppSelector } from '../../store'
+import { setModel } from '../../store/train.settings.slice'
+import { Model } from '../shared.settings/Model'
+
 import { TrainingFile } from './TrainingFile'
 
 export const TrainSettings = () => {
+  const model = useAppSelector(state => state.trainSettings.model!)
   return (
     <Box
       display="flex"
@@ -12,7 +16,7 @@ export const TrainSettings = () => {
       p={4}
     >
       <TrainingFile/>
-      <Model/>
+      <Model model={model} setModel={setModel}/>
     </Box>
   )
 }

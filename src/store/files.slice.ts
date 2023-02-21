@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { LineType } from '../models/Line'
 import { OpenAiFile } from '../models/openAI/Files'
+import { RootState } from './index'
 
 interface FilesState {
   files: OpenAiFile[];
@@ -43,5 +44,8 @@ export const {
   setCurrentLines,
   deleteFileStore,
 } = filesSlice.actions
+
+export const selectFineTuneFiles = (state: RootState) =>
+  state.files.files.filter((file: OpenAiFile) => file.purpose === 'fine-tune')
 
 export default filesSlice.reducer

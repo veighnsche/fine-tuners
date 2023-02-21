@@ -5,7 +5,7 @@ import { LineType } from '../models/Line'
 import { useAppDispatch, useAppSelector } from '../store'
 import { toggleFilesDialog, toggleNameDialog } from '../store/app.slice'
 import { HistoryItemType } from '../store/document.slice'
-import { EditText } from './EditText'
+import { PlaygroundEdit } from './PlaygroundEdit'
 import { FilesDialog } from './FilesDialog'
 import { History } from './History'
 import { MidBar } from './MidBar'
@@ -68,7 +68,7 @@ function App() {
               minWidth={theme.spacing(30)}
               onLineClick={handleLineClick}
             />
-            <EditText
+            <PlaygroundEdit
               ref={editTextRef}
               width={widthUnit(3.5)}
             />

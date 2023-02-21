@@ -1,27 +1,18 @@
-import { Box, InputLabel, MenuItem, Select, Tooltip } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { AuthStatus } from '../../auth/auth.model'
-import { OpenAiFineTune } from '../../models/openAI/FineTuning'
-import { useOpenAI } from '../../hooks/openAI'
+import { Box, InputLabel, MenuItem, Select, SelectChangeEvent, Tooltip } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../../store'
-import { setModel } from '../../store/playground.settings.slice'
+import type { setModel as setPlaygroundModel } from '../../store/playground.settings.slice'
+import type { setModel as setTrainModel } from '../../store/train.settings.slice'
 
-export const Model = () => {
-  const connected = useAppSelector(state => state.auth.status === AuthStatus.PASSWORD_VERIFIED)
-  const currentModel = useAppSelector(state => state.trainSettings.model)
+
+interface ModelProps {
+  model: string
+  setModel: typeof setTrainModel | typeof setPlaygroundModel
+}
+
+export const Model = ({ model, setModel }: ModelProps) => {
   const modelOptions = useAppSelector(state => state.playgroundSettings.modelOptions)
+  const fineTunes = useAppSelector(state => state.fineTunes.fineTunes)
   const dispatch = useAppDispatch()
-  const { fetchFineTunesList } = useOpenAI()
-  const [fineTunes, setFineTunes] = useState<OpenAiFineTune[]>([])
-
-  useEffect(() => {
-    if (connected) {
-      fetchFineTunesList()
-      .then((models) => {
-        setFineTunes(models.data)
-      })
-    }
-  }, [connected])
 
   function makeModelOptions() {
     // from modelOptions and fineTunes, make a list of models
@@ -30,6 +21,10 @@ export const Model = () => {
     modelOptions.forEach((model) => models.add(model))
     fineTunes.forEach((fineTune) => models.add(fineTune.fine_tuned_model))
     return Array.from(models)
+  }
+
+  const handleChange = (event: SelectChangeEvent) => {
+    dispatch(setModel({ model: event.target.value }))
   }
 
   return (
@@ -45,10 +40,8 @@ export const Model = () => {
       <Select
         fullWidth
         size="small"
-        value={currentModel}
-        onChange={(event) => {
-          dispatch(setModel({ model: event.target.value }))
-        }}
+        value={model}
+        onChange={handleChange}
       >
         {makeModelOptions().map((model) => (
           <MenuItem key={model} value={model}>{model}</MenuItem>

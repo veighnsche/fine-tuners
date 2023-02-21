@@ -8,7 +8,7 @@ interface EditTextProps {
   width: ReturnType<Theme['spacing']>;
 }
 
-export const EditText = forwardRef<TextEditorRefHandler, EditTextProps>(
+export const PlaygroundEdit = forwardRef<TextEditorRefHandler, EditTextProps>(
   ({ width }, ref) => {
     const dispatch = useAppDispatch()
     const from = useAppSelector(state => state.app.editTextFrom)
