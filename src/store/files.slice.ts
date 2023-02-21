@@ -45,7 +45,7 @@ export const {
   deleteFileStore,
 } = filesSlice.actions
 
-export const selectFineTuneFiles = (state: RootState) =>
+export const selectFinetuneFiles = (state: RootState) =>
   state.files.files.filter((file: OpenAiFile) => file.purpose === 'fine-tune')
 
 export default filesSlice.reducer

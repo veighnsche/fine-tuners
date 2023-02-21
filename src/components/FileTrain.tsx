@@ -5,7 +5,7 @@ import { useOpenAI } from '../hooks/openAI'
 import { OpenAiFineTuningEvent } from '../models/openAI/FineTuning'
 import { useAppSelector } from '../store'
 import { selectTrainSettings } from '../store/train.settings.slice'
-import { TrainSettings } from './train.settings'
+import { TrainSettings } from './settings.train'
 
 const StyledPaper = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'theme',

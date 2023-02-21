@@ -23,7 +23,7 @@ export interface OpenAiHyperParams {
   prompt_loss_weight: number;
 }
 
-export interface OpenAiFineTune {
+export interface OpenAiFinetune {
   id: string;
   object: string;
   model: string;
@@ -39,7 +39,7 @@ export interface OpenAiFineTune {
   updated_at: number;
 }
 
-export interface OpenAiFineTuneObject {
-  data: OpenAiFineTune[];
+export interface OpenAiFinetuneObject {
+  data: OpenAiFinetune[];
   object: string;
 }

@@ -16,7 +16,7 @@ import { Fragment, MouseEvent, useState } from 'react'
 import { useOpenAI } from '../hooks/openAI'
 import { OpenAiFile } from '../models/openAI/Files'
 import { useAppDispatch, useAppSelector } from '../store'
-import { deleteFileStore, selectFineTuneFiles, setCurrentLines, unsetCurrentFile } from '../store/files.slice'
+import { deleteFileStore, selectFinetuneFiles, setCurrentLines, unsetCurrentFile } from '../store/files.slice'
 import { setTrainingFile } from '../store/train.settings.slice'
 import { timestampToDateTime } from '../utils/dates'
 import { FileContents } from './FileContents'
@@ -27,13 +27,13 @@ interface FilesDialogProps {
   onClose: () => void;
 }
 
-export const FilesDialog = ({ open, onClose }: FilesDialogProps) => {
+export const DialogFiles = ({ open, onClose }: FilesDialogProps) => {
   const [optionsAnchorEl, setOptionsAnchorEl] = useState<HTMLElement | null>(null)
   const [selectedFile, setSelectedFile] = useState<OpenAiFile | null>(null)
   const [showing, setShowing] = useState<'contents' | 'train'>('contents')
 
   const dispatch = useAppDispatch()
-  const files = useAppSelector(selectFineTuneFiles)
+  const files = useAppSelector(selectFinetuneFiles)
   const { fetchFile, deleteFile } = useOpenAI()
   const isOptionsOpen = Boolean(optionsAnchorEl)
 

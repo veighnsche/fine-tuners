@@ -1,14 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface AppState {
-  isNameDialogOpen: boolean
-  isFilesDialogOpen: boolean
+  dialogOpen: 'name' | 'files' | 'finetunes' | null
   editTextFrom: 'history' | 'training' | null
 }
 
 export const initialState: AppState = {
-  isNameDialogOpen: false,
-  isFilesDialogOpen: false,
+  dialogOpen: null,
   editTextFrom: null,
 }
 
@@ -17,10 +15,13 @@ export const appSlice = createSlice({
   initialState,
   reducers: {
     toggleNameDialog: (state) => {
-      state.isNameDialogOpen = !state.isNameDialogOpen
+      state.dialogOpen = state.dialogOpen === 'name' ? null : 'name'
     },
     toggleFilesDialog: (state) => {
-      state.isFilesDialogOpen = !state.isFilesDialogOpen
+      state.dialogOpen = state.dialogOpen === 'files' ? null : 'files'
+    },
+    toggleFinetunesDialog: (state) => {
+      state.dialogOpen = state.dialogOpen === 'finetunes' ? null : 'finetunes'
     },
     setEditTextFrom: (state, action: PayloadAction<{
       from: AppState['editTextFrom']
@@ -33,6 +34,7 @@ export const appSlice = createSlice({
 export const {
   toggleNameDialog,
   toggleFilesDialog,
+  toggleFinetunesDialog,
   setEditTextFrom,
 } = appSlice.actions
 

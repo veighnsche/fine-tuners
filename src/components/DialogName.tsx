@@ -8,7 +8,7 @@ interface NameDialogProps {
   onClose: () => void;
 }
 
-export const NameDialog = ({ open, onClose }: NameDialogProps) => {
+export const DialogName = ({ open, onClose }: NameDialogProps) => {
   const dispatch = useAppDispatch()
   const documentName = useAppSelector(state => state.document.name)
   const [name, setName] = useState(documentName)

@@ -10,7 +10,7 @@ interface MidBarProps {
   height: ReturnType<Theme['spacing']>;
 }
 
-export const MidBar = ({ height }: MidBarProps) => {
+export const TopBarEdit = ({ height }: MidBarProps) => {
   const theme = useTheme()
 
   const fileMenuAnchor = useRef<HTMLButtonElement>(null)
@@ -80,6 +80,7 @@ export const MidBar = ({ height }: MidBarProps) => {
           </Button>
         </Box>
       </Box>
+
       {fileMenuOpen ? (
         <FileMenu
           open
@@ -87,6 +88,7 @@ export const MidBar = ({ height }: MidBarProps) => {
           onClose={() => setFileMenuOpen(false)}
         />
       ) : null}
+
       {openAiMenuOpen ? (
         <OpenAiMenu
           open
@@ -94,6 +96,7 @@ export const MidBar = ({ height }: MidBarProps) => {
           onClose={() => setOpenAiMenuOpen(false)}
         />
       ) : null}
+
     </>
   )
 }

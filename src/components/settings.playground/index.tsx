@@ -1,7 +1,7 @@
 import { Box, Theme } from '@mui/material'
 import { useAppSelector } from '../../store'
 import { setModel } from '../../store/playground.settings.slice'
-import { Model } from '../shared.settings/Model'
+import { Model } from '../settings.shared/Model'
 import { BestOf } from './BestOf'
 import { FrequencyPenalty } from './FrequencyPenalty'
 import { MaxTokens } from './MaxTokens'

@@ -5,12 +5,12 @@ import { LineType } from '../models/Line'
 import { useAppDispatch, useAppSelector } from '../store'
 import { toggleFilesDialog, toggleNameDialog } from '../store/app.slice'
 import { HistoryItemType } from '../store/document.slice'
-import { FilesDialog } from './FilesDialog'
+import { DialogFiles } from './DialogFiles'
 import { History } from './History'
-import { MidBar } from './MidBar'
-import { NameDialog } from './NameDialog'
+import { TopBarEdit } from './TopBarEdit'
+import { DialogName } from './DialogName'
 import { Playground } from './Playground'
-import { PlaygroundSettings } from './playground.settings'
+import { PlaygroundSettings } from './settings.playground'
 import { PlaygroundEdit } from './PlaygroundEdit'
 import { TextEditorRefHandler } from './TextEditor'
 import { TopBar } from './TopBar'
@@ -26,8 +26,7 @@ function App() {
 
   const editTextRef = useRef<TextEditorRefHandler>(null)
 
-  const isNameDialogOpen = useAppSelector(state => state.app.isNameDialogOpen)
-  const isFilesDialogOpen = useAppSelector(state => state.app.isFilesDialogOpen)
+  const dialogOpen = useAppSelector(state => state.app.dialogOpen)
 
   const handleHistoryItemClick = (item: HistoryItemType) => {
     editTextRef.current?.setText({
@@ -56,7 +55,7 @@ function App() {
             <Playground width={widthUnit(4)}/>
             <PlaygroundSettings width={widthUnit(1)} minWidth={theme.spacing(40)}/>
           </Box>
-          <MidBar height={barHeight}/>
+          <TopBarEdit height={barHeight}/>
           <Box height={contentHeight} display="flex" gap={1} p={1}>
             <History
               width={widthUnit(0.75)}
@@ -75,16 +74,16 @@ function App() {
           </Box>
         </Box>
 
-        {isNameDialogOpen ? (
-          <NameDialog
-            open={isNameDialogOpen}
+        {dialogOpen === 'name' ? (
+          <DialogName
+            open
             onClose={() => dispatch(toggleNameDialog())}
           />
         ) : null}
 
-        {isFilesDialogOpen ? (
-          <FilesDialog
-            open={isFilesDialogOpen}
+        {dialogOpen === 'files' ? (
+          <DialogFiles
+            open
             onClose={() => dispatch(toggleFilesDialog())}
           />
         ) : null}

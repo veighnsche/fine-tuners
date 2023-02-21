@@ -1,10 +1,10 @@
 import wretch from 'wretch'
 import { authFailed } from '../../auth/auth.slice'
 import { useAuth } from '../../auth/hooks'
-import { OpenAiFineTuneObject } from '../../models/openAI/FineTuning'
+import { OpenAiFinetuneObject } from '../../models/openAI/FineTuning'
 import { useAppDispatch } from '../../store'
 
-export const useFineTunesList = () => {
+export const useFinetunesList = () => {
   const { getApiKey } = useAuth()
   const dispatch = useAppDispatch()
 
@@ -17,6 +17,6 @@ export const useFineTunesList = () => {
       dispatch(authFailed())
       throw new Error('OpenAI API request failed')
     })
-    .json<OpenAiFineTuneObject>()
+    .json<OpenAiFinetuneObject>()
   }
 }

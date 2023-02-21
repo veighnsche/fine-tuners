@@ -5,6 +5,7 @@ import { useRef, useState } from 'react'
 import { AuthMenu } from '../auth/components/AuthMenu'
 import { AuthStatusIcon } from '../auth/components/AuthStatusIcon'
 import { useAppDispatch, useAppSelector } from '../store'
+import { toggleFinetunesDialog } from '../store/app.slice'
 import { hideNotification, removeNotification } from '../store/notifications.slice'
 import { Identicon } from './Identicon'
 
@@ -36,27 +37,35 @@ export const TopBar = ({ height }: TopBarProps) => {
           </Typography>
         </Box>
         <Toolbar variant="dense" sx={{ display: 'flex', gap: 1, height }}>
+          <Button
+            size="small"
+            color="inherit"
+            onClick={() => dispatch(toggleFinetunesDialog())}
+          >
+            <Typography variant="body2" color="inherit" component="div">
+              Fine tunes
+            </Typography>
+          </Button>
+
           <Box sx={{ flexGrow: 1 }}/>
 
           <Box display="flex" sx={{ gap: 1 }} p={0.5}>
-            {notifications.map(notification => {
-              return (
-                <Slide
-                  key={notification.id}
-                  direction="left"
-                  in={shownNotifications.includes(notification.id)}
-                  onExited={() => dispatch(removeNotification(notification))}
+            {notifications.map(notification => (
+              <Slide
+                key={notification.id}
+                direction="left"
+                in={shownNotifications.includes(notification.id)}
+                onExited={() => dispatch(removeNotification(notification))}
+              >
+                <Alert
+                  severity={notification.severity}
+                  onClose={() => dispatch(hideNotification(notification))}
+                  variant="outlined"
                 >
-                  <Alert
-                    severity={notification.severity}
-                    onClose={() => dispatch(hideNotification(notification))}
-                    variant="outlined"
-                  >
-                    {notification.message}
-                  </Alert>
-                </Slide>
-              )
-            })}
+                  {notification.message}
+                </Alert>
+              </Slide>
+            ))}
           </Box>
 
           <div ref={authMenuAnchor}>

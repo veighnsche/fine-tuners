@@ -4,7 +4,7 @@ import authReducer from '../auth/auth.slice'
 import appReducer from './app.slice'
 import documentReducer from './document.slice'
 import filesReducer from './files.slice'
-import fineTunesReducer from './fineTunes.slice'
+import finetunesReducer from './finetunes.slice'
 import linesReducer from './lines.slice'
 import notificationsReducer from './notifications.slice'
 import playgroundSettingsReducer from './playground.settings.slice'
@@ -16,7 +16,7 @@ export const store = configureStore({
     app: appReducer,
     document: documentReducer,
     files: filesReducer,
-    fineTunes: fineTunesReducer,
+    finetunes: finetunesReducer,
     lines: linesReducer,
     notifications: notificationsReducer,
     playgroundSettings: playgroundSettingsReducer,

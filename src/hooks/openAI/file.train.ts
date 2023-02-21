@@ -1,7 +1,7 @@
 import wretch from 'wretch'
 import { authFailed } from '../../auth/auth.slice'
 import { useAuth } from '../../auth/hooks'
-import { OpenAiFineTune, OpenAiFineTuningEvent, OpenAiFineTuningParams } from '../../models/openAI/FineTuning'
+import { OpenAiFinetune, OpenAiFineTuningEvent, OpenAiFineTuningParams } from '../../models/openAI/FineTuning'
 import { useAppDispatch } from '../../store'
 
 interface UseFileTrainParams {
@@ -21,7 +21,7 @@ export const useFileTrain = () => {
       dispatch(authFailed())
       throw new Error('OpenAI API request failed')
     })
-    .json<OpenAiFineTune>()
+    .json<OpenAiFinetune>()
 
     console.log('res', res)
 

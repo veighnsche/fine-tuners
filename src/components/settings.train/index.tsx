@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import { useAppSelector } from '../../store'
 import { setModel } from '../../store/train.settings.slice'
-import { Model } from '../shared.settings/Model'
+import { Model } from '../settings.shared/Model'
 
 import { TrainingFile } from './TrainingFile'
 

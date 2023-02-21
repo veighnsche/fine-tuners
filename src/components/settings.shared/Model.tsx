@@ -11,15 +11,15 @@ interface ModelProps {
 
 export const Model = ({ model, setModel }: ModelProps) => {
   const modelOptions = useAppSelector(state => state.playgroundSettings.modelOptions)
-  const fineTunes = useAppSelector(state => state.fineTunes.fineTunes)
+  const finetunes = useAppSelector(state => state.finetunes.finetunes)
   const dispatch = useAppDispatch()
 
   function makeModelOptions() {
-    // from modelOptions and fineTunes, make a list of models
+    // from modelOptions and finetunes, make a list of models
     // that the user can choose from
     const models = new Set<string>()
     modelOptions.forEach((model) => models.add(model))
-    fineTunes.forEach((fineTune) => models.add(fineTune.fine_tuned_model))
+    finetunes.forEach((finetune) => models.add(finetune.fine_tuned_model))
     return Array.from(models)
   }
 
