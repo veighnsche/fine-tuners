@@ -23,8 +23,6 @@ export const useFileTrain = () => {
     })
     .json<OpenAiFinetune>()
 
-    console.log('res', res)
-
     const eventList = await wretch(`https://api.openai.com/v1/fine-tunes/${res.id}/events?stream=true`)
     .auth(`Bearer ${apiKey}`)
     .get()

@@ -1,20 +1,20 @@
 import wretch from 'wretch'
 import { authFailed } from '../../auth/auth.slice'
 import { useAuth } from '../../auth/hooks'
-import { OpenAiFileDeleteResponse } from '../../models/openAI/Files'
+import { OpenAiFinetuneDeleteResponse } from '../../models/openAI/FineTuning'
 import { useAppDispatch } from '../../store'
 
-interface UseDeleteFileParams {
-  id: string;
+interface UseFileTrainParams {
+  name: string;
 }
 
-export const useFileDelete = () => {
+export const useFinetuneDelete = () => {
   const { getApiKey } = useAuth()
   const dispatch = useAppDispatch()
 
-  return async ({ id }: UseDeleteFileParams): Promise<OpenAiFileDeleteResponse> => {
+  return async function ({ name }: UseFileTrainParams): Promise<OpenAiFinetuneDeleteResponse> {
     const apiKey = await getApiKey()
-    return wretch(`https://api.openai.com/v1/files/${id}`)
+    return wretch(`https://api.openai.com/v1/models/${name}`)
     .auth(`Bearer ${apiKey}`)
     .delete()
     .unauthorized(() => {

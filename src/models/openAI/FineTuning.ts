@@ -43,3 +43,9 @@ export interface OpenAiFinetuneObject {
   data: OpenAiFinetune[];
   object: string;
 }
+
+export interface OpenAiFinetuneDeleteResponse {
+  id: string;
+  object: string;
+  deleted: boolean;
+}

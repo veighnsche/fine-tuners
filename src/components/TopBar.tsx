@@ -5,7 +5,7 @@ import { useRef, useState } from 'react'
 import { AuthMenu } from '../auth/components/AuthMenu'
 import { AuthStatusIcon } from '../auth/components/AuthStatusIcon'
 import { useAppDispatch, useAppSelector } from '../store'
-import { toggleFinetunesDialog } from '../store/app.slice'
+import { openDialog } from '../store/app.slice'
 import { hideNotification, removeNotification } from '../store/notifications.slice'
 import { Identicon } from './Identicon'
 
@@ -40,7 +40,7 @@ export const TopBar = ({ height }: TopBarProps) => {
           <Button
             size="small"
             color="inherit"
-            onClick={() => dispatch(toggleFinetunesDialog())}
+            onClick={() => dispatch(openDialog({ dialog: 'finetunes' }))}
           >
             <Typography variant="body2" color="inherit" component="div">
               Fine tunes

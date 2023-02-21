@@ -1,6 +1,6 @@
 import { Divider, Menu, MenuItem, Tooltip } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../store'
-import { toggleNameDialog } from '../store/app.slice'
+import { openDialog } from '../store/app.slice'
 import { downloadJsonlEditFile, downloadJsonlFile, selectFile } from '../utils/files'
 
 interface TopBarMenuProps {
@@ -29,13 +29,13 @@ export const FileMenu = ({ anchorEl, open, onClose }: TopBarMenuProps) => {
 
   const handleRename = () => {
     onClose()
-    dispatch(toggleNameDialog())
+    dispatch(openDialog({ dialog: 'name' }))
   }
 
   const handleEditSaveClick = () => {
     onClose()
     if (!documentName) {
-      dispatch(toggleNameDialog())
+      dispatch(openDialog({ dialog: 'name' }))
       return
     }
     downloadJsonlEditFile({
@@ -48,7 +48,7 @@ export const FileMenu = ({ anchorEl, open, onClose }: TopBarMenuProps) => {
   const handleSaveClick = () => {
     onClose()
     if (!documentName) {
-      dispatch(toggleNameDialog())
+      dispatch(openDialog({ dialog: 'name' }))
       return
     }
     downloadJsonlFile({ lines: getLines(), name: documentName })

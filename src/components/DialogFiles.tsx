@@ -16,7 +16,7 @@ import { Fragment, MouseEvent, useState } from 'react'
 import { useOpenAI } from '../hooks/openAI'
 import { OpenAiFile } from '../models/openAI/Files'
 import { useAppDispatch, useAppSelector } from '../store'
-import { deleteFileStore, selectFinetuneFiles, setCurrentLines, unsetCurrentFile } from '../store/files.slice'
+import { removeFile, selectFinetuneFiles, setCurrentLines, unsetCurrentFile } from '../store/files.slice'
 import { setTrainingFile } from '../store/train.settings.slice'
 import { timestampToDateTime } from '../utils/dates'
 import { FileContents } from './FileContents'
@@ -60,10 +60,12 @@ export const DialogFiles = ({ open, onClose }: FilesDialogProps) => {
   const handleFileDelete = async () => {
     if (!selectedFile) return
     const id = selectedFile.id
-    await deleteFile({ id })
-    dispatch(deleteFileStore({ id }))
-    setSelectedFile(null)
-    handleMenuClose()
+    const { deleted } = await deleteFile({ id })
+    if (deleted) {
+      handleMenuClose()
+      dispatch(removeFile({ id }))
+      setSelectedFile(null)
+    }
   }
 
   const handleViewContents = async () => {
@@ -82,9 +84,9 @@ export const DialogFiles = ({ open, onClose }: FilesDialogProps) => {
     <>
       <Dialog
         open={open}
+        onClose={handleClose}
         maxWidth="xl"
         sx={{ '& .MuiDialog-paper': { width: '80%', height: '80vh' } }}
-        onClose={handleClose}
       >
         <Box display="flex" gap={1} height="100%">
           <Paper sx={{ width: '33%', height: '100%' }} square>

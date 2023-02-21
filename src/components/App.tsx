@@ -3,17 +3,18 @@ import { useRef } from 'react'
 import { AuthWrapper } from '../auth/auth.wrapper'
 import { LineType } from '../models/Line'
 import { useAppDispatch, useAppSelector } from '../store'
-import { toggleFilesDialog, toggleNameDialog } from '../store/app.slice'
+import { closeDialog } from '../store/app.slice'
 import { HistoryItemType } from '../store/document.slice'
 import { DialogFiles } from './DialogFiles'
-import { History } from './History'
-import { TopBarEdit } from './TopBarEdit'
+import { DialogFinetunes } from './DialogFinetunes'
 import { DialogName } from './DialogName'
+import { History } from './History'
 import { Playground } from './Playground'
-import { PlaygroundSettings } from './settings.playground'
 import { PlaygroundEdit } from './PlaygroundEdit'
+import { PlaygroundSettings } from './settings.playground'
 import { TextEditorRefHandler } from './TextEditor'
 import { TopBar } from './TopBar'
+import { TopBarEdit } from './TopBarEdit'
 import { TrainingData } from './TrainingData'
 
 function App() {
@@ -44,6 +45,10 @@ function App() {
       completion: line.completion,
       from: 'training',
     })
+  }
+
+  const handleClose = () => {
+    dispatch(closeDialog())
   }
 
   return (
@@ -77,14 +82,21 @@ function App() {
         {dialogOpen === 'name' ? (
           <DialogName
             open
-            onClose={() => dispatch(toggleNameDialog())}
+            onClose={handleClose}
           />
         ) : null}
 
         {dialogOpen === 'files' ? (
           <DialogFiles
             open
-            onClose={() => dispatch(toggleFilesDialog())}
+            onClose={handleClose}
+          />
+        ) : null}
+
+        {dialogOpen === 'finetunes' ? (
+          <DialogFinetunes
+            open
+            onClose={handleClose}
           />
         ) : null}
 

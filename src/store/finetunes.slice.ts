@@ -18,9 +18,17 @@ export const finetunesSlice = createSlice({
     }>) => {
       state.finetunes = action.payload.finetunes
     },
+    removeFinetune: (state, action: PayloadAction<{
+      id: string
+    }>) => {
+      state.finetunes = state.finetunes.filter(f => f.id !== action.payload.id)
+    }
   },
 })
 
-export const { setFinetunes } = finetunesSlice.actions
+export const {
+  setFinetunes,
+  removeFinetune,
+} = finetunesSlice.actions
 
 export default finetunesSlice.reducer

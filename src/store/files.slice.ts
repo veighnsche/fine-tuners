@@ -30,7 +30,7 @@ export const filesSlice = createSlice({
     }>) => {
       state.currentLines = action.payload.lines
     },
-    deleteFileStore: (state, action: PayloadAction<{
+    removeFile: (state, action: PayloadAction<{
       id: string;
     }>) => {
       state.files = state.files.filter(file => file.id !== action.payload.id)
@@ -42,7 +42,7 @@ export const {
   setFiles,
   unsetCurrentFile,
   setCurrentLines,
-  deleteFileStore,
+  removeFile,
 } = filesSlice.actions
 
 export const selectFinetuneFiles = (state: RootState) =>

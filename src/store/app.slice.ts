@@ -14,14 +14,13 @@ export const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
-    toggleNameDialog: (state) => {
-      state.dialogOpen = state.dialogOpen === 'name' ? null : 'name'
+    openDialog: (state, action: PayloadAction<{
+      dialog: AppState['dialogOpen']
+    }>) => {
+      state.dialogOpen = action.payload.dialog
     },
-    toggleFilesDialog: (state) => {
-      state.dialogOpen = state.dialogOpen === 'files' ? null : 'files'
-    },
-    toggleFinetunesDialog: (state) => {
-      state.dialogOpen = state.dialogOpen === 'finetunes' ? null : 'finetunes'
+    closeDialog: (state) => {
+      state.dialogOpen = null
     },
     setEditTextFrom: (state, action: PayloadAction<{
       from: AppState['editTextFrom']
@@ -32,9 +31,8 @@ export const appSlice = createSlice({
 })
 
 export const {
-  toggleNameDialog,
-  toggleFilesDialog,
-  toggleFinetunesDialog,
+  openDialog,
+  closeDialog,
   setEditTextFrom,
 } = appSlice.actions
 
