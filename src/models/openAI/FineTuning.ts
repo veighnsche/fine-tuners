@@ -5,6 +5,7 @@ export interface OpenAiFineTuningParams {
   model?: string;
   n_epochs?: number;
   prompt_loss_weight?: number;
+  suffix?: string;
   // todo: there are way more params
 
 }

@@ -1,14 +1,14 @@
-import styled from '@emotion/styled'
-import { Box, Button, ButtonGroup, Paper, Theme, Typography, useTheme } from '@mui/material'
-import { useRef } from 'react'
-import { useOpenAI } from '../hooks/openAI'
-import { OpenAiFineTuningEvent } from '../models/openAI/FineTuning'
-import { useAppSelector } from '../store'
-import { selectTrainSettings } from '../store/train.settings.slice'
-import { TrainSettings } from './settings.train'
+import styled from "@emotion/styled";
+import { Box, Button, ButtonGroup, Paper, Theme, Typography, useTheme } from "@mui/material";
+import { useRef } from "react";
+import { useOpenAI } from "../hooks/openAI";
+import { OpenAiFineTuningEvent } from "../models/openAI/FineTuning";
+import { useAppSelector } from "../store";
+import { selectTrainSettings } from "../store/train.settings.slice";
+import { TrainSettings } from "./settings.train";
 
 const StyledPaper = styled(Paper, {
-  shouldForwardProp: (prop) => prop !== 'theme',
+  shouldForwardProp: (prop) => prop !== "theme",
 })<{
   theme: Theme
 }>`
@@ -16,28 +16,33 @@ const StyledPaper = styled(Paper, {
   display: flex;
   flex-direction: column;
   padding: ${({ theme }) => theme.spacing(1)};
-  
+
   p {
     margin: 0;
     padding: 0;
   }
-`
+`;
 
 export const FileTrain = () => {
-  const settings = useAppSelector(selectTrainSettings)
-  const { trainFile } = useOpenAI()
-  const paperRef = useRef<HTMLDivElement>(null)
-  const theme = useTheme()
+  const settings = useAppSelector(selectTrainSettings);
+  const { trainFile } = useOpenAI();
+  const paperRef = useRef<HTMLDivElement>(null);
+  const theme = useTheme();
 
   const handleTrain = async () => {
-    const trainingEvents = await trainFile({ params: settings })
+    const trainingEvents = await trainFile({
+      params: {
+        ...settings,
+        suffix: settings.training_file
+      },
+    });
 
     for await (const event of trainingEvents) {
-      const p = document.createElement('p')
-      p.innerText = (event.chunk as OpenAiFineTuningEvent).message
-      paperRef.current!.appendChild(p)
+      const p = document.createElement("p");
+      p.innerText = (event.chunk as OpenAiFineTuningEvent).message;
+      paperRef.current!.appendChild(p);
     }
-  }
+  };
 
   return (
     <>
@@ -66,5 +71,5 @@ export const FileTrain = () => {
         </StyledPaper>
       </Box>
     </>
-  )
-}
+  );
+};

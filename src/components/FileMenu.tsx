@@ -1,6 +1,8 @@
 import { Divider, Menu, MenuItem, Tooltip } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../store'
 import { openDialog } from '../store/app.slice'
+import { setDocumentFromFile } from "../store/document.slice";
+import { setLines } from "../store/lines.slice";
 import { downloadJsonlEditFile, downloadJsonlFile, selectFile } from '../utils/files'
 
 interface TopBarMenuProps {
@@ -23,8 +25,11 @@ export const FileMenu = ({ anchorEl, open, onClose }: TopBarMenuProps) => {
   const handleOpenFileClick = async () => {
     onClose()
     const file = await selectFile()
-    // todo: MAKE IT DO SOMETHING
-    console.log(file)
+
+    if (file.type === 'jsonl-edit') {
+      dispatch(setDocumentFromFile({ document: file.document }))
+    }
+    dispatch(setLines({ lines: file.lines }))
   }
 
   const handleRename = () => {

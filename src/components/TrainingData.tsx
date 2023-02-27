@@ -1,32 +1,32 @@
-import AddIcon from '@mui/icons-material/Add'
-import DataObjectIcon from '@mui/icons-material/DataObject'
-import { Box, Divider, IconButton, List, Paper, Theme, Typography } from '@mui/material'
-import { Fragment } from 'react'
-import { LineType } from '../models/Line'
-import { useAppDispatch, useAppSelector } from '../store'
-import { newLine } from '../store/lines.slice'
-import { TrainingDataItem } from './TrainingDataItem'
+import AddIcon from "@mui/icons-material/Add";
+import DataObjectIcon from "@mui/icons-material/DataObject";
+import { Box, Divider, IconButton, List, Paper, Theme, Typography } from "@mui/material";
+import { Fragment } from "react";
+import { LineType } from "../models/Line";
+import { useAppDispatch, useAppSelector } from "../store";
+import { newLine } from "../store/lines.slice";
+import { TrainingDataItem } from "./TrainingDataItem";
 
 interface HistoryProps {
-  width: ReturnType<Theme['spacing']>;
-  minWidth: ReturnType<Theme['spacing']>;
+  width: ReturnType<Theme["spacing"]>;
+  minWidth: ReturnType<Theme["spacing"]>;
   onLineClick: (line: LineType) => void;
 }
 
 export const TrainingData = ({ width, minWidth, onLineClick }: HistoryProps) => {
-  const lines = useAppSelector(state => state.lines.lines)
-  const dispatch = useAppDispatch()
+  const lines = useAppSelector(state => state.lines.lines);
+  const dispatch = useAppDispatch();
 
   const handleAddLine = () => {
-    dispatch(newLine())
-  }
+    dispatch(newLine());
+  };
 
   return (
     <Paper sx={{
       p: 1,
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
+      display: "flex",
+      flexDirection: "column",
+      height: "100%",
       gap: 1,
       width,
       minWidth,
@@ -72,7 +72,12 @@ export const TrainingData = ({ width, minWidth, onLineClick }: HistoryProps) => 
           </Typography>
         </Box>
       ) : (
-        <List>
+        <List
+          sx={{
+            flexGrow: 1,
+            overflow: "auto",
+          }}
+        >
           {lines.map((line, index) => (
             <Fragment key={index}>
               {index !== 0 ? <Divider/> : null}
@@ -85,5 +90,5 @@ export const TrainingData = ({ width, minWidth, onLineClick }: HistoryProps) => 
         </List>
       )}
     </Paper>
-  )
-}
+  );
+};

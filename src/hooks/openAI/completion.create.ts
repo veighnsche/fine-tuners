@@ -62,8 +62,10 @@ export const useCompletionCreate = () => {
           break readerLoop
         }
 
+        const parsed = JSON.parse(trimmed)
+
         yield {
-          chunk: trimmed,
+          chunk: parsed.choices[0].text,
           done: false,
         }
       }

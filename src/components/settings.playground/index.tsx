@@ -26,6 +26,7 @@ export const PlaygroundSettings = ({ width, minWidth }: PlaygroundSettingsProps)
       width={width}
       minWidth={minWidth}
       p={4}
+      overflow="auto"
     >
       <Model model={model} setModel={setModel}/>
       <Temperature/>
